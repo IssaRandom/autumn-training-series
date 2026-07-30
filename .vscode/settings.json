@@ -1,6 +1,5 @@
 {
   "liveServer.settings.root": "/autumn-training-series",
   "liveServer.settings.port": 5500,
-  "liveServer.settings.wait": 200,
-  "liveServer.settings.CustomBrowser": "chrome"
+  "liveServer.settings.wait": 200
 }

@@ -223,14 +223,15 @@ h3 { line-height: 1.1; }
 .camp-suitable, .camp-deadline { padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); }
 .camp-deadline { font-size: .78rem !important; }
 
-.expect-section { position: relative; overflow: hidden; }
+.expect-section { position: relative; overflow: hidden; padding: 36px 0 28px; }
 .expect-section::after { position: absolute; right: -120px; bottom: -180px; width: 500px; height: 500px; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; content: ""; }
-.expect-heading { display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; align-items: end; margin-bottom: 60px; }
+.expect-heading { display: grid; grid-template-columns: .9fr 1.1fr; gap: 50px; align-items: start; margin: 14px 0 20px; }
 .expect-heading h2 { max-width: 620px; margin-bottom: 0; font-size: clamp(2.6rem, 5vw, 5.4rem); }
 .expect-heading p:last-child { max-width: 560px; color: #b8c7dc; }
 .expect-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255,255,255,.2); }
 .expect-grid article { padding: 30px 30px 10px 0; }
 .expect-grid article + article { padding-left: 30px; border-left: 1px solid rgba(255,255,255,.2); }
+.booking-panel .button.button-secondary { margin-top: 14px; }
 .expect-grid span { color: var(--blue-300); font-size: .74rem; font-weight: 800; }
 .expect-grid h3 { margin: 30px 0 12px; font-size: 1.25rem; }
 .expect-grid p { margin: 0; color: #afbed3; font-size: .88rem; }
