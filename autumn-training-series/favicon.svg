@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">KW JF Sailing</title>
+  <rect width="64" height="64" rx="8" fill="#061a3a"/>
+  <path d="M11 15h6v13l10-13h7L23 29l12 20h-7l-9-15-2 3v12h-6V15Zm29 0h15v6h-9v9h8v6h-8v13h-6V15Z" fill="#fff"/>
+  <path d="M32 10h3v44h-3z" fill="#3977f6"/>
+</svg>
