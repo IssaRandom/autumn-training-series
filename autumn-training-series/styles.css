@@ -335,7 +335,7 @@ h3 { line-height: 1.1; }
   .hero-image { object-position: 67% 50%; }
   .hero-overlay { background: linear-gradient(90deg, rgba(3,19,46,.94) 0%, rgba(3,19,46,.7) 60%, rgba(3,19,46,.3)); }
   .programme-grid, .expect-heading, .booking-panel, .faq-layout, .final-cta-grid { grid-template-columns: 1fr; }
-  .programme-visual { max-width: 650px; }
+  .programme-visual { max-width: 540px; margin-inline: auto; }
   .expect-heading { gap: 24px; }
   .schedule-layout { display: block; }
   .camp-panel { display: none; }
@@ -373,8 +373,9 @@ h3 { line-height: 1.1; }
   .hero-meta { display: grid; gap: 2px; }
   .hero-index { display: none; }
   .programme-grid { grid-template-columns: 1fr; gap: 44px; }
-  .programme-visual { padding: 0 12px 12px 0; }
-  .programme-visual figcaption { position: static; max-width: none; }
+  .programme-visual { width: min(100%, 540px); max-width: 100%; padding: 0; margin: 0 auto; }
+  .programme-visual img { width: 100%; height: auto; }
+  .programme-visual figcaption { position: static; max-width: none; padding: 18px 16px; }
   .coach-grid { grid-template-columns: 1fr; }
   .coach-card > img { height: 330px; }
   .date-alert { grid-template-columns: 1fr; gap: 7px; }
