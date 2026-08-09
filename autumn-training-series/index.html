@@ -1,150 +1,3 @@
-ChatGPT Plus
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Pasted code(1).html
-File
-please edit this index.html file for my website to change the text for the camps to show how many spaces are left for the camps here is the new information "19 - 20 Sep WPNSA	 
-ILCA4	
-Henry Cruse	Need to send payment link
-Ruby Coster	Need to send payment link
-	
-ILCA6	
-Will Keys-Batson	Need to send payment link
-Theodore Valantin	Need to send payment link
-	
-26 - 27 Sep Poole YC	
-ILCA4	
-Isabella	Paid
-Frazer	Paid
-Harry	Paid
-Ruby	Paid
-Henry Cruse	Waitlisted
-	
-ILCA6	
-Theodore Valantin	Paid
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link
-	
-3 - 4 Oct WPNSA	
-ILCA4	
-Henry Cruse	Need to send payment link
-Ruby Coster	Need to send payment link
-	
-ILCA6	
-Theodore Valantin	Need to send payment link
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link
-	
-11 - 12 Oct Poole YC	
-ILCA4	
-Henry Cruse	Need to send payment link
-Ruby Coster	Need to send payment link
-	
-ILCA6	
-Theodore Valantin	Need to send payment link
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link
-	
-19 - 22 Oct WPNSA	
-ILCA4	
-Ruby Coster	Need to send payment link
-	
-ILCA6	
-Theodore Valantin	Need to send payment link
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link
-	
-26 - 30 Oct Poole YC	
-ILCA4	
-Ruby Coster	Need to send payment link
-	
-ILCA6	
-Theodore Valantin	Need to send payment link
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link
-	
-7 - 8 Nov Poole YC	
-ILCA4	
-Ruby Coster	Need to send payment link
-Henry Cruse	Need to send payment link
-	
-ILCA6	
-Theodore Valantin	Need to send payment link
-Harry Whelan	Need to send payment link
-Will Keys-Batson	Need to send payment link" it would be great to simply have a bit at the bottom which says how many spaces remaining/8
-
-Worked for 26s
-Done. I’ve edited the uploaded index.html so every camp now shows a simple availability line underneath its description, using the current confirmed/payment-pending sailors and excluding the waitlisted sailor from the eight available places. I also corrected Autumn Series #4 from 10–11 October to 11–12 October in both the visible schedule and the structured event data. 
-
-
-The availability now reads:
-
-19–20 Sep: 4 spaces remaining / 8
-
-26–27 Sep: 1 space remaining / 8
-
-3–4 Oct: 3 spaces remaining / 8
-
-11–12 Oct: 3 spaces remaining / 8
-
-19–22 Oct: 4 spaces remaining / 8
-
-26–30 Oct: 4 spaces remaining / 8
-
-7–8 Nov: 3 spaces remaining / 8
-
-index_updated_spaces.html
-
-Would you prefer the availability text to be subtle grey, green/orange/red depending on spaces, or bold navy?
-
-
-
-index_updated_spaces.html
-HTML
-
-
-would be good to just have ILCA 4 X spaces remaining\n ILCA 6 X spaces remaining. then make the text red when it is only a couple of spaces
-
-Worked for 24s
-Done. Each camp now shows availability separately, for example:
-
-ILCA 4: 6 spaces remaining
-ILCA 6: 5 spaces remaining
-
-I’ve also added a red low-spaces style ready for camps with only 1–2 places remaining. At the moment none of the individual fleets are that low, so they remain in the normal colour.
-
-For 26–27 September, I counted Henry Cruse as waitlisted rather than occupying one of the 8 ILCA 4 places.
-
-index_class_spaces.html
-
-
-
-index_class_spaces.html
-HTML
-
-
-Library
-/
-James
-/
-index_class_spaces.html
-
-
-
-
 <!doctype html>
 <html lang="en-GB">
 <head>
@@ -157,10 +10,6 @@ index_class_spaces.html
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" as="image" href="assets/images/hero-sailing.jpg" fetchpriority="high">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .event-spaces { display: block; }
-    .event-spaces.low-spaces { color: #c62828; font-weight: 700; }
-  </style>
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Autumn Training Series | ILCA 4 &amp; 6 Coaching">
@@ -403,31 +252,67 @@ index_class_spaces.html
             <article class="event-card is-selected" role="listitem" data-event="ats1">
               <button class="event-trigger" type="button" aria-expanded="true" aria-controls="detail-ats1">
                 <span class="event-date"><small>SEP</small>19–20</span>
-                <span class="event-main"><strong>Autumn Series #1</strong><small>WPNSA · Technical foundations</small><small class="event-spaces">ILCA 4: 6 spaces remaining</small><small class="event-spaces">ILCA 6: 6 spaces remaining</small></span>
+                <span class="event-main"><strong>Autumn Series #1</strong><small>WPNSA · Technical foundations</small><span class="event-availability"><small>ILCA 4 <strong>6 spaces remaining</strong></small><small>ILCA 6 <strong>6 spaces remaining</strong></small></span></span>
                 <span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>
               </button>
               <div class="mobile-event-detail" id="detail-ats1" aria-live="polite"></div>
             </article>
-            <article class="event-card" role="listitem" data-event="ats2">
-              <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-ats2">
-                <span class="event-date"><small>SEP</small>26–27</span>
-                <span class="event-main"><strong>Autumn Series #2</strong><small>Poole Yacht Club · Execution under pressure</small><small class="event-spaces">ILCA 4: 4 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
-                <span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>
-              </button>
-              <div class="mobile-event-detail" id="detail-ats2"></div>
-            </article>
-            <article class="event-card" role="listitem" data-event="ats3">
-              <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-ats3">
-                <span class="event-date"><small>OCT</small>3–4</span>
-                <span class="event-main"><strong>Autumn Series #3</strong><small>WPNSA · Starting skills</small><small class="event-spaces">ILCA 4: 6 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
-                <span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>
-              </button>
-              <div class="mobile-event-detail" id="detail-ats3"></div>
-            </article>
+            <!-- ATS #2 — REDACTED / UNAVAILABLE -->
+<article class="event-card is-unavailable is-redacted" role="listitem" data-event="ats2">
+  <button
+    class="event-trigger"
+    type="button"
+    aria-expanded="false"
+    aria-controls="detail-ats2"
+    aria-disabled="true"
+    disabled
+  >
+    <span class="event-date redacted-date">
+      <small>SEP</small>
+      <span>••–••</span>
+    </span>
+
+    <span class="event-main">
+      <strong>Autumn Series #2</strong>
+      <small class="redacted-location">Additional training opportunity</small>
+    </span>
+
+    <span class="redacted-label">[REDACTED]</span>
+  </button>
+
+  <div class="mobile-event-detail" id="detail-ats2"></div>
+</article>
+
+
+<!-- ATS #3 — REDACTED / UNAVAILABLE -->
+<article class="event-card is-unavailable is-redacted" role="listitem" data-event="ats3">
+  <button
+    class="event-trigger"
+    type="button"
+    aria-expanded="false"
+    aria-controls="detail-ats3"
+    aria-disabled="true"
+    disabled
+  >
+    <span class="event-date redacted-date">
+      <small>OCT</small>
+      <span>••–••</span>
+    </span>
+
+    <span class="event-main">
+      <strong>Autumn Series #3</strong>
+      <small class="redacted-location">Additional training opportunity</small>
+    </span>
+
+    <span class="redacted-label">[REDACTED]</span>
+  </button>
+
+  <div class="mobile-event-detail" id="detail-ats3"></div>
+</article>
             <article class="event-card" role="listitem" data-event="ats4">
               <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-ats4">
                 <span class="event-date"><small>OCT</small>11–12</span>
-                <span class="event-main"><strong>Autumn Series #4</strong><small>Poole Yacht Club · Start-line control</small><small class="event-spaces">ILCA 4: 6 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
+                <span class="event-main"><strong>Autumn Series #4</strong><small>Poole Yacht Club · Start-line control</small><span class="event-availability"><small>ILCA 4 <strong>6 spaces remaining</strong></small><small>ILCA 6 <strong>5 spaces remaining</strong></small></span></span>
                 <span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>
               </button>
               <div class="mobile-event-detail" id="detail-ats4"></div>
@@ -435,7 +320,7 @@ index_class_spaces.html
             <article class="event-card" role="listitem" data-event="race1">
               <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-race1">
                 <span class="event-date"><small>OCT</small>19–22</span>
-                <span class="event-main"><strong>October Race Camp</strong><small>WPNSA · Strategy and tactics</small><small class="event-spaces">ILCA 4: 7 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
+                <span class="event-main"><strong>October Race Camp</strong><small>WPNSA · Strategy and tactics</small><span class="event-availability"><small>ILCA 4 <strong>7 spaces remaining</strong></small><small>ILCA 6 <strong>5 spaces remaining</strong></small></span></span>
                 <span class="event-price">£360</span><span class="event-arrow" aria-hidden="true">→</span>
               </button>
               <div class="mobile-event-detail" id="detail-race1"></div>
@@ -443,7 +328,7 @@ index_class_spaces.html
             <article class="event-card" role="listitem" data-event="race2">
               <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-race2">
                 <span class="event-date"><small>OCT</small>26–30</span>
-                <span class="event-main"><strong>October Race Camp</strong><small>Poole Yacht Club · Review and development</small><small class="event-spaces">ILCA 4: 7 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
+                <span class="event-main"><strong>October Race Camp</strong><small>Poole Yacht Club · Review and development</small><span class="event-availability"><small>ILCA 4 <strong>7 spaces remaining</strong></small><small>ILCA 6 <strong>5 spaces remaining</strong></small></span></span>
                 <span class="event-price">£450</span><span class="event-arrow" aria-hidden="true">→</span>
               </button>
               <div class="mobile-event-detail" id="detail-race2"></div>
@@ -451,7 +336,7 @@ index_class_spaces.html
             <article class="event-card" role="listitem" data-event="ats5">
               <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-ats5">
                 <span class="event-date"><small>NOV</small>7–8</span>
-                <span class="event-main"><strong>Autumn Series #5</strong><small>Poole Yacht Club · Winter foundations</small><small class="event-spaces">ILCA 4: 6 spaces remaining</small><small class="event-spaces">ILCA 6: 5 spaces remaining</small></span>
+                <span class="event-main"><strong>Autumn Series #5</strong><small>Poole Yacht Club · Winter foundations</small><span class="event-availability"><small>ILCA 4 <strong>6 spaces remaining</strong></small><small>ILCA 6 <strong>5 spaces remaining</strong></small></span></span>
                 <span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>
               </button>
               <div class="mobile-event-detail" id="detail-ats5"></div>
