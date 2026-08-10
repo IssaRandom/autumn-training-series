@@ -55,7 +55,7 @@
     },
 
     ats4: {
-      date: "11–12 October 2026",
+      date: "10–11 October 2026",
       venue: "Poole Yacht Club",
       price: "£180",
       title: "Autumn Training Series #4",
@@ -157,11 +157,14 @@
   const cards = [...document.querySelectorAll(".event-card")];
   const desktopDetail = document.querySelector("[data-camp-detail]");
 
-  const isUnavailable = card =>
-    card.classList.contains("is-unavailable") ||
-    card.querySelector(".event-trigger")?.disabled ||
-    card.querySelector(".event-trigger")?.getAttribute("aria-disabled") === "true";
+  const WHATSAPP_URL = "https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q";
 
+  const isUnavailable = card =>
+    card.classList.contains("is-unavailable");
+
+  const isRedacted = card =>
+    card.classList.contains("is-redacted");
+  
   function selectEvent(card) {
     if (!card || isUnavailable(card)) return;
 
@@ -195,9 +198,21 @@
   cards.forEach(card => {
     const trigger = card.querySelector(".event-trigger");
 
-    if (!trigger || isUnavailable(card)) return;
+    if (!trigger) return;
 
     trigger.addEventListener("click", () => {
+
+      // Redacted camps link directly to the WhatsApp group
+      if (isRedacted(card)) {
+        window.open(
+          WHATSAPP_URL,
+          "_blank",
+          "noopener,noreferrer"
+        );
+        return;
+      }
+
+      // Normal camps open their information panel
       selectEvent(card);
     });
   });
