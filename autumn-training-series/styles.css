@@ -1274,6 +1274,54 @@ h3 { line-height: 1.1; }
       auto;
   }
 
+  .schedule-layout {
+    display: block;
+  }
+
+  .camp-panel {
+    display: none;
+  }
+
+  .event-trigger {
+    grid-template-columns: 66px minmax(0,1fr) auto 22px;
+  }
+
+  .event-card.is-selected {
+    color: var(--ink);
+    border-color: var(--blue-600);
+    background: var(--white);
+  }
+
+  .event-card.is-selected .event-trigger {
+    color: var(--ink);
+    background: var(--white);
+  }
+
+  .is-selected .event-date {
+    border-color: var(--line);
+  }
+
+  .is-selected .event-date small {
+    color: var(--blue-600);
+  }
+
+  .is-selected .event-main small {
+    color: var(--muted);
+  }
+
+  /* ADD THIS */
+  .event-card.is-selected .event-availability,
+  .event-card.is-selected .event-availability small,
+  .event-card.is-selected .event-availability strong {
+    color: var(--ink);
+  }
+
+  .event-card.is-selected .mobile-event-detail {
+    display: block;
+    padding: 22px 18px 20px;
+    border-top: 1px solid var(--line);
+  }
+
 }
 
 
