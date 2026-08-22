@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Solent Race Navigator | Beyond the Shift</title>
+  <meta name="description" content="Live GPS-enabled Solent race navigation for small-boat racing.">
+  <meta name="theme-color" content="#071b2f">
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="https://beyondtheshift.co.uk/navigator/">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #071b2f; }
+    body { min-height: 100dvh; }
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      border: 0;
+      background: #071b2f;
+    }
+    .fallback {
+      position: fixed;
+      inset: auto 1rem max(1rem, env(safe-area-inset-bottom)) 1rem;
+      z-index: 2;
+      margin: 0 auto;
+      max-width: 34rem;
+      padding: .7rem 1rem;
+      border-radius: .75rem;
+      background: rgba(7, 27, 47, .9);
+      color: #fff;
+      font: 600 14px/1.4 system-ui, sans-serif;
+      text-align: center;
+    }
+    .fallback a { color: #8fe3d4; }
+  </style>
+</head>
+<body>
+  <iframe
+    src="https://solent-race-navigator.lucyijdavis.chatgpt.site"
+    title="Solent Race Navigator"
+    allow="geolocation; fullscreen; screen-wake-lock"
+    referrerpolicy="strict-origin-when-cross-origin"
+  ></iframe>
+  <noscript>
+    <p class="fallback">JavaScript is required. <a href="https://solent-race-navigator.lucyijdavis.chatgpt.site">Open the navigator directly</a>.</p>
+  </noscript>
+</body>
+</html>
