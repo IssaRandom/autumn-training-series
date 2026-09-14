@@ -19,19 +19,27 @@
     winter10: { date:"20–21 February 2027", venue:"Poole Yacht Club", price:"", title:"Winter Training Series #10", intro:"The final listed winter weekend at Poole Yacht Club, following directly on from the February Training Camp.", focus:"Consolidate the week’s learning and sharpen race execution ahead of the spring season.", expect:["Two-day training block","Technical consolidation","Race-focused training","Video analysis and feedback"], deadline:"Booking interest is now open. Full camp and pricing information will follow." }
   };
 
-  document.title = "Autumn & Winter Training Series | ILCA 4 & 6 Coaching";
+  document.title = "Winter Dates Now Live | ILCA 4 & 6 Training 2026/27";
+  const heroContent = document.querySelector(".hero-content");
+  if (heroContent && !heroContent.querySelector(".winter-launch-badge")) {
+    const badge = document.createElement("a");
+    badge.className = "winter-launch-badge";
+    badge.href = "#dates";
+    badge.innerHTML = '<span>NEW</span> 6 WINTER DATES NOW LIVE <b>↓</b>';
+    heroContent.prepend(badge);
+  }
   const heroTitle = document.querySelector("#hero-title");
   if (heroTitle) heroTitle.innerHTML = "Autumn &amp;<br>Winter Training<br>Series";
   const eyebrow = document.querySelector(".hero .eyebrow");
-  if (eyebrow) eyebrow.innerHTML = 'ILCA 4 &amp; 6 <span>·</span> 2026/27 Training';
+  if (eyebrow) eyebrow.innerHTML = 'ILCA 4 &amp; 6 <span>·</span> WINTER 2026/27 DATES RELEASED';
   const heroMeta = document.querySelector(".hero-meta");
-  if (heroMeta) heroMeta.innerHTML = '<strong>September 2026–February 2027</strong><span>WPNSA and Poole Yacht Club</span>';
+  if (heroMeta) heroMeta.innerHTML = '<strong>6 NEW WINTER CAMPS</strong><span>December 2026 + February 2027 · Poole Yacht Club</span>';
   const heroCopy = document.querySelector(".hero-copy");
-  if (heroCopy) heroCopy.textContent = "New winter training dates are now live, extending the programme through Christmas, New Year and February.";
+  if (heroCopy) heroCopy.textContent = "Winter dates are now live. New Christmas, New Year and February training blocks have been added to the programme, alongside the remaining autumn camps.";
   const datesHeading = document.querySelector("#dates .section-kicker");
-  if (datesHeading) datesHeading.textContent = "Autumn + Winter 2026/27";
+  if (datesHeading) datesHeading.textContent = "NEW WINTER DATES NOW LIVE";
   const datesTitle = document.querySelector("#dates h2");
-  if (datesTitle) datesTitle.textContent = "Training dates";
+  if (datesTitle) datesTitle.textContent = "Autumn + winter training dates";
 
   const list = document.querySelector(".event-list");
   if (list && !document.querySelector('[data-event="winterChristmas"]')) {
@@ -58,7 +66,7 @@
   }
 
   const injectedStyles = document.createElement("style");
-  injectedStyles.textContent = `.winter-date-divider{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 4px;padding:13px 16px;border-left:4px solid var(--blue-600);background:var(--ice);text-transform:uppercase}.winter-date-divider span{font-size:.78rem;font-weight:850;letter-spacing:.08em}.winter-date-divider strong{color:var(--blue-600);font-size:.72rem;letter-spacing:.08em}.winter-event-card{border-color:#bfd0ee}.winter-new-pill{min-width:44px;padding:6px 8px;border-radius:999px;color:var(--white);background:var(--blue-600);font-size:.66rem;line-height:1;text-align:center}.event-availability{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:7px}.event-availability small{font-size:.69rem}.event-availability strong{font-weight:850}@media(max-width:860px){.event-card.is-selected .event-availability,.event-card.is-selected .event-availability small,.event-card.is-selected .event-availability strong{color:var(--ink)!important}}@media(max-width:620px){.winter-date-divider{align-items:flex-start;flex-direction:column;gap:2px}.event-availability{display:grid;gap:2px}.winter-new-pill{min-width:38px;font-size:.58rem}}`;
+  injectedStyles.textContent = `.winter-launch-badge{width:fit-content;display:inline-flex;align-items:center;gap:9px;margin:0 0 18px;padding:8px 12px 8px 8px;border:1px solid rgba(255,255,255,.5);border-radius:4px;color:#fff;background:rgba(3,19,46,.64);backdrop-filter:blur(8px);font-size:.76rem;font-weight:900;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;box-shadow:0 8px 24px rgba(0,0,0,.18)}.winter-launch-badge span{padding:5px 8px;border-radius:3px;color:var(--navy-950);background:#ffdf27;font-size:.66rem;letter-spacing:.1em}.winter-launch-badge b{color:#ffdf27;font-size:1rem}.winter-launch-badge:hover{border-color:#ffdf27;transform:translateY(-1px)}.winter-date-divider{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 4px;padding:13px 16px;border-left:4px solid var(--blue-600);background:var(--ice);text-transform:uppercase}.winter-date-divider span{font-size:.78rem;font-weight:850;letter-spacing:.08em}.winter-date-divider strong{color:var(--blue-600);font-size:.72rem;letter-spacing:.08em}.winter-event-card{border-color:#bfd0ee}.winter-new-pill{min-width:44px;padding:6px 8px;border-radius:999px;color:var(--white);background:var(--blue-600);font-size:.66rem;line-height:1;text-align:center}.event-availability{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:7px}.event-availability small{font-size:.69rem}.event-availability strong{font-weight:850}@media(max-width:860px){.event-card.is-selected .event-availability,.event-card.is-selected .event-availability small,.event-card.is-selected .event-availability strong{color:var(--ink)!important}}@media(max-width:620px){.winter-launch-badge{margin-bottom:15px;font-size:.66rem;letter-spacing:.055em}.winter-launch-badge span{font-size:.58rem}.winter-date-divider{align-items:flex-start;flex-direction:column;gap:2px}.event-availability{display:grid;gap:2px}.winter-new-pill{min-width:38px;font-size:.58rem}}`;
   document.head.appendChild(injectedStyles);
 
   const detailMarkup = (event, includeTitle = true) => `<div class="camp-topline"><span>${event.date}</span>${event.price ? `<strong>${event.price}</strong>` : `<strong>NEW DATE</strong>`}</div>${includeTitle ? `<h3>${event.title}</h3>` : ""}<p class="camp-venue">${event.venue}</p><p>${event.intro}</p><h4>Main focus</h4><p>${event.focus}</p><ul>${event.expect.map(item=>`<li>${item}</li>`).join("")}</ul><p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p><p class="camp-deadline">${event.deadline}</p><a class="button button-full" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">Book this camp <span aria-hidden="true">↗</span></a>`;
