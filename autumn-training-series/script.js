@@ -4,9 +4,9 @@
   const BOOKING_URL = "https://forms.gle/X7offBwNaL24wZ4t7";
 
   const events = {
-    ats1: { date:"19–20 September 2026", venue:"WPNSA", price:"£180", title:"Autumn Training Series #1", intro:"Strip sailing back to its foundations and build repeatable technique before the winter training period.", focus:"Speed runs, tacks, gybes, mark roundings and core boat handling.", expect:["High-intensity on-water sessions","Structured technical repetition","Onshore video analysis","Personalised post-camp summary"], deadline:"Bookings normally close 29 August 2026. A £20 late fee may apply after the deadline." },
-    ats2: { date:"26–27 September 2026", venue:"Poole Yacht Club", price:"£180", title:"Autumn Training Series #2", intro:"Apply core technique when boat-on-boat pressure reduces time and attention, revealing the areas that need focused work.", focus:"Technical execution under pressure, boat-on-boat interactions and turning conscious skills into automatic processes.", expect:["Pressure-based boat-handling drills","Targeted work on individual weaknesses","Onshore video analysis","Personalised post-camp summary"], deadline:"Bookings normally close 5 September 2026. A £20 late fee may apply after the deadline." },
-    ats3: { date:"3–4 October 2026", venue:"WPNSA", price:"£180", title:"Autumn Training Series #3", intro:"Build a dependable starting toolbox in a controlled training environment before autumn qualification events.", focus:"Start-line manoeuvres, time-on-distance, line awareness and consistent technical execution.", expect:["Repeated starting sequences","Time-on-distance practice","Line-awareness drills","Video review and individual feedback"], deadline:"Bookings normally close 12 September 2026. A £20 late fee may apply after the deadline." },
+    ats1: { date:"19–20 September 2026", venue:"WPNSA", price:"£180", title:"Autumn Training Series #1", intro:"Strip sailing back to its foundations and build repeatable technique before the winter training period.", focus:"Speed runs, tacks, gybes, mark roundings and core boat handling.", expect:["High-intensity on-water sessions","Structured technical repetition","Onshore video analysis","Personalised post-camp summary"], deadline:"Camp completed." },
+    ats2: { date:"26–27 September 2026", venue:"Poole Yacht Club", price:"£180", title:"Autumn Training Series #2", intro:"Apply core technique when boat-on-boat pressure reduces time and attention, revealing the areas that need focused work.", focus:"Technical execution under pressure, boat-on-boat interactions and turning conscious skills into automatic processes.", expect:["Pressure-based boat-handling drills","Targeted work on individual weaknesses","Onshore video analysis","Personalised post-camp summary"], deadline:"Last chance to book — limited spaces remaining." },
+    ats3: { date:"3–4 October 2026", venue:"WPNSA", price:"£180", title:"Autumn Training Series #3", intro:"Build a dependable starting toolbox in a controlled training environment before autumn qualification events.", focus:"Start-line manoeuvres, time-on-distance, line awareness and consistent technical execution.", expect:["Repeated starting sequences","Time-on-distance practice","Line-awareness drills","Video review and individual feedback"], deadline:"Last chance to book — limited spaces remaining." },
     ats4: { date:"10–11 October 2026", venue:"Poole Yacht Club", price:"£180", title:"Autumn Training Series #4", intro:"Put speed and starting skills into a competitive setting, with detailed work on controlling space before the gun.", focus:"Start-line positioning, holding a lane and boat-on-boat control during the final three minutes.", expect:["Close boat-on-boat exercises","Position-holding practice","Start-line decision-making","Video review and individual feedback"], deadline:"Bookings normally close 19 September 2026. A £20 late fee may apply after the deadline." },
     race1: { date:"19–22 October 2026", venue:"WPNSA", price:"£360", title:"October Race Camp", intro:"Turn lessons from the National Opens into practical changes before the final qualification event of the season.", focus:"Strategic and tactical decision-making around the racecourse, with opportunities to refine race execution.", expect:["Race-scenario training","Strategy and tactical exercises","Event-learning review","Video analysis and individual feedback"], deadline:"Bookings normally close 28 September 2026. A £20 late fee may apply after the deadline." },
     race2: { date:"26–30 October 2026", venue:"Poole Yacht Club", price:"£450", title:"October Race Camp", intro:"Review autumn event performance, address immediate development opportunities and shape a focused winter programme.", focus:"A varied training week guided by the specific developmental needs of the sailors attending.", expect:["Performance review","Targeted technical and racecraft sessions","Winter priority setting","Video analysis and individual feedback"], deadline:"Bookings normally close 5 October 2026. A £20 late fee may apply after the deadline." },
@@ -41,6 +41,37 @@
   const datesTitle = document.querySelector("#dates h2");
   if (datesTitle) datesTitle.textContent = "Autumn + winter training dates";
 
+  // Update the autumn cards now that ATS #1 has happened and ATS #2/#3 are public again.
+  const completedCard = document.querySelector('[data-event="ats1"]');
+  if (completedCard) {
+    completedCard.classList.remove("is-selected");
+    completedCard.classList.add("is-unavailable", "is-completed");
+    const trigger = completedCard.querySelector(".event-trigger");
+    if (trigger) {
+      trigger.disabled = true;
+      trigger.setAttribute("aria-disabled", "true");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.innerHTML = '<span class="event-date"><small>SEP</small>19–20</span><span class="event-main"><strong>Autumn Series #1</strong><small>WPNSA · Technical foundations</small><span class="completed-label">CAMP COMPLETED</span></span><span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">✓</span>';
+    }
+    const mobileDetail = completedCard.querySelector(".mobile-event-detail");
+    if (mobileDetail) mobileDetail.innerHTML = "";
+  }
+
+  const reopenCamp = (key, month, date, venue, focus, ilca4, ilca6) => {
+    const card = document.querySelector(`[data-event="${key}"]`);
+    if (!card) return;
+    card.classList.remove("is-unavailable", "is-redacted", "is-selected");
+    const trigger = card.querySelector(".event-trigger");
+    if (!trigger) return;
+    trigger.disabled = false;
+    trigger.removeAttribute("aria-disabled");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.innerHTML = `<span class="event-date"><small>${month}</small>${date}</span><span class="event-main"><strong>${key === "ats2" ? "Autumn Series #2" : "Autumn Series #3"}</strong><small>${venue} · ${focus}</small><span class="last-chance-label">LAST CHANCE TO BOOK</span><span class="event-availability"><small class="${ilca4 <= 3 ? "low-spaces" : ""}">ILCA 4 <strong>${ilca4} spaces remaining</strong></small><small class="${ilca6 <= 3 ? "low-spaces" : ""}">ILCA 6 <strong>${ilca6} spaces remaining</strong></small></span></span><span class="event-price">£180</span><span class="event-arrow" aria-hidden="true">→</span>`;
+  };
+
+  reopenCamp("ats2", "SEP", "26–27", "Poole Yacht Club", "Technical execution under pressure", 3, 5);
+  reopenCamp("ats3", "OCT", "3–4", "WPNSA", "Starting & line awareness", 6, 5);
+
   const list = document.querySelector(".event-list");
   if (list && !document.querySelector('[data-event="winterChristmas"]')) {
     const divider = document.createElement("div");
@@ -66,23 +97,21 @@
   }
 
   const injectedStyles = document.createElement("style");
-  injectedStyles.textContent = `.winter-launch-badge{width:fit-content;display:inline-flex;align-items:center;gap:9px;margin:0 0 18px;padding:8px 12px 8px 8px;border:1px solid rgba(255,255,255,.5);border-radius:4px;color:#fff;background:rgba(3,19,46,.64);backdrop-filter:blur(8px);font-size:.76rem;font-weight:900;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;box-shadow:0 8px 24px rgba(0,0,0,.18)}.winter-launch-badge span{padding:5px 8px;border-radius:3px;color:var(--navy-950);background:#ffdf27;font-size:.66rem;letter-spacing:.1em}.winter-launch-badge b{color:#ffdf27;font-size:1rem}.winter-launch-badge:hover{border-color:#ffdf27;transform:translateY(-1px)}.winter-date-divider{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 4px;padding:13px 16px;border-left:4px solid var(--blue-600);background:var(--ice);text-transform:uppercase}.winter-date-divider span{font-size:.78rem;font-weight:850;letter-spacing:.08em}.winter-date-divider strong{color:var(--blue-600);font-size:.72rem;letter-spacing:.08em}.winter-event-card{border-color:#bfd0ee}.winter-new-pill{min-width:44px;padding:6px 8px;border-radius:999px;color:var(--white);background:var(--blue-600);font-size:.66rem;line-height:1;text-align:center}.event-availability{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:7px}.event-availability small{font-size:.69rem}.event-availability strong{font-weight:850}@media(max-width:860px){.event-card.is-selected .event-availability,.event-card.is-selected .event-availability small,.event-card.is-selected .event-availability strong{color:var(--ink)!important}}@media(max-width:620px){.winter-launch-badge{margin-bottom:15px;font-size:.66rem;letter-spacing:.055em}.winter-launch-badge span{font-size:.58rem}.winter-date-divider{align-items:flex-start;flex-direction:column;gap:2px}.event-availability{display:grid;gap:2px}.winter-new-pill{min-width:38px;font-size:.58rem}}`;
+  injectedStyles.textContent = `.winter-launch-badge{width:fit-content;display:inline-flex;align-items:center;gap:9px;margin:0 0 18px;padding:8px 12px 8px 8px;border:1px solid rgba(255,255,255,.5);border-radius:4px;color:#fff;background:rgba(3,19,46,.64);backdrop-filter:blur(8px);font-size:.76rem;font-weight:900;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;box-shadow:0 8px 24px rgba(0,0,0,.18)}.winter-launch-badge span{padding:5px 8px;border-radius:3px;color:var(--navy-950);background:#ffdf27;font-size:.66rem;letter-spacing:.1em}.winter-launch-badge b{color:#ffdf27;font-size:1rem}.winter-launch-badge:hover{border-color:#ffdf27;transform:translateY(-1px)}.winter-date-divider{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 4px;padding:13px 16px;border-left:4px solid var(--blue-600);background:var(--ice);text-transform:uppercase}.winter-date-divider span{font-size:.78rem;font-weight:850;letter-spacing:.08em}.winter-date-divider strong{color:var(--blue-600);font-size:.72rem;letter-spacing:.08em}.winter-event-card{border-color:#bfd0ee}.winter-new-pill{min-width:44px;padding:6px 8px;border-radius:999px;color:var(--white);background:var(--blue-600);font-size:.66rem;line-height:1;text-align:center}.event-availability{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:7px}.event-availability small{font-size:.69rem}.event-availability strong{font-weight:850}.event-card.is-completed{opacity:.58;cursor:default;background:var(--mist);border-color:var(--line)}.event-card.is-completed:hover{transform:none;border-color:var(--line)}.event-card.is-completed .event-trigger{cursor:default}.completed-label{display:block;width:fit-content;margin-top:7px;padding:4px 8px;border-radius:3px;background:#dfe5ed;color:#52627a;font-size:.64rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.last-chance-label{display:block;width:fit-content;margin-top:7px;padding:4px 8px;border-radius:3px;background:#ffdf27;color:#03132e;font-size:.64rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.event-card.is-selected .last-chance-label{color:#03132e}@media(max-width:860px){.event-card.is-selected .event-availability,.event-card.is-selected .event-availability small,.event-card.is-selected .event-availability strong{color:var(--ink)!important}.event-card.is-selected .event-availability .low-spaces,.event-card.is-selected .event-availability .low-spaces strong{color:#c62828!important}}@media(max-width:620px){.winter-launch-badge{margin-bottom:15px;font-size:.66rem;letter-spacing:.055em}.winter-launch-badge span{font-size:.58rem}.winter-date-divider{align-items:flex-start;flex-direction:column;gap:2px}.event-availability{display:grid;gap:2px}.winter-new-pill{min-width:38px;font-size:.58rem}}`;
   document.head.appendChild(injectedStyles);
 
   const detailMarkup = (event, includeTitle = true) => `<div class="camp-topline"><span>${event.date}</span>${event.price ? `<strong>${event.price}</strong>` : `<strong>NEW DATE</strong>`}</div>${includeTitle ? `<h3>${event.title}</h3>` : ""}<p class="camp-venue">${event.venue}</p><p>${event.intro}</p><h4>Main focus</h4><p>${event.focus}</p><ul>${event.expect.map(item=>`<li>${item}</li>`).join("")}</ul><p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p><p class="camp-deadline">${event.deadline}</p><a class="button button-full" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">Book this camp <span aria-hidden="true">↗</span></a>`;
 
   const cards=[...document.querySelectorAll(".event-card")];
   const desktopDetail=document.querySelector("[data-camp-detail]");
-  const WHATSAPP_URL="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q";
   const isUnavailable=card=>card.classList.contains("is-unavailable");
-  const isRedacted=card=>card.classList.contains("is-redacted");
   function selectEvent(card){
     if(!card||isUnavailable(card))return;
     const event=events[card.dataset.event]; if(!event)return;
     cards.forEach(item=>{const selected=item===card;const trigger=item.querySelector(".event-trigger");const mobileDetail=item.querySelector(".mobile-event-detail");item.classList.toggle("is-selected",selected);if(trigger)trigger.setAttribute("aria-expanded",String(selected));if(mobileDetail)mobileDetail.innerHTML=selected?detailMarkup(event,false):"";});
     if(desktopDetail)desktopDetail.innerHTML=detailMarkup(event);
   }
-  cards.forEach(card=>{const trigger=card.querySelector(".event-trigger");if(!trigger)return;trigger.addEventListener("click",()=>{if(isRedacted(card)){window.open(WHATSAPP_URL,"_blank","noopener,noreferrer");return;}selectEvent(card);});});
+  cards.forEach(card=>{const trigger=card.querySelector(".event-trigger");if(!trigger||isUnavailable(card))return;trigger.addEventListener("click",()=>selectEvent(card));});
   const firstAvailableCard=cards.find(card=>!isUnavailable(card));if(firstAvailableCard)selectEvent(firstAvailableCard);
 
   const header=document.querySelector("[data-header]");const menuButton=document.querySelector(".menu-toggle");const nav=document.querySelector(".primary-nav");const backToTop=document.querySelector(".back-to-top");
