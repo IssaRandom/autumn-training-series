@@ -97,8 +97,6 @@
     }).join("");
     nextWrap.hidden = false;
   }
-  const heroIndex = document.querySelector("[data-hero-index]");
-  if (heroIndex && upcoming[0]) heroIndex.textContent = `Next up · ${upcoming[0].month} ${upcoming[0].days}`;
 
   /* ---------- Camp detail ---------- */
   const detailMarkup = (camp, includeTitle = true) => `<div class="camp-topline"><span>${camp.date}</span>${camp.price ? `<strong>${camp.price}</strong>` : `<strong>NEW DATE</strong>`}</div>${includeTitle ? `<h3>${camp.title}</h3>` : ""}<p class="camp-venue">${camp.venue}</p><p>${camp.intro}</p><h4>Main focus</h4><p>${camp.detailFocus}</p><ul>${camp.expect.map(item => `<li>${item}</li>`).join("")}</ul><p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p><p class="camp-deadline">${camp.deadline}</p><a class="button button-full" href="${BOOKING_URL}" target="_blank" rel="noopener noreferrer">Book this camp <span aria-hidden="true">↗</span></a>`;
@@ -106,10 +104,11 @@
   const cards = [...document.querySelectorAll(".event-card[data-event]")];
   const desktopDetail = document.querySelector("[data-camp-detail]");
   const animate = (el, frames, options) => { if (!reduceMotion && el && el.animate) el.animate(frames, {easing: EASE_OUT, fill: "both", ...options}); };
+  // Below 861px the detail opens inline as an accordion; above it, in the sticky side panel
+  const inlineDetail = window.matchMedia("(max-width: 860px)");
 
-  function selectEvent(card, {animateChange = true} = {}) {
+  function setSelected(card) {
     const camp = card && campByKey[card.dataset.event];
-    if (!camp || card.classList.contains("is-selected")) return;
     cards.forEach(item => {
       const selected = item === card;
       const trigger = item.querySelector(".event-trigger");
@@ -118,12 +117,27 @@
       if (trigger) trigger.setAttribute("aria-expanded", String(selected));
       if (mobileDetail) mobileDetail.innerHTML = selected ? detailMarkup(camp, false) : "";
     });
-    if (desktopDetail) desktopDetail.innerHTML = detailMarkup(camp);
-    if (!animateChange) return;
-    // Panel swap: content settles in from the right, like a fresh page of the brief
-    animate(desktopDetail, [{opacity: 0, transform: "translateX(14px)"}, {opacity: 1, transform: "none"}], {duration: 380});
+    if (camp && desktopDetail) desktopDetail.innerHTML = detailMarkup(camp);
+  }
+
+  function selectEvent(card, {animateChange = true} = {}) {
+    if (!card || !campByKey[card.dataset.event]) return;
+    const isOpen = card.classList.contains("is-selected");
+    if (!inlineDetail.matches) {
+      if (isOpen) return;
+      setSelected(card);
+      // Panel swap: content settles in from the right, like a fresh page of the brief
+      if (animateChange) animate(desktopDetail, [{opacity: 0, transform: "translateX(14px)"}, {opacity: 1, transform: "none"}], {duration: 380});
+      return;
+    }
+    // Accordion: tapping an open card closes it. Closing a card above shortens the page,
+    // so pin the tapped card to where it was on screen instead of letting it jump away.
+    const before = card.getBoundingClientRect().top;
+    setSelected(isOpen ? null : card);
+    const shift = card.getBoundingClientRect().top - before;
+    if (shift) window.scrollBy(0, shift);
     const mobileDetail = card.querySelector(".mobile-event-detail");
-    if (mobileDetail && mobileDetail.offsetParent) {
+    if (!isOpen && animateChange && mobileDetail) {
       animate(mobileDetail, [{height: "0px", opacity: 0}, {height: `${mobileDetail.scrollHeight}px`, opacity: 1}], {duration: 420, fill: "none"});
     }
   }
@@ -131,13 +145,16 @@
     const trigger = card.querySelector(".event-trigger");
     if (trigger) trigger.addEventListener("click", () => selectEvent(card));
   });
-  if (cards[0]) selectEvent(cards[0], {animateChange: false});
+  // Desktop always shows a camp in the panel; on phones the list starts collapsed so every date is scannable
+  const ensureSelection = () => { if (!inlineDetail.matches && cards[0] && !cards.some(card => card.classList.contains("is-selected"))) setSelected(cards[0]); };
+  ensureSelection();
+  if (inlineDetail.addEventListener) inlineDetail.addEventListener("change", ensureSelection);
 
   document.querySelectorAll("[data-select]").forEach(link => link.addEventListener("click", event => {
     const card = document.querySelector(`.event-card[data-event="${link.dataset.select}"]`);
     if (!card) return;
     event.preventDefault();
-    selectEvent(card, {animateChange: false});
+    if (!card.classList.contains("is-selected")) setSelected(card);
     card.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "start"});
     card.classList.remove("is-pinged");
     void card.offsetWidth;
@@ -162,19 +179,33 @@
     });
     navLinks.forEach(link => link.addEventListener("click", closeMenu));
     document.addEventListener("keydown", event => { if (event.key === "Escape" && nav.classList.contains("is-open")) { closeMenu(); menuButton.focus(); } });
-    const observedSections = navLinks.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean);
+    // Sections in page order (the nav lists FAQs before Booking, the page does not)
+    const observedSections = [...new Set(navLinks.map(link => document.querySelector(link.getAttribute("href"))).filter(Boolean))]
+      .sort((a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
     const updateActiveNav = () => {
       if (!observedSections.length) return;
       let current = observedSections[0];
       observedSections.forEach(section => { if (section.getBoundingClientRect().top <= window.innerHeight * .35) current = section; });
-      navLinks.forEach(link => link.classList.toggle("is-active", link.getAttribute("href") === `#${current.id}`));
+      navLinks.forEach(link => link.classList.toggle("is-active", !link.classList.contains("button") && link.getAttribute("href") === `#${current.id}`));
+    };
+    // The header steps out of the way while reading down the page and returns on any scroll up
+    const hero = document.querySelector(".hero");
+    let lastY = window.scrollY;
+    const updateHeader = () => {
+      const y = window.scrollY;
+      const pastHero = y > (hero ? hero.offsetHeight * .6 : 400);
+      const delta = y - lastY;
+      if (!pastHero || delta < -6) document.body.classList.remove("header-hidden");
+      else if (delta > 6 && !document.body.classList.contains("menu-open")) document.body.classList.add("header-hidden");
+      if (Math.abs(delta) > 6 || !pastHero) lastY = y;
+      if (header) header.classList.toggle("is-scrolled", y > 20);
     };
     let ticking = false;
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        if (header) header.classList.toggle("is-scrolled", window.scrollY > 20);
+        updateHeader();
         if (backToTop) backToTop.hidden = window.scrollY < 700;
         updateActiveNav();
         ticking = false;
@@ -182,6 +213,8 @@
     };
     onScroll();
     window.addEventListener("scroll", onScroll, {passive: true});
+    // Keyboard users tabbing into the hidden header bring it straight back
+    if (header) header.addEventListener("focusin", () => document.body.classList.remove("header-hidden"));
   }
   if (backToTop) backToTop.addEventListener("click", () => window.scrollTo({top: 0, behavior: reduceMotion ? "auto" : "smooth"}));
 
@@ -195,6 +228,31 @@
       mobileCta.classList.toggle("is-hidden", visibleZones.size > 0);
     }, {threshold: .35});
     ctaZones.forEach(zone => ctaObserver.observe(zone));
+  }
+
+  /* ---------- Coach portraits: drift gently with the cursor (mouse and trackpad only) ---------- */
+  if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.querySelectorAll("[data-coach-photo]").forEach(photo => {
+      const img = photo.querySelector("img");
+      if (!img) return;
+      let frame = 0;
+      photo.addEventListener("pointermove", event => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const box = photo.getBoundingClientRect();
+          const x = (event.clientX - box.left) / box.width - .5;
+          const y = (event.clientY - box.top) / box.height - .5;
+          // Move against the cursor, a few pixels at most, so the frame feels like a window onto the photo
+          img.style.setProperty("--px", `${(-x * 16).toFixed(1)}px`);
+          img.style.setProperty("--py", `${(-y * 12).toFixed(1)}px`);
+        });
+      });
+      photo.addEventListener("pointerleave", () => {
+        cancelAnimationFrame(frame);
+        img.style.removeProperty("--px");
+        img.style.removeProperty("--py");
+      });
+    });
   }
 
   /* ---------- Scroll reveals ---------- */
