@@ -43,6 +43,8 @@ body {
 body.menu-open { overflow: hidden; }
 img { display: block; max-width: 100%; height: auto; }
 picture { display: contents; }
+/* With picture as display: contents, its <source> would otherwise become a grid or flex item */
+picture > source { display: none; }
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
@@ -169,16 +171,6 @@ h3 { line-height: 1.1; }
 }
 .programme-visual figcaption strong { display: block; color: var(--blue-300); text-transform: uppercase; }
 
-.coach-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
-.coach-card { display: grid; grid-template-columns: 40% 60%; overflow: hidden; background: var(--white); box-shadow: var(--shadow); }
-.coach-card img { width: 100%; height: 100%; min-height: 470px; object-fit: cover; object-position: 50% 50%; }
-.coach-card:first-child img { object-position: 50% 25%; }
-.coach-card-body { padding: clamp(26px, 3vw, 36px); }
-.coach-role { margin-bottom: 8px; color: var(--blue-600); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.coach-card h3 { margin-bottom: 14px; font-size: clamp(2rem, 3vw, 3rem); }
-.coach-card p { color: var(--muted); font-size: .92rem; }
-.coach-card ul { margin: 18px 0 0; padding: 18px 0 0 18px; border-top: 1px solid var(--line); }
-.coach-card li { margin-bottom: 7px; font-size: .85rem; line-height: 1.4; }
 
 .date-alert {
   display: grid; grid-template-columns: 220px 1fr; gap: 18px; margin-bottom: 26px; padding: 16px 18px;
@@ -392,8 +384,6 @@ h3 { line-height: 1.1; }
 @media (max-width: 1100px) {
   .primary-nav { gap: 14px; }
   .primary-nav > a:not(.button) { font-size: .66rem; }
-  .coach-card { grid-template-columns: 1fr; }
-  .coach-card img { height: 350px; min-height: 0; }
   .expect-grid { grid-template-columns: repeat(2, 1fr); }
   .expect-grid article:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.2); }
   .expect-grid article:nth-child(4) { border-top: 1px solid rgba(255,255,255,.2); }
@@ -463,8 +453,6 @@ h3 { line-height: 1.1; }
   .programme-grid { grid-template-columns: 1fr; gap: 34px; }
   .programme-visual { padding: 0 12px 12px 0; }
   .programme-visual figcaption { position: static; max-width: none; }
-  .coach-grid { grid-template-columns: 1fr; }
-  .coach-card img { height: 300px; }
   .date-alert { grid-template-columns: 1fr; gap: 7px; }
   .event-trigger { grid-template-columns: 56px minmax(0,1fr) auto; gap: 11px; padding-right: 12px; }
   .event-date { height: 58px; }
@@ -1652,4 +1640,72 @@ h3 { line-height: 1.1; }
   .hero-actions { flex-direction: row; align-items: stretch; gap: 8px; }
   .hero-actions .button { width: auto; flex: 1 1 0; padding-inline: 12px; }
   .next-camps { margin-top: 24px; padding-top: 14px; }
+}
+
+/* =========================================================
+   COACHES
+   Photo-led cards: portrait in a fixed 4:3 frame with the name
+   set over a navy fade, bio and highlights below. On a mouse or
+   trackpad the photo eases in and drifts with the cursor; on
+   touch it settles into place as the card scrolls in.
+   ========================================================= */
+
+.coach-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 2.4vw, 32px); }
+.coach-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 6px; background: var(--white); box-shadow: var(--shadow); }
+.coach-photo { position: relative; overflow: hidden; aspect-ratio: 4 / 3; background: var(--navy-950); }
+.coach-photo img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--focus, 50% 30%);
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(calc(var(--fit, 1) * var(--zoom, 1))); transform-origin: var(--focus, 50% 30%);
+  transition: transform .9s var(--ease-out);
+}
+/* One shared navy fade so the black and the studio-grey backdrops read as a pair */
+.coach-photo::after {
+  position: absolute; inset: 0; pointer-events: none; content: "";
+  background: linear-gradient(0deg, rgba(3, 19, 46, .92) 0%, rgba(3, 19, 46, .55) 26%, rgba(3, 19, 46, 0) 52%);
+}
+.coach-caption {
+  position: absolute; z-index: 1; right: 0; bottom: 0; left: 0;
+  padding: 0 clamp(20px, 2.6vw, 30px) clamp(18px, 2.2vw, 26px); color: var(--white);
+  transition: transform .6s var(--ease-out);
+}
+.coach-caption .coach-role { margin: 0 0 8px; color: var(--blue-300); font-size: .7rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.coach-caption h3 { margin: 0; font-size: clamp(2rem, 3.4vw, 3rem); line-height: .95; }
+.coach-caption h3::after {
+  display: block; width: 72px; height: 3px; margin-top: 14px; background: var(--blue-500); content: "";
+  transform-origin: left center; transition: transform .6s var(--ease-out);
+}
+
+.coach-card-body { flex: 1; padding: clamp(22px, 2.6vw, 30px); }
+.coach-card-body > p { margin-bottom: 0; color: var(--muted); font-size: .94rem; line-height: 1.65; }
+.coach-card-body h4 { margin: 22px 0 4px; color: var(--blue-600); font-size: .72rem; letter-spacing: .14em; }
+.coach-card-body ul { margin: 0; padding: 0; list-style: none; }
+.coach-card-body li {
+  position: relative; padding: 9px 0 9px 20px; border-bottom: 1px solid var(--line);
+  color: var(--ink); font-size: .86rem; font-weight: 600; line-height: 1.4;
+}
+.coach-card-body li:last-child { padding-bottom: 0; border-bottom: 0; }
+.coach-card-body li::before { position: absolute; top: 18px; left: 0; width: 9px; height: 2px; background: var(--blue-600); content: ""; }
+
+/* Entrance: the portrait settles from a slight zoom as the card reveals */
+.js .coach-card:not(.is-visible) .coach-photo img { --zoom: 1.12; }
+.js .coach-card .coach-photo img { transition: transform 1.4s var(--ease-out); }
+
+/* Hover (mouse and trackpad only): lift, zoom, cursor drift, the start-line rule extends */
+@media (hover: hover) and (pointer: fine) {
+  .coach-card { transition: opacity .7s var(--ease-out), transform .6s var(--ease-out), box-shadow .6s var(--ease-out); }
+  .coach-card.is-visible:hover { transform: translateY(-6px); box-shadow: 0 26px 60px rgba(5, 24, 55, .2); }
+  .js .coach-card.is-visible .coach-photo img { transition: transform .9s var(--ease-out); }
+  .coach-card:hover .coach-photo img { --zoom: 1.07; }
+  .coach-card:hover .coach-caption { transform: translateY(-4px); }
+  .coach-card:hover .coach-caption h3::after { transform: scaleX(2.2); }
+}
+
+@media (max-width: 760px) {
+  .coach-grid { grid-template-columns: 1fr; max-width: 560px; margin-inline: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coach-photo img { --zoom: 1 !important; --px: 0px !important; --py: 0px !important; }
+  .coach-card.is-visible:hover, .coach-card:hover .coach-caption { transform: none !important; }
+  .coach-card:hover .coach-caption h3::after { transform: scaleX(2.2); }
 }

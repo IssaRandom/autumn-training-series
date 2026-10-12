@@ -230,6 +230,31 @@
     ctaZones.forEach(zone => ctaObserver.observe(zone));
   }
 
+  /* ---------- Coach portraits: drift gently with the cursor (mouse and trackpad only) ---------- */
+  if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.querySelectorAll("[data-coach-photo]").forEach(photo => {
+      const img = photo.querySelector("img");
+      if (!img) return;
+      let frame = 0;
+      photo.addEventListener("pointermove", event => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const box = photo.getBoundingClientRect();
+          const x = (event.clientX - box.left) / box.width - .5;
+          const y = (event.clientY - box.top) / box.height - .5;
+          // Move against the cursor, a few pixels at most, so the frame feels like a window onto the photo
+          img.style.setProperty("--px", `${(-x * 16).toFixed(1)}px`);
+          img.style.setProperty("--py", `${(-y * 12).toFixed(1)}px`);
+        });
+      });
+      photo.addEventListener("pointerleave", () => {
+        cancelAnimationFrame(frame);
+        img.style.removeProperty("--px");
+        img.style.removeProperty("--py");
+      });
+    });
+  }
+
   /* ---------- Scroll reveals ---------- */
   const revealItems = document.querySelectorAll(".reveal, .event-list");
   if (reduceMotion || !("IntersectionObserver" in window)) {
