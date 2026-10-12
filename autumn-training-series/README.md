@@ -32,6 +32,16 @@ autumn-training-series/
         └── README.txt
 ```
 
+## Updating camps
+
+All camp dates, prices, availability and descriptions live in the `camps` array at the top of `script.js`. The page works the rest out from today's date:
+
+- camps whose end date has passed are automatically shown in the compact "camps completed" strip at the bottom of the list
+- the remaining camps are listed soonest first, with the nearest one flagged "Next up" and a countdown
+- the next three camps appear in the hero under "Next camps"
+
+To update availability, change `spaces: [ILCA 4, ILCA 6]` (use `null` for "Spaces available").
+
 ## Content hierarchy
 
 1. Sticky navigation and action-focused hero
