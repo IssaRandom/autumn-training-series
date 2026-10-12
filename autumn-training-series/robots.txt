@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /thank-you
 
-Sitemap: [CANONICAL_URL]/sitemap.xml
+Sitemap: https://beyondtheshift.co.uk/sitemap.xml

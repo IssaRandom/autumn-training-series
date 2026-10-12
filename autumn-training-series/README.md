@@ -45,12 +45,32 @@ autumn-training-series/
 9. Final booking and WhatsApp calls to action
 10. Contact, policy and legal footer
 
-## Links already added
+## Live site details
 
+- Live URL: `https://beyondtheshift.co.uk` (hosted on Cloudflare, which serves pages without `.html`, e.g. `/privacy`)
 - Google Form: `https://forms.gle/X7offBwNaL24wZ4t7`
-- WhatsApp group: `https://chat.whatsapp.com/HallHqgK4Y1JzEigwVseDT`
+- Medical and image release form: linked from the booking section and `thank-you.html`
+- WhatsApp group: `https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q`
+- Venues: WPNSA, Osprey Quay, Portland, Dorset DT5 1SA · Poole Yacht Club, New Harbour Road West, Hamworthy, Poole BH15 4AQ
+- No public email or phone number by choice; contact is via the WhatsApp group and booking form.
 
-The Google Form was taken from the supplied PDF. The newer WhatsApp link supplied with the website brief has been used instead of the older link inside the PDF.
+## Launch checklist status
+
+| Item | Where |
+|---|---|
+| Custom 404 page | `404.html` (Cloudflare serves it automatically for missing URLs) |
+| CTA above the fold | Hero "Book a camp" and "View dates & prices" buttons |
+| Meta title and description per page | Every HTML file's `<head>` |
+| Open Graph image | `assets/images/og-image.jpg` (1200×630) |
+| Favicon set | `favicon.ico`, `favicon.svg`, `assets/icons/*`, `site.webmanifest` |
+| robots.txt and sitemap.xml | Root of the site; only indexable pages are listed |
+| Alt text | Every `<img>` has descriptive alt text |
+| Sticky mobile CTA | `.mobile-cta` bar under 860px; hides while another booking button is on screen |
+| Performance | Responsive WebP/JPG images; first load is roughly 180 KB |
+| Thank-you page | `thank-you.html` — put `https://beyondtheshift.co.uk/thank-you` in the Google Form's confirmation message |
+| Privacy notice | `privacy.html` |
+| Cookie banner and analytics | Not used: the site sets no cookies and loads no tracking, so neither is legally required. If analytics are added later, review the privacy notice and consent first. |
+| Security and cache headers | `_headers` (Cloudflare); `netlify.toml` kept for reference |
 
 ## Placeholders to replace
 
@@ -58,22 +78,10 @@ Search the complete folder for square brackets (`[`) to find these quickly.
 
 | Placeholder | Where it appears | What to add |
 |---|---|---|
-| `[CONTACT_EMAIL]` | Footer | Public contact email address |
-| `[INSTAGRAM_URL]` | Footer | Full Instagram profile URL |
-| `[DOMAIN_NAME]` | This guide | Final domain, for example `kwjfsailing.co.uk` |
-| `[CANONICAL_URL]` | `index.html`, `robots.txt`, `sitemap.xml` | Full live URL without a trailing slash |
-| `[VENUE_ADDRESS_WPNSA]` | Event structured data in `index.html` | Confirmed venue address |
-| `[VENUE_ADDRESS_POOLE_YC]` | Event structured data in `index.html` | Confirmed venue address |
-| `[PRIVACY_NOTICE]` | `privacy.html` | Approved privacy wording |
 | `[TERMS_AND_CONDITIONS]` | `terms.html` | Approved terms |
 | `[CANCELLATION_POLICY]` | `cancellation.html` | Approved cancellation and refund policy |
 | `[PHOTOGRAPHY_CONSENT]` | `photography.html` | Approved consent wording |
-| `[GOOGLE_ANALYTICS_ID]` | Comment in `index.html` | Optional analytics ID only after consent review |
-| `[CONFIRM ANSWER BEFORE PUBLISHING]` | FAQs | Confirmed operational answers |
-| `[LEGAL TEXT REQUIRED BEFORE PUBLISHING]` | Policy pages | Replace with approved legal text |
-| `[WEBSITE_CREDIT]` | Footer | Name of designer or remove the line |
-
-The original `[GOOGLE_FORM_URL]` and `[WHATSAPP_GROUP_URL]` placeholders have already been replaced with the supplied live links.
+| `[LEGAL TEXT REQUIRED BEFORE PUBLISHING]` | Policy pages | Replace with approved legal text, then add the page back to the footer and `sitemap.xml` and remove `noindex` |
 
 ## Replacing images
 
