@@ -9,34 +9,36 @@
      CAMP DATA — the single source of truth for the schedule.
      A camp is treated as completed automatically once its end date has passed,
      and the list is always ordered soonest first.
-     spaces: [ILCA 4, ILCA 6] remaining, or null for "Spaces available".
+     booked: [ILCA 4, ILCA 6] places taken, from the Bookings sheet.
+     Each class has CAPACITY places; the site never shows more than
+     MAX_SHOWN remaining, so the count only drops once a class has 3+ booked.
      --------------------------------------------------------- */
   const camps = [
-    {key:"ats1",start:"2026-09-19",end:"2026-09-20",month:"SEP",days:"19–20",short:"Autumn Series #1",venue:"WPNSA",focus:"Technical foundations",season:"autumn",price:"£180",spaces:[6,6],
+    {key:"ats1",start:"2026-09-19",end:"2026-09-20",month:"SEP",days:"19–20",short:"Autumn Series #1",venue:"WPNSA",focus:"Technical foundations",season:"autumn",price:"£180",booked:[5,7],
       date:"19–20 September 2026",title:"Autumn Training Series #1",intro:"Strip sailing back to its foundations and build repeatable technique before the winter training period.",detailFocus:"Speed runs, tacks, gybes, mark roundings and core boat handling.",expect:["High-intensity on-water sessions","Structured technical repetition","Onshore video analysis","Personalised post-camp summary"],deadline:"Bookings normally close three weeks before the camp."},
-    {key:"ats2",start:"2026-09-26",end:"2026-09-27",month:"SEP",days:"26–27",short:"Autumn Series #2",venue:"Poole Yacht Club",focus:"Execution under pressure",season:"autumn",price:"£180",spaces:[3,5],
+    {key:"ats2",start:"2026-09-26",end:"2026-09-27",month:"SEP",days:"26–27",short:"Autumn Series #2",venue:"Poole Yacht Club",focus:"Execution under pressure",season:"autumn",price:"£180",booked:[5,4],
       date:"26–27 September 2026",title:"Autumn Training Series #2",intro:"Apply core technique when boat-on-boat pressure reduces time and attention, revealing the areas that need focused work.",detailFocus:"Technical execution under pressure, boat-on-boat interactions and turning conscious skills into automatic processes.",expect:["Pressure-based boat-handling drills","Targeted work on individual weaknesses","Onshore video analysis","Personalised post-camp summary"],deadline:"Bookings normally close three weeks before the camp."},
-    {key:"ats3",start:"2026-10-03",end:"2026-10-04",month:"OCT",days:"3–4",short:"Autumn Series #3",venue:"WPNSA",focus:"Starting & line awareness",season:"autumn",price:"£180",spaces:[3,3],
+    {key:"ats3",start:"2026-10-03",end:"2026-10-04",month:"OCT",days:"3–4",short:"Autumn Series #3",venue:"WPNSA",focus:"Starting & line awareness",season:"autumn",price:"£180",booked:[4,3],
       date:"3–4 October 2026",title:"Autumn Training Series #3",intro:"Build a dependable starting toolbox in a controlled training environment before autumn qualification events.",detailFocus:"Start-line manoeuvres, time-on-distance, line awareness and consistent technical execution.",expect:["Repeated starting sequences","Time-on-distance practice","Line-awareness drills","Video review and individual feedback"],deadline:"Last chance to book — limited spaces remaining."},
-    {key:"ats4",start:"2026-10-10",end:"2026-10-11",month:"OCT",days:"10–11",short:"Autumn Series #4",venue:"Poole Yacht Club",focus:"Start-line positioning & control",season:"autumn",price:"£180",spaces:[2,1],
+    {key:"ats4",start:"2026-10-10",end:"2026-10-11",month:"OCT",days:"10–11",short:"Autumn Series #4",venue:"Poole Yacht Club",focus:"Start-line positioning & control",season:"autumn",price:"£180",booked:[6,7],
       date:"10–11 October 2026",title:"Autumn Training Series #4",intro:"Put speed and starting skills into a competitive setting, with detailed work on controlling space before the gun.",detailFocus:"Start-line positioning, holding a lane and boat-on-boat control during the final three minutes.",expect:["Close boat-on-boat exercises","Position-holding practice","Start-line decision-making","Video review and individual feedback"],deadline:"Last chance to book — limited spaces remaining."},
-    {key:"race1",start:"2026-10-19",end:"2026-10-22",month:"OCT",days:"19–22",short:"October Race Camp",venue:"WPNSA",focus:"Strategy and tactics",season:"autumn",price:"£360",spaces:[7,2],
+    {key:"race1",start:"2026-10-19",end:"2026-10-22",month:"OCT",days:"19–22",short:"October Race Camp",venue:"WPNSA",focus:"Strategy and tactics",season:"autumn",price:"£360",booked:[0,6],
       date:"19–22 October 2026",title:"October Race Camp",intro:"Turn lessons from the National Opens into practical changes before the final qualification event of the season.",detailFocus:"Strategic and tactical decision-making around the racecourse, with opportunities to refine race execution.",expect:["Race-scenario training","Strategy and tactical exercises","Event-learning review","Video analysis and individual feedback"],deadline:"Bookings remain open subject to availability."},
-    {key:"race2",start:"2026-10-26",end:"2026-10-30",month:"OCT",days:"26–30",short:"October Race Camp",venue:"Poole Yacht Club",focus:"Review and development",season:"autumn",price:"£450",spaces:[2,3],
+    {key:"race2",start:"2026-10-26",end:"2026-10-30",month:"OCT",days:"26–30",short:"October Race Camp",venue:"Poole Yacht Club",focus:"Review and development",season:"autumn",price:"£450",booked:[6,4],
       date:"26–30 October 2026",title:"October Race Camp",intro:"Review autumn event performance, address immediate development opportunities and shape a focused winter programme.",detailFocus:"A varied training week guided by the specific developmental needs of the sailors attending.",expect:["Performance review","Targeted technical and racecraft sessions","Winter priority setting","Video analysis and individual feedback"],deadline:"Bookings remain open subject to availability."},
-    {key:"ats5",start:"2026-11-07",end:"2026-11-08",month:"NOV",days:"7–8",short:"Autumn Series #5",venue:"Poole Yacht Club",focus:"Winter foundations",season:"autumn",price:"£180",spaces:[6,3],
+    {key:"ats5",start:"2026-11-07",end:"2026-11-08",month:"NOV",days:"7–8",short:"Autumn Series #5",venue:"Poole Yacht Club",focus:"Winter foundations",season:"autumn",price:"£180",booked:[1,4],
       date:"7–8 November 2026",title:"Autumn Training Series #5",intro:"Consolidate the autumn programme by returning to the technical fundamentals that will underpin winter development.",detailFocus:"Speed runs, tacks, gybes, mark roundings, boat handling and clear priorities for the winter.",expect:["Technical consolidation","High-quality repetition","Winter foundation work","Video analysis and individual feedback"],deadline:"Bookings remain open subject to availability."},
-    {key:"winterChristmas",start:"2026-12-19",end:"2026-12-23",month:"DEC",days:"19–23",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"Christmas Camp",season:"winter",price:"£450",spaces:null,
+    {key:"winterChristmas",start:"2026-12-19",end:"2026-12-23",month:"DEC",days:"19–23",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"Christmas Camp",season:"winter",price:"£450",booked:[0,1],
       date:"19–23 December 2026",title:"Winter Training Series - Christmas Camp",intro:"A five-day winter training block at Poole Yacht Club, continuing the technical and race-development work from the autumn series.",detailFocus:"A structured winter block for ILCA 4 and ILCA 6 sailors, with the detailed daily focus shaped around the group and conditions.",expect:["High-quality winter water time","Technical and racecraft development","Video analysis","Individual feedback"],deadline:"Booking now open. Book by 28 November to avoid the £20 late booking fee."},
-    {key:"winterNY1",start:"2026-12-27",end:"2026-12-30",month:"DEC",days:"27–30",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"New Year’s Camp #1",season:"winter",price:"£360",spaces:null,
+    {key:"winterNY1",start:"2026-12-27",end:"2026-12-30",month:"DEC",days:"27–30",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"New Year’s Camp #1",season:"winter",price:"£360",booked:[0,0],
       date:"27–30 December 2026",title:"Winter Training Series - New Year's Camp #1",intro:"Four days of focused training between Christmas and New Year at Poole Yacht Club.",detailFocus:"Maintain momentum through the holiday period with purposeful technical work, racing exercises and winter development.",expect:["Four-day training block","Technical repetition","Racecraft exercises","Video analysis and feedback"],deadline:"Booking now open. Book by 6 December to avoid the £20 late booking fee."},
-    {key:"winterNY2",start:"2026-12-31",end:"2027-01-03",month:"DEC/JAN",days:"31–3",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"New Year’s Camp #2",season:"winter",price:"£360",spaces:null,
+    {key:"winterNY2",start:"2026-12-31",end:"2027-01-03",month:"DEC/JAN",days:"31–3",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"New Year’s Camp #2",season:"winter",price:"£360",booked:[0,0],
       date:"31 December 2026–3 January 2027",title:"Winter Training Series - New Year's Camp #2",intro:"A second four-day New Year training block at Poole Yacht Club, carrying winter development into 2027.",detailFocus:"Technical development and race execution with a programme adapted to the sailors attending and the conditions.",expect:["Four-day training block","Speed and boat-handling work","Race scenarios","Video analysis and feedback"],deadline:"Booking now open. Book by 10 December to avoid the £20 late booking fee."},
-    {key:"winter9",start:"2027-02-13",end:"2027-02-14",month:"FEB",days:"13–14",short:"Winter Training Series #9",venue:"Poole Yacht Club",focus:"Weekend block",season:"winter",price:"£180",spaces:null,
+    {key:"winter9",start:"2027-02-13",end:"2027-02-14",month:"FEB",days:"13–14",short:"Winter Training Series #9",venue:"Poole Yacht Club",focus:"Weekend block",season:"winter",price:"£180",booked:[0,0],
       date:"13–14 February 2027",title:"Winter Training Series #9",intro:"A focused weekend block at Poole Yacht Club as the winter programme moves towards the spring season.",detailFocus:"Consolidating winter gains through technical training, starts and race-focused exercises.",expect:["Two-day training block","Technical development","Starting and racecraft work","Video analysis and feedback"],deadline:"Booking now open. Book by 23 January to avoid the £20 late booking fee."},
-    {key:"winterFebruary",start:"2027-02-15",end:"2027-02-19",month:"FEB",days:"15–19",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"February Training Camp",season:"winter",price:"£450",spaces:null,
+    {key:"winterFebruary",start:"2027-02-15",end:"2027-02-19",month:"FEB",days:"15–19",short:"Winter Training Series",venue:"Poole Yacht Club",focus:"February Training Camp",season:"winter",price:"£450",booked:[0,0],
       date:"15–19 February 2027",title:"Winter Training Series - February Training Camp",intro:"A five-day February training camp at Poole Yacht Club for a concentrated mid-winter development block.",detailFocus:"A varied programme combining technical work, speed, starts and racecraft across a full training week.",expect:["Five-day training block","Speed and technique","Starts and racecraft","Video analysis and feedback"],deadline:"Booking now open. Book by 25 January to avoid the £20 late booking fee."},
-    {key:"winter10",start:"2027-02-20",end:"2027-02-21",month:"FEB",days:"20–21",short:"Winter Training Series #10",venue:"Poole Yacht Club",focus:"Weekend block",season:"winter",price:"£180",spaces:null,
+    {key:"winter10",start:"2027-02-20",end:"2027-02-21",month:"FEB",days:"20–21",short:"Winter Training Series #10",venue:"Poole Yacht Club",focus:"Weekend block",season:"winter",price:"£180",booked:[0,0],
       date:"20–21 February 2027",title:"Winter Training Series #10",intro:"The final listed winter weekend at Poole Yacht Club, following directly on from the February Training Camp.",detailFocus:"Consolidate the week’s learning and sharpen race execution ahead of the spring season.",expect:["Two-day training block","Technical consolidation","Race-focused training","Video analysis and feedback"],deadline:"Booking now open. Book by 30 January to avoid the £20 late booking fee."}
   ];
 
@@ -60,10 +62,13 @@
     if (days < 14) return `Starts in ${days} days`;
     return `Starts in ${Math.round(days / 7)} weeks`;
   };
-  const availabilityMarkup = spaces => {
-    if (!spaces) return `<span class="event-availability"><small>ILCA 4 <strong>Spaces available</strong></small><small>ILCA 6 <strong>Spaces available</strong></small></span>`;
-    const item = (cls, n) => n < 3 ? `<small class="low-spaces">${cls} <strong>${n} ${n === 1 ? "space" : "spaces"} remaining</strong></small>` : `<small>${cls} <strong>Spaces available</strong></small>`;
-    return `<span class="event-availability">${item("ILCA 4", spaces[0])}${item("ILCA 6", spaces[1])}</span>`;
+  const CAPACITY = 8;
+  const MAX_SHOWN = 6;
+  const remaining = camp => camp.booked.map(n => Math.max(0, Math.min(MAX_SHOWN, CAPACITY - n)));
+  const availabilityMarkup = camp => {
+    const item = (cls, n) => n === 0 ? `<small class="low-spaces">${cls} <strong>Fully booked</strong></small>` : `<small${n < 3 ? ` class="low-spaces"` : ""}>${cls} <strong>${n} ${n === 1 ? "space" : "spaces"} remaining</strong></small>`;
+    const [ilca4, ilca6] = remaining(camp);
+    return `<span class="event-availability">${item("ILCA 4", ilca4)}${item("ILCA 6", ilca6)}</span>`;
   };
 
   /* ---------- Schedule list ---------- */
@@ -78,7 +83,7 @@
       const isNext = camp.key === nextKey;
       const flag = isNext ? `<span class="next-label">Next up · ${countdown(camp)}</span>` : "";
       const price = camp.price ? `<span class="event-price">${camp.price}</span>` : `<span class="event-price winter-new-pill">NEW</span>`;
-      parts.push(`<article class="event-card${isNext ? " is-next" : ""}${camp.season === "winter" ? " winter-event-card" : ""}" role="listitem" data-event="${camp.key}" style="--i:${index}"><button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-${camp.key}"><span class="event-date"><small>${camp.month}</small>${camp.days}</span><span class="event-main"><strong>${camp.short}</strong><small>${camp.venue} · ${camp.focus}</small>${flag}${availabilityMarkup(camp.spaces)}</span>${price}<span class="event-arrow" aria-hidden="true">→</span></button><div class="mobile-event-detail" id="detail-${camp.key}"></div></article>`);
+      parts.push(`<article class="event-card${isNext ? " is-next" : ""}${camp.season === "winter" ? " winter-event-card" : ""}" role="listitem" data-event="${camp.key}" style="--i:${index}"><button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-${camp.key}"><span class="event-date"><small>${camp.month}</small>${camp.days}</span><span class="event-main"><strong>${camp.short}</strong><small>${camp.venue} · ${camp.focus}</small>${flag}${availabilityMarkup(camp)}</span>${price}<span class="event-arrow" aria-hidden="true">→</span></button><div class="mobile-event-detail" id="detail-${camp.key}"></div></article>`);
     });
     if (completed.length) {
       const chips = completed.map(camp => `<li><span class="done-date">${camp.month} ${camp.days}</span><span class="done-name">${camp.short}</span><span class="done-venue">${camp.venue === "Poole Yacht Club" ? "Poole YC" : camp.venue}</span></li>`).join("");
@@ -92,7 +97,7 @@
   const nextRow = document.querySelector("[data-next-camps-row]");
   if (nextWrap && nextRow && upcoming.length) {
     nextRow.innerHTML = upcoming.slice(0, 3).map(camp => {
-      const low = camp.spaces && Math.min(...camp.spaces) < 3 ? `<em>Few spaces left</em>` : "";
+      const low = Math.min(...remaining(camp)) < 3 ? `<em>Few spaces left</em>` : "";
       return `<a class="next-camp" href="#dates" data-select="${camp.key}"><span class="next-camp-date">${camp.month}<b>${camp.days}</b></span><span class="next-camp-body"><strong>${camp.short}</strong><small>${camp.venue} · ${countdown(camp)}</small>${low}</span></a>`;
     }).join("");
     nextWrap.hidden = false;
