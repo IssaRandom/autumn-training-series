@@ -40,7 +40,7 @@ All camp dates, prices, availability and descriptions live in the `camps` array 
 - the remaining camps are listed soonest first, with the nearest one flagged "Next up" and a countdown
 - the next three camps appear in the hero under "Next camps"
 
-To update availability, change `spaces: [ILCA 4, ILCA 6]` (use `null` for "Spaces available").
+To update availability, set `booked: [ILCA 4, ILCA 6]` to the number of places taken in the Bookings sheet (Paid, Awaiting payment or Pencilled in). Each class has 8 places, and the site shows at most 6 remaining, so the countdown only starts once a class has 3 bookings.
 
 ## Content hierarchy
 
