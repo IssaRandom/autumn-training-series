@@ -10,6 +10,7 @@
      A camp is treated as completed automatically once its end date has passed,
      and the list is always ordered soonest first.
      signups: total sailors booked across ILCA 4 and ILCA 6 (see placesLeft).
+     secondGroup: true shows "Second group forming"; waitlist: true shows "Waiting list only".
      --------------------------------------------------------- */
   const camps = [
     {key:"ats1",start:"2026-09-19",end:"2026-09-20",month:"SEP",days:"19–20",short:"Autumn Series #1",venue:"WPNSA",focus:"Technical foundations",season:"autumn",price:"£180",signups:4,
@@ -60,16 +61,21 @@
     if (days < 14) return `Starts in ${days} days`;
     return `Starts in ${Math.round(days / 7)} weeks`;
   };
-  // One group runs at 4 sailors: count down from 6 until then, then hold at
-  // 2 left while a second group fills, and count down to full at 12.
+  // Count down from 6 until a group can run at 4 sailors, then hold at 2 left.
+  // secondGroup and waitlist are switched on by hand when that happens.
   const placesLeft = camp => {
     const n = camp.signups || 0;
-    return n < 4 ? 6 - n : Math.max(0, Math.min(2, 12 - n));
+    return n < 4 ? 6 - n : 2;
+  };
+  const availabilityLabel = camp => {
+    if (camp.waitlist) return "Waiting list only";
+    if (camp.secondGroup) return "Second group forming";
+    const left = placesLeft(camp);
+    return `${left} ${left === 1 ? "place" : "places"} left`;
   };
   const availabilityMarkup = camp => {
-    const left = placesLeft(camp);
-    const label = left === 0 ? "Fully booked" : `${left} ${left === 1 ? "place" : "places"} left`;
-    return `<span class="event-availability"><small${left < 3 ? ' class="low-spaces"' : ""}><strong>${label}</strong></small></span>`;
+    const low = camp.waitlist || placesLeft(camp) < 3;
+    return `<span class="event-availability"><small${low ? ' class="low-spaces"' : ""}><strong>${availabilityLabel(camp)}</strong></small></span>`;
   };
 
   /* ---------- Schedule list ---------- */
@@ -98,7 +104,7 @@
   const nextRow = document.querySelector("[data-next-camps-row]");
   if (nextWrap && nextRow && upcoming.length) {
     nextRow.innerHTML = upcoming.slice(0, 3).map(camp => {
-      const low = placesLeft(camp) < 3 ? `<em>Few places left</em>` : "";
+      const low = camp.waitlist ? `<em>Waiting list only</em>` : camp.secondGroup ? `<em>Second group forming</em>` : placesLeft(camp) < 3 ? `<em>Few places left</em>` : "";
       return `<a class="next-camp" href="#dates" data-select="${camp.key}"><span class="next-camp-date">${camp.month}<b>${camp.days}</b></span><span class="next-camp-body"><strong>${camp.short}</strong><small>${camp.venue} · ${countdown(camp)}</small>${low}</span></a>`;
     }).join("");
     nextWrap.hidden = false;
