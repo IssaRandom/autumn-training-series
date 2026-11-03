@@ -40,7 +40,7 @@ All camp dates, prices, availability and descriptions live in the `camps` array 
 - the remaining camps are listed soonest first, with the nearest one flagged "Next up" and a countdown
 - the next three camps appear in the hero under "Next camps"
 
-To update availability, change `spaces: [ILCA 4, ILCA 6]` (use `null` for "Spaces available").
+To update availability, change `signups` to the total number of sailors booked (ILCA 4 and ILCA 6 together). The site shows 6 places left with no sign-ups and counts down to 2 at 4 sailors. It holds at 2 left while a second group fills, then counts down to "Fully booked" at 12.
 
 ## Content hierarchy
 
