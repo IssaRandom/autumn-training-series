@@ -15,7 +15,13 @@
   const toc = document.querySelector("[data-toc]");
   const tocBtn = document.querySelector("[data-toc-toggle]");
   const current = document.querySelector("[data-toc-current]");
-  list.innerHTML = secs.map(s => `<li><a href="#${s.id}">${s.querySelector("h2").textContent}</a></li>`).join("");
+  // Sections with data-part="Sailing" / "Parents" get a group label in the contents (venue guides)
+  let part = null;
+  list.innerHTML = secs.map(s => {
+    const p = s.dataset.part, head = p && p !== part ? `<li class="toc-part" aria-hidden="true">${p}</li>` : "";
+    part = p || part;
+    return `${head}<li><a href="#${s.id}">${s.querySelector("h2").textContent}</a></li>`;
+  }).join("");
   const links = [...list.querySelectorAll("a")];
   const setOpen = open => { toc.classList.toggle("is-open", open); tocBtn.setAttribute("aria-expanded", open); };
   tocBtn.addEventListener("click", () => setOpen(!toc.classList.contains("is-open")));

@@ -1,0 +1,106 @@
+/* Venue guide template. Loaded after ../beta.css and ../advice/advice.css by every beta/venues/<venue>/ page. */
+
+/* contents group labels (advice.js adds .toc-part for data-part sections) */
+.toc-part { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--blue-300); padding: 18px 0 6px 18px; }
+.toc-part:first-child { padding-top: 0; }
+@media (max-width: 900px) { .toc-part { padding: 14px 0 4px; } }
+
+/* hero: sailors / parents split */
+.v-jump { display: grid; grid-template-columns: repeat(2, minmax(0, 260px)); gap: 10px; margin-top: 26px; }
+.v-jump-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; padding: 14px 18px; border-radius: var(--radius); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .18); text-decoration: none; backdrop-filter: blur(8px); transition: background .25s, transform .35s var(--ease); }
+.v-jump-card:hover { background: rgba(47, 109, 246, .35); transform: translateY(-2px); }
+.v-jump-k { grid-column: 1; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-300); }
+.v-jump-card b { grid-column: 1; font-size: 15px; }
+.v-jump-card .arrow { grid-column: 2; grid-row: 1 / 3; font-weight: 700; }
+@media (max-width: 520px) { .v-jump { grid-template-columns: 1fr; } }
+
+/* map with numbered pins */
+.v-map { margin: 26px 0 8px; }
+.v-map-img { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.v-map-img img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; opacity: .55; filter: saturate(.6); }
+.v-pin { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; background: var(--accent); color: #fff; font-size: 13px; font-weight: 800; cursor: pointer; display: grid; place-items: center; padding: 0; box-shadow: 0 0 0 0 rgba(47, 109, 246, .6); transition: transform .25s var(--ease), background .2s; }
+.v-pin:hover, .v-pin.is-on { transform: scale(1.18); background: #fff; color: var(--accent); box-shadow: 0 0 0 6px rgba(47, 109, 246, .35); }
+.v-legend { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 4px; counter-reset: pin; }
+.v-legend li { display: grid; grid-template-columns: 26px 1fr; gap: 0 12px; padding: 8px 10px; border-radius: 10px; font-size: 15px; color: var(--muted); counter-increment: pin; transition: background .2s; }
+.v-legend li::before { content: counter(pin); grid-row: span 2; width: 26px; height: 26px; border-radius: 50%; background: var(--surface-2); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+.v-legend b { color: #fff; display: block; }
+.v-legend li.is-on { background: var(--surface); }
+.v-legend li.is-on::before { background: var(--accent); }
+.v-map figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+/* wind picker: 3x3 compass + panel */
+.wind { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 22px; }
+.wind-rose { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; aspect-ratio: 1; padding: 10px; border-radius: 50%; background: radial-gradient(circle, var(--surface-2) 0 38%, var(--surface) 39% 70%, transparent 71%); border: 1px solid var(--line); position: sticky; top: 110px; }
+.wind-rose button { border: 1px solid var(--line-strong); background: var(--bg-2); color: var(--muted); border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+.wind-rose button:hover { color: #fff; border-color: var(--blue-300); }
+.wind-rose button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 16px rgba(47, 109, 246, .6); }
+.wind-rose button.has-notes::after { content: ""; display: block; width: 5px; height: 5px; border-radius: 50%; background: var(--t-no); margin: 3px auto 0; }
+.wind-rose button[aria-selected="true"].has-notes::after { background: #fff; }
+.wind-core { display: grid; place-items: center; position: relative; }
+.wind-core b { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+/* arrow shows where the wind blows FROM (points downwind) */
+.wind-arrow { position: absolute; inset: 0; margin: auto; width: 6px; height: 96%; transform: rotate(var(--wa, 225deg)); transition: transform .6s var(--ease); }
+.wind-arrow::before { content: ""; position: absolute; inset: 0 0 8px; border-radius: 2px; background: linear-gradient(transparent, var(--blue-300) 40%, #fff); }
+.wind-arrow::after { content: ""; position: absolute; left: 50%; bottom: 0; translate: -50% 0; border: 9px solid transparent; border-top: 13px solid #fff; border-bottom: 0; }
+.wind-panel { animation: panel-in .45s var(--ease); }
+.wind-panel[hidden] { display: none; }
+@keyframes panel-in { from { opacity: 0; transform: translateY(8px); } }
+.wind-head { font-weight: 700; color: #fff; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.area { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; border-radius: 99px; padding: 3px 9px; background: var(--surface-2); color: var(--muted); }
+.area-bay { background: var(--t-no); color: var(--t-no-tx); }
+.area-harbour { background: var(--t-champ); color: var(--t-champ-tx); }
+.wind-watch { font-size: 15px !important; color: var(--muted) !important; }
+.wind-watch b { color: #fff; }
+
+/* left/right bias bar: style="--left:70" */
+.bias { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px 10px; margin: 6px 0 18px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.bias-bar { height: 10px; border-radius: 99px; background: var(--t-intl); overflow: hidden; }
+.bias-bar i { display: block; height: 100%; width: calc(var(--left) * 1%); background: var(--t-no); border-right: 2px solid var(--bg); transition: width .6s var(--ease); }
+.bias em { grid-column: 1 / -1; font-style: normal; text-transform: none; letter-spacing: 0; font-size: 14px; color: #fff; }
+.bias em .verify { margin-left: 6px; }
+
+@media (max-width: 700px) {
+  .wind { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .wind-rose { position: static; width: min(240px, 72vw); margin: 0 auto; }
+}
+
+/* wind rose chart (venues.js draws SVG from data-rose) */
+.rose-fig { margin: 20px 0; display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; align-items: center; }
+.rose svg { width: 100%; height: auto; display: block; }
+.rose-fig figcaption { font-size: 14px; color: var(--muted); }
+.rose-fig figcaption a { color: var(--blue-300); }
+@media (max-width: 600px) { .rose-fig { grid-template-columns: minmax(0, 1fr); } .rose { max-width: 300px; margin: 0 auto; } }
+
+/* parents' day timeline */
+.timeline { list-style: none; margin: 18px 0; padding: 0; position: relative; }
+.timeline::before { content: ""; position: absolute; left: 62px; top: 10px; bottom: 10px; width: 2px; background: linear-gradient(var(--accent), var(--t-no)); }
+.timeline li { display: grid; grid-template-columns: 50px 1fr; gap: 0 28px; padding: 10px 0; position: relative; }
+.timeline li::before { content: ""; position: absolute; left: 57px; top: 16px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--blue-300); }
+.timeline time { grid-row: span 2; font-weight: 800; color: var(--blue-300); font-variant-numeric: tabular-nums; font-size: 15px; padding-top: 1px; }
+.timeline b { color: #fff; }
+.timeline span { color: var(--muted); font-size: 15px; }
+
+/* cost calculator */
+.calc { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); margin: 18px 0 10px; }
+.calc label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.calc input { width: 100%; font: inherit; font-size: 16px; font-weight: 700; color: #fff; background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 10px; }
+.calc input:focus { outline: none; border-color: var(--blue-300); box-shadow: 0 0 0 3px rgba(143, 181, 255, .25); }
+.calc-out { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.calc-total { font-size: clamp(30px, 4vw, 40px); font-weight: 800; color: #fff; letter-spacing: -.02em; }
+.calc-break { font-size: 14px; color: var(--muted); }
+
+/* events at this venue (from data/events.js) */
+.v-events { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 8px; }
+.v-events a { display: grid; grid-template-columns: 4px 96px 1fr auto; gap: 0 14px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); text-decoration: none; transition: border-color .2s, transform .3s var(--ease); }
+.v-events a:hover { border-color: var(--bar); transform: translateX(3px); }
+.v-events .sw { align-self: stretch; border-radius: 2px; background: var(--bar); box-shadow: 0 0 8px var(--bar); }
+.v-events .d { font-size: 13px; font-weight: 800; color: var(--bar); font-variant-numeric: tabular-nums; }
+.v-events .n { font-weight: 700; color: #fff; line-height: 1.3; }
+.v-events .n small { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.v-events .go { color: var(--blue-300); font-weight: 700; }
+.v-events .empty { color: var(--muted); }
+@media (max-width: 520px) { .v-events a { grid-template-columns: 4px 1fr auto; } .v-events .d { grid-column: 2; } .v-events .n { grid-column: 2; } .v-events .go { grid-column: 3; grid-row: 1 / 3; } .v-events .sw { grid-row: 1 / 3; } }
+
+/* 2-column technique tables fit a phone without side-scrolling */
+.wind-panel .table-wrap table { min-width: 0; }
+.wind-panel .table-wrap td:first-child { white-space: normal; width: 34%; }
