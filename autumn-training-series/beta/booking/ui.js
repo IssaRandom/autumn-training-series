@@ -85,7 +85,9 @@
     function step2() {
       host.innerHTML = `<form class="bk-card bk-form" novalidate>
         <h2 class="bk-h">Check your email</h2>
-        <p class="bk-muted">We sent a code to <b>${esc(email)}</b>. It works for 15 minutes. Check spam if it hasn't arrived in a minute.</p>
+        ${B.mode === "mock"
+          ? `<p class="bk-mock">Test mode: no email is sent. Use the code <b>123456</b>. To test real emails, add <b>?live=1</b> to the address.</p>`
+          : `<p class="bk-muted">We sent a code to <b>${esc(email)}</b>. It works for 15 minutes. Check spam if it hasn't arrived in a minute.</p>`}
         <label class="bk-field"><span>6-digit code</span>
           <input class="bk-code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="7" required></label>
         ${errorBox}

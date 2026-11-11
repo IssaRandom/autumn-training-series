@@ -67,5 +67,5 @@ Preview at :8765/beta/, check console errors, mobile (375px) and reduced-motion.
 ## Booking (beta/booking, account, book + apps-script/Code.gs)
 - Backend = Apps Script web app over Kai's sheet; setup steps in `apps-script/README.md`, plan in `BOOKING-PLAN.md`. Any Code.gs change needs pasting + a new deployment version by James.
 - Medical & image release = **James's own Google Form, unchanged**. Never add site tick boxes that repeat its questions (photo consent etc.). The form's name question is `Sailors full name` (entry.1504912846), no email question; matching is by full name. Trigger on the form via `medical_form_id`; `syncMedical()` backfills; parent gets a receipt email.
-- localhost always uses the mock (`booking/mock.js`, code 123456) unless `?live=1` (kept per tab in sessionStorage; `?live=0` turns it off).
+- localhost always uses the mock (`booking/mock.js`, code 123456) unless `?live=1` (remembered in localStorage on that browser, so new tabs keep it; `?live=0` turns it off). In mock mode the code screen says no email is sent.
 

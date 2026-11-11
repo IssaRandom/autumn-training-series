@@ -8,11 +8,12 @@
   const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   const params = new URLSearchParams(location.search);
   // localhost uses the mock unless ?live=1 is passed, so local testing never writes to the real sheet by accident.
-  // The choice lasts for the tab (sessionStorage) so links between account/ and book/ keep it; ?live=0 goes back.
+  // The choice is remembered on this browser (localStorage), so new tabs and later visits keep it
+  // (a per-tab choice silently fell back to the mock, which "sends" no email); ?live=0 goes back.
   let liveLocal = false;
   try {
-    if (params.has("live")) sessionStorage.setItem("bts-book-live", params.get("live") === "1" ? "1" : "");
-    liveLocal = sessionStorage.getItem("bts-book-live") === "1";
+    if (params.has("live")) localStorage.setItem("bts-book-live", params.get("live") === "1" ? "1" : "");
+    liveLocal = localStorage.getItem("bts-book-live") === "1";
   } catch (e) { liveLocal = params.get("live") === "1"; }
   const mode = LOCAL ? (liveLocal && CFG.api ? "live" : "mock") : CFG.api ? "live" : "off";
 
