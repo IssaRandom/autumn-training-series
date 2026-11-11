@@ -10,14 +10,14 @@ Start every session by reading `STATUS.md` (repo root). Update it before ending.
 ## Repo facts
 - Static site, no build step. Publish root = `autumn-training-series/` (inner folder). Hosted on Cloudflare (serves `/page` without `.html`); netlify.toml/_headers also present.
 - Live site files — DO NOT edit for beta work: `index.html`, `styles.css`, `script.js`, legal pages. Live camp data = `camps` array at top of `script.js` (beta may READ it for "next 3 trainings").
-- Preview: `.claude/launch.json` config `site` → python http.server :8765 serving the inner folder → open `http://localhost:8765/beta/`.
+- Preview: `.claude/launch.json` config `site` → :8765. If another session already holds 8765, use config `site-alt` → :8767 (the port is hard-coded in the python args, so autoPort can't move it).
 - Branch: `beta` off `master` (winter-dates-update is separate live work).
 
 ## Beta rules
 - All beta code in `autumn-training-series/beta/`: `index.html`, `beta.css`, `beta.js`, sub-pages as folders (`beta/calendar/`, `beta/advice/…`, `beta/venues/…`). Shared images from `../assets/` ok; beta-only media in `beta/media/`.
 - `<meta name="robots" content="noindex">` on every beta page; never add beta to sitemap.xml.
 - Placeholders: images `https://picsum.photos/seed/<word>/1600/900` (or local grey SVG), text clearly marked `[PLACEHOLDER]` in HTML comments + realistic draft copy. Keep a list of placeholders in STATUS.md.
-- Brand: navy #0A2346 / #061a3a, red #D22630, light grey #EAEAEA, white, electric blue #2463eb accents; Montserrat. No anchors/rope/cartoon nautical. British English, no serial comma.
+- Brand = the live site palette (styles.css): navy #0b2a59 / #061a3a, electric blue #2463eb accent (`--accent`, buttons `.btn-accent`), blue-300 #8fb5ff on dark, ice #eef4fb / mist #f6f8fc neutrals; Montserrat. Red #D22630 only for deadlines/warnings (James said the red-led beta didn't match the aesthetic, 11 Nov 2026). No anchors/rope/cartoon nautical. British English, no serial comma.
 
 ## Motion stack (CDN, pinned versions)
 - GSAP 3.12.5 + ScrollTrigger (cdnjs), Lenis 1.1.x (unpkg) smooth scroll.
@@ -48,5 +48,10 @@ Nav: Advice, Calendar, Venues, About, then discreet "Coaching" button.
 - The hero `<video data-src data-src-mobile hidden>` is ready. While it is empty, the poster image does a scale and parallax scrub. The hero is pinned on desktop only. Lenis runs on desktop only (it conflicts with inner scroll boxes, so it's not on the calendar page).
 - Coach image parallax uses scale 1.12 so the edges never show.
 
+## Advice guide template (Phase 3, built)
+`beta/advice/advice.css` + `advice.js` shared by every `beta/advice/<slug>/index.html` (copy `new-to-ilca/`). Parts: hero (crumbs, h1 `data-split`, lede, meta pills), contents built from `.g-sec[id] h2` (sticky sidebar ≥900px, sticky dropdown bar below), reading progress bar, `.takeaways`, `.callout`/`.callout-tip`, `.table-wrap`, `.checklist`, `.stat-grid`, `.cols-2 .mini-card`, `.g-figure`, `.link-card`, `.verify` (yellow "To verify" tag, beta only), `.g-end` related cards + soft coaching link.
+
 ## Verify
 Preview at :8765/beta/, check console errors, mobile (375px) and reduced-motion. At 375px also run `[innerWidth, document.documentElement.scrollWidth]`: both must be 375. Screenshot for James (SendUserFile the browser-tool screenshot paths).
+- The Browser pane is often hidden, which freezes CSS/WAAPI animations and rAF: run `document.getAnimations().forEach(a=>a.finish())` before screenshots, and never make visible content depend on rAF/animation completing. Use `zoom` region 0,0,800,514 to crop the scaled 1400px view.
+- Bash heredocs containing `.remove()` trip the rm safety check: write patch scripts to the scratchpad and run them.

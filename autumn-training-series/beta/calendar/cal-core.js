@@ -27,17 +27,21 @@
   }
   const rigText = e => (e.rigs && e.rigs.length ? e.rigs.map(r => `ILCA ${r}`).join(" · ") : "All rigs");
 
-  /* Greedy lane packing: longest-first within same start keeps big blocks on top lanes. */
+  /* Lane packing. BTS training is placed first so it always sits on the top lane,
+     then championships, then everything else (by start, longest first). */
+  const PRIORITY = { "bts-camp": 0, championship: 1 };
   function pack(segs) {
-    segs.sort((a, b) => a.c - b.c || b.s - a.s);
-    const ends = [];
+    const pr = g => PRIORITY[g.e.type] ?? 2;
+    segs.sort((a, b) => pr(a) - pr(b) || a.c - b.c || b.s - a.s);
+    const lanes = [];
     segs.forEach(g => {
-      let lane = ends.findIndex(end => end < g.c);
-      if (lane === -1) { lane = ends.length; ends.push(-1); }
-      ends[lane] = g.c + g.s - 1;
+      const end = g.c + g.s - 1;
+      let lane = lanes.findIndex(L => L.every(([c, e]) => e < g.c || c > end));
+      if (lane === -1) { lane = lanes.length; lanes.push([]); }
+      lanes[lane].push([g.c, end]);
       g.l = lane;
     });
-    return ends.length;
+    return lanes.length;
   }
 
   /* Render one row.
@@ -84,5 +88,13 @@
     return lines.join("\r\n");
   }
 
-  window.BTSCal = { DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics };
+  /* Google Calendar "add event" link (all-day, end exclusive) */
+  function gcal(e) {
+    const f = d => iso(d).replace(/-/g, "");
+    const q = new URLSearchParams({ action: "TEMPLATE", text: e.name, dates: `${f(parse(e.start))}/${f(addDays(parse(e.end), 1))}`,
+      details: [rigText(e), e.note, e.url].filter(Boolean).join(" — "), location: e.venue || "" });
+    return `https://calendar.google.com/calendar/render?${q}`;
+  }
+
+  window.BTSCal = { DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics, gcal };
 })();
