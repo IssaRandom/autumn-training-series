@@ -43,7 +43,7 @@
   --cell-we: #091631;
   --cell-num: #c3d0e3;
   --cell-num-we: #7d90ad;
-  --cell-num-past: #4f6283;
+  --cell-num-past: #7488a6;   /* 4.6:1 on --cell (AA); weight 400 keeps it apart from weekends */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -185,6 +185,9 @@ a.training:hover { padding-left: 12px; }
 .footer-inner { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .footer a { text-decoration: none; } .footer a:hover { color: #fff; }
 .footer ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; flex-wrap: wrap; }
+.beta-tag { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: rgba(255, 255, 255, .22); color: inherit; padding: 2px 7px; border-radius: 99px; line-height: 1.4; }
+.places { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.places.is-full { color: #ffb4b4; }
 .beta-flag { position: fixed; z-index: 60; left: 12px; bottom: 12px; background: #fff; color: var(--bg); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 10px; border-radius: 99px; opacity: .85; pointer-events: none; }
 
 /* reveal helper (JS adds .in) */
@@ -203,7 +206,7 @@ a.training:hover { padding-left: 12px; }
 .cal-cell.is-pad + .cal-cell:not(.is-pad) { border-left-color: var(--line); }
 .cal-num { display: block; font-size: 11px; font-weight: 600; color: var(--cell-num); line-height: 20px; text-align: center; font-variant-numeric: tabular-nums; }
 .cal-cell.is-we .cal-num { color: var(--cell-num-we); }
-.cal-cell.is-past .cal-num { color: var(--cell-num-past); }
+.cal-cell.is-past .cal-num { color: var(--cell-num-past); font-weight: 400; }
 .cal-cell.is-today .cal-num { background: var(--accent); color: #fff; border-radius: 4px; margin: 1px 2px 0; line-height: 18px; }
 .cal-bars { position: absolute; inset: 0; pointer-events: none; }
 .cal-bar {

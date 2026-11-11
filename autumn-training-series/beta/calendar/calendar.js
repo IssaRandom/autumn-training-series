@@ -405,6 +405,15 @@
 
   const sheet = $("[data-sheet]");
   let current = null;
+  /* Online booking (beta): camps open in the booking sheet, with price today and places left. */
+  const BK = window.BTSBook;
+  const bookable = {};
+  if (BK && BK.mode !== "off") {
+    BK.camps().then(list => {
+      list.forEach(c => { bookable[c.camp_id] = c; });
+      if (current && sheet.open) openSheet(current);
+    }).catch(() => { /* fall back to the booking form */ });
+  }
   function relative(e) {
     const s = C.parse(e.start), t = C.parse(e.end);
     if (t < C.today) return "Finished";
@@ -427,12 +436,18 @@
     const facts = [];
     if (e.venue) facts.push(["Venue", C.esc(e.venue)]);
     facts.push(["Rigs", C.esc(C.rigText(e)) + (e.type === "ilca-uk-training" && !e.rigs.length ? " (places by ranking/entry)" : "")]);
+    const online = e.type === "bts-camp" && bookable[e.id];
+    if (online) {
+      facts.push(["Price", `${BK.fmt.money(online.price_now)} per sailor${online.late_now ? " (includes late booking fee)" : ""}`]);
+      if (BK.fmt.placesText(online)) facts.push(["Places", `<b>${C.esc(BK.fmt.placesText(online))}</b>`]);
+    }
     if (e.note) facts.push(["Notes", C.esc(e.note)]);
     if (e.checkNor) facts.push(["Check", `<span class="warn">Rigs vary by event — check the NOR</span>`]);
     if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional — dates or venue may change</span>`]);
     $("[data-sheet-facts]").innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
     const actions = [];
-    if (e.type === "bts-camp") actions.push(`<a class="btn btn-accent arrow" href="/">Book with BTS</a>`);
+    if (online) actions.push(`<a class="btn btn-accent arrow" href="../book/?camp=${encodeURIComponent(e.id)}">Book online <span class="beta-tag">Beta</span></a>`);
+    else if (e.type === "bts-camp") actions.push(`<a class="btn btn-accent arrow" href="/">Book with BTS</a>`);
     else if (e.url) actions.push(`<a class="btn btn-accent" href="${C.esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a>`);
     $("[data-sheet-actions]").innerHTML = actions.join("") +
       `<div class="add-cal"><span class="add-cal-label">Add to calendar</span>` +

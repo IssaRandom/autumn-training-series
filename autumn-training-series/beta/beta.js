@@ -29,6 +29,19 @@
         <span><span class="training-name">${C.esc(e.name)}</span><br><span class="training-venue">${C.esc(e.venue)} · ${C.esc(C.rigText(e))}</span></span>
         <span class="arrow" aria-hidden="true"></span>
       </a></li>`).join("") : `<li class="training">New dates coming soon.</li>`;
+    /* Online booking (beta): link open camps to /beta/book/ and show places left. */
+    const BK = window.BTSBook;
+    if (BK && BK.mode !== "off") BK.camps().then(camps => {
+      next.forEach((e, i) => {
+        const c = camps.find(x => x.camp_id === e.id);
+        const a = list.querySelectorAll("a.training")[i];
+        if (!c || !a) return;
+        a.href = `book/?camp=${encodeURIComponent(e.id)}`;
+        const p = BK.fmt.placesText(c);
+        a.querySelector(".arrow").removeAttribute("aria-hidden");
+        a.querySelector(".arrow").innerHTML = `${p ? `<span class="places${c.full ? " is-full" : ""}">${C.esc(p)}</span> ` : ""}<span class="beta-tag">Book · Beta</span>`;
+      });
+    }).catch(() => {});
   }
 
   /* ---------- Calendar teaser: 8-week strip from this Monday ---------- */

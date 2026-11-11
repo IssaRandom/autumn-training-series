@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>My bookings — Beyond the Shift (beta)</title>
+  <meta name="description" content="Sign in to see your Beyond the Shift bookings, payment details and sailors.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../beta.css?v=20261111d">
+  <link rel="stylesheet" href="../booking/booking.css?v=20261111d">
+</head>
+<body class="bk-page">
+  <a class="sr-only" href="#main">Skip to content</a>
+  <header class="nav is-solid" data-nav>
+    <div class="wrap nav-inner">
+      <a class="logo" href="../">Beyond the <b>Shift</b></a>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="../#advice">Advice</a></li>
+          <li><a href="../calendar/">Calendar</a></li>
+          <li><a href="../#venues">Venues</a></li>
+          <li><a href="./" aria-current="page">My bookings</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn-accent nav-cta" href="../calendar/">Book a camp</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="bk-wrap" data-app>
+      <div class="bk-head">
+        <div>
+          <h1 class="bk-title">My bookings</h1>
+          <p class="bk-sub" data-who-am-i>Bookings, payment details and your sailors in one place.</p>
+        </div>
+        <button type="button" class="bk-link" data-signout hidden>Sign out</button>
+      </div>
+      <div data-banner></div>
+      <div data-view><p class="bk-muted bk-loading">Loading…</p></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <span>© <span data-year>2026</span> Beyond the Shift · James Foster &amp; Kai Wolgram</span>
+      <ul>
+        <li><a href="../calendar/">Calendar</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/cancellation">Cancellation</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="../booking/config.js?v=20261111d"></script>
+  <script src="../booking/api.js?v=20261111d"></script>
+  <script src="../booking/ui.js?v=20261111d"></script>
+  <script src="account.js?v=20261111d"></script>
+</body>
+</html>

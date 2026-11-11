@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../beta.css">
-  <link rel="stylesheet" href="calendar.css">
+  <link rel="stylesheet" href="../beta.css?v=20261111d">
+  <link rel="stylesheet" href="calendar.css?v=20261111d">
 </head>
 <body class="cal-page">
   <header class="nav is-solid" data-nav>
@@ -23,6 +23,7 @@
           <li><a href="./" aria-current="page">Calendar</a></li>
           <li><a href="../#venues">Venues</a></li>
           <li><a href="../#about">About</a></li>
+          <li><a href="../account/">My bookings</a></li>
           <li class="mobile-only"><a href="/">Coaching &amp; booking</a></li>
         </ul>
       </nav>
@@ -97,8 +98,10 @@
   </dialog>
 
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
-  <script src="../data/events.js"></script>
-  <script src="cal-core.js"></script>
-  <script src="calendar.js"></script>
+  <script src="../data/events.js?v=20261111d"></script>
+  <script src="../booking/config.js?v=20261111d"></script>
+  <script src="../booking/api.js?v=20261111d"></script>
+  <script src="cal-core.js?v=20261111d"></script>
+  <script src="calendar.js?v=20261111d"></script>
 </body>
 </html>
