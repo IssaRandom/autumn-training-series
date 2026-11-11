@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ILCA season calendar 2026/27 — Beyond the Shift (beta)</title>
+  <meta name="description" content="ILCA 4, 6 and 7 season planner: Beyond the Shift training, ILCA UK National Opens, championships, internationals and selection deadlines.">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../beta.css">
+  <link rel="stylesheet" href="calendar.css">
+</head>
+<body class="cal-page">
+  <header class="nav is-solid" data-nav>
+    <div class="wrap nav-inner">
+      <a class="logo" href="../">Beyond the <b>Shift</b></a>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="../#advice">Advice</a></li>
+          <li><a href="./" aria-current="page">Calendar</a></li>
+          <li><a href="../#venues">Venues</a></li>
+          <li><a href="../#about">About</a></li>
+          <li class="mobile-only"><a href="/">Coaching &amp; booking</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn-red nav-cta" href="/">Coaching</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+    </div>
+  </header>
+
+  <main id="main" class="cal-main">
+    <div class="cal-toolbar" data-toolbar>
+      <div class="tb-row">
+        <h1 class="cal-title">Season <span>2026/27</span></h1>
+        <div class="seg" role="group" aria-label="View">
+          <button type="button" data-view="year" aria-pressed="true">Year plan</button>
+          <button type="button" data-view="month" aria-pressed="false">Months</button>
+        </div>
+        <button type="button" class="tb-btn" data-today>Today</button>
+      </div>
+
+      <div class="tb-row tb-filters">
+        <div class="chips" role="group" aria-label="Event types (also the colour key)" data-type-chips></div>
+        <div class="seg seg-rig" role="group" aria-label="Rig">
+          <span class="seg-label" aria-hidden="true">Rig</span>
+          <button type="button" data-rig="all" aria-pressed="true">All</button>
+          <button type="button" data-rig="4" aria-pressed="false" aria-label="ILCA 4">4</button>
+          <button type="button" data-rig="6" aria-pressed="false" aria-label="ILCA 6">6</button>
+          <button type="button" data-rig="7" aria-pressed="false" aria-label="ILCA 7">7</button>
+        </div>
+        <div class="zoom" data-zoom-ui>
+          <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out">−</button>
+          <input type="range" min="0" max="100" value="0" aria-label="Zoom" data-zoom-range>
+          <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in">+</button>
+          <button type="button" class="tb-btn tb-sm" data-zoom="fit">Fit</button>
+        </div>
+      </div>
+
+      <nav class="month-jump" aria-label="Jump to month" data-month-jump hidden></nav>
+    </div>
+
+    <p class="cal-hint" data-hint>
+      <span class="hint-desktop">Ctrl + scroll or pinch to zoom · drag the slider · click a month name to open it</span>
+      <span class="hint-touch">Pinch to zoom · swipe sideways · tap an event for details</span>
+    </p>
+
+    <!-- Year plan: weekday-aligned month rows (desktop default) -->
+    <section class="yp" data-year-view aria-label="Year plan" tabindex="0"></section>
+
+    <!-- Months: classic 7-column month grids + readable list (mobile default) -->
+    <section class="mv" data-month-view aria-label="Months" hidden></section>
+
+    <p class="cal-source wrap">Dates from ILCA UK, ILCA and EurILCA, checked 11 Nov 2026. Striped = provisional. Always check the Notice of Race before entering.</p>
+  </main>
+
+  <div class="tip" data-tip role="tooltip" hidden></div>
+
+  <dialog class="sheet" data-sheet aria-labelledby="sheet-title">
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <div class="sheet-top">
+      <span class="pill" data-sheet-type></span>
+      <div class="sheet-nav">
+        <button type="button" class="tb-icon" data-sheet-step="-1" aria-label="Previous event">‹</button>
+        <button type="button" class="tb-icon" data-sheet-step="1" aria-label="Next event">›</button>
+        <button type="button" class="tb-icon" data-sheet-close aria-label="Close">×</button>
+      </div>
+    </div>
+    <h2 id="sheet-title" data-sheet-title></h2>
+    <p class="sheet-when" data-sheet-when></p>
+    <dl class="sheet-facts" data-sheet-facts></dl>
+    <div class="sheet-actions" data-sheet-actions></div>
+  </dialog>
+
+  <span class="beta-flag" aria-hidden="true">Beta preview</span>
+  <script src="../data/events.js"></script>
+  <script src="cal-core.js"></script>
+  <script src="calendar.js"></script>
+</body>
+</html>
