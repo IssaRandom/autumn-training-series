@@ -17,7 +17,7 @@ Start every session by reading `STATUS.md` (repo root). Update it before ending.
 - All beta code in `autumn-training-series/beta/`: `index.html`, `beta.css`, `beta.js`, sub-pages as folders (`beta/calendar/`, `beta/advice/…`, `beta/venues/…`). Shared images from `../assets/` ok; beta-only media in `beta/media/`.
 - `<meta name="robots" content="noindex">` on every beta page; never add beta to sitemap.xml.
 - Placeholders: images `https://picsum.photos/seed/<word>/1600/900` (or local grey SVG), text clearly marked `[PLACEHOLDER]` in HTML comments + realistic draft copy. Keep a list of placeholders in STATUS.md.
-- Brand = the live site palette (styles.css): navy #0b2a59 / #061a3a, electric blue #2463eb accent (`--accent`, buttons `.btn-accent`), blue-300 #8fb5ff on dark, ice #eef4fb / mist #f6f8fc neutrals; Montserrat. Red #D22630 only for deadlines/warnings (James said the red-led beta didn't match the aesthetic, 11 Nov 2026). No anchors/rope/cartoon nautical. British English, no serial comma.
+- **Dark theme** (James, 11 Nov 2026: dark background + light text feels more modern). Use the semantic tokens in `beta.css`: `--bg` #050e22 page, `--bg-2` alt section, `--surface`/`--surface-2` cards, `--line`/`--line-strong` borders, `--ink` body text, `--heading` #fff, `--muted` #9aabc4, `--blue-300` #8fb5ff for eyebrows/links on dark, `--accent` #2f6df6 buttons. Never hard-code #fff backgrounds or navy text on new parts. Brand = live-site navy + electric blue; Montserrat. Red only for deadlines/warnings (the red-led beta didn't match). `--grey`/`--grey-2` are legacy aliases for the dark surfaces. No anchors/rope/cartoon nautical. British English, no serial comma.
 
 ## Motion stack (CDN, pinned versions)
 - GSAP 3.12.5 + ScrollTrigger (cdnjs), Lenis 1.1.x (unpkg) smooth scroll.
@@ -51,7 +51,21 @@ Nav: Advice, Calendar, Venues, About, then discreet "Coaching" button.
 ## Advice guide template (Phase 3, built)
 `beta/advice/advice.css` + `advice.js` shared by every `beta/advice/<slug>/index.html` (copy `new-to-ilca/`). Parts: hero (crumbs, h1 `data-split`, lede, meta pills), contents built from `.g-sec[id] h2` (sticky sidebar ≥900px, sticky dropdown bar below), reading progress bar, `.takeaways`, `.callout`/`.callout-tip`, `.table-wrap`, `.checklist`, `.stat-grid`, `.cols-2 .mini-card`, `.g-figure`, `.link-card`, `.verify` (yellow "To verify" tag, beta only), `.g-end` related cards + soft coaching link.
 
+## Venue guide template (Phase 4, built)
+`beta/venues/<venue>/index.html` (copy `weymouth/`) = advice template + `beta/venues/venues.css` / `venues.js`: sailors/parents hero split, `data-part` contents groups, `.v-map` pins, `.wind` compass picker with per-direction panels (area tag, `.bias` bar, technique table), `.rose` from `data-rose`, `.timeline`, `.calc` cost calculator, `.v-events` from events.js via `data-venue-match`. Details in STATUS.md.
+
+## Cache-busting
+All local script/CSS tags use `?v=`. Run `python tools/beta-bust.py` (repo root) after editing any beta JS/CSS/data, before deploying.
+
 ## Verify
 Preview at :8765/beta/, check console errors, mobile (375px) and reduced-motion. At 375px also run `[innerWidth, document.documentElement.scrollWidth]`: both must be 375. Screenshot for James (SendUserFile the browser-tool screenshot paths).
 - The Browser pane is often hidden, which freezes CSS/WAAPI animations and rAF: run `document.getAnimations().forEach(a=>a.finish())` before screenshots, and never make visible content depend on rAF/animation completing. Use `zoom` region 0,0,800,514 to crop the scaled 1400px view.
 - Bash heredocs containing `.remove()` trip the rm safety check: write patch scripts to the scratchpad and run them.
+- `a.finish()` throws on infinite animations (scroll cue): wrap it, `getAnimations().forEach(a => { try { a.finish() } catch (e) {} })`.
+- The preview browser caches CSS/JS hard. After editing, run `await fetch(url, {cache: "reload"})` for each changed file, then `location.reload()`.
+
+## Booking (beta/booking, account, book + apps-script/Code.gs)
+- Backend = Apps Script web app over Kai's sheet; setup steps in `apps-script/README.md`, plan in `BOOKING-PLAN.md`. Any Code.gs change needs pasting + a new deployment version by James.
+- Medical & image release = **James's own Google Form, unchanged**. Never add site tick boxes that repeat its questions (photo consent etc.). The form's name question is `Sailors full name` (entry.1504912846), no email question; matching is by full name. Trigger on the form via `medical_form_id`; `syncMedical()` backfills; parent gets a receipt email.
+- localhost always uses the mock (`booking/mock.js`, code 123456) unless `?live=1` (kept per tab in sessionStorage; `?live=0` turns it off).
+

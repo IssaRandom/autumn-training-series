@@ -24,6 +24,10 @@ description: Plan, draft and structure Beyond the Shift free-value content for /
 
 ## Venue guides
 Sailing guide + parents' guide per venue. Weymouth/Portland first (USP: tide, swell refraction, local knowledge nobody else publishes). Then Poole, Hayling, Lymington, Warsash, Vilamoura. Can link to BTS Race Navigator tidal models.
+- Template built: `beta/venues/weymouth/` (see bts-beta-site). Content model from James & Kai (11 Nov 2026): **ILCA-specific and technical**, written by ILCA sailors. Per wind direction AND per area (harbour vs bay behave differently in the same direction): where you race, which side pays as a percentage ("top left about 70:30", never a guarantee), technique by leg and tack (body position in inches, mainsheet vs steering, which gybe in a cross swell), "watch for". Annotated map (wind bends, where you overstand). Historic wind = Windfinder stats, credited, not passed off as ours.
+- Parents' half: event-day timeline, stay/eat/watch, a travel cost calculator (fuel at ~30 mpg towing, nights, entry, ferry). International venues add ferries, charter, flights and journey time.
+- Ask the British team what they'd let us read/publish from their Weymouth notes (not confirmed).
+- Later: season templates per sailor type with a map route + costs, and a "travel information" directory (STATUS.md has the list).
 
 ## Workflow (token-cheap)
 James/Kai record a voice note per topic → send transcript → clean it (keep their voice), draft section copy into the page template, mark facts to verify. Old ILCA UK new-to-class guide exists (dated) — use for facts only, rewrite.
