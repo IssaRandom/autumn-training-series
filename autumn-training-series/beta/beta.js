@@ -22,7 +22,7 @@
   /* ---------- Next 3 trainings ---------- */
   const list = document.querySelector("[data-next-trainings]");
   if (list && C) {
-    const next = events.filter(e => e.type === "bts-camp" && C.parse(e.end) >= C.today).sort((a, b) => C.parse(a.start) - C.parse(b.start)).slice(0, 3);
+    const next = events.filter(e => e.type === "bts-camp" && !e.placeholder && C.parse(e.end) >= C.today).sort((a, b) => C.parse(a.start) - C.parse(b.start)).slice(0, 3);
     list.innerHTML = next.length ? next.map(e => `
       <li class="reveal"><a class="training" href="/">
         <span class="training-date">${C.esc(C.range(e).replace(/ \d{4}/g, ""))}</span>

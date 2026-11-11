@@ -443,10 +443,12 @@
     }
     if (e.note) facts.push(["Notes", C.esc(e.note)]);
     if (e.checkNor) facts.push(["Check", `<span class="warn">Rigs vary by event — check the NOR</span>`]);
-    if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional — dates or venue may change</span>`]);
+    if (e.placeholder) facts.push(["Status", `<span class="warn">Placeholder — dates to be set, not open for booking yet</span>`]);
+    else if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional — dates or venue may change</span>`]);
     $("[data-sheet-facts]").innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
     const actions = [];
     if (online) actions.push(`<a class="btn btn-accent arrow" href="../book/?camp=${encodeURIComponent(e.id)}">Book online <span class="beta-tag">Beta</span></a>`);
+    else if (e.type === "bts-camp" && e.placeholder) actions.push(`<a class="btn btn-accent" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Register interest ↗</a>`);
     else if (e.type === "bts-camp") actions.push(`<a class="btn btn-accent arrow" href="/">Book with BTS</a>`);
     else if (e.url) actions.push(`<a class="btn btn-accent" href="${C.esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a>`);
     $("[data-sheet-actions]").innerHTML = actions.join("") +

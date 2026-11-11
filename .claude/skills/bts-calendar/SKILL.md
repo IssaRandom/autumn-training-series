@@ -13,10 +13,13 @@ One file: `autumn-training-series/beta/data/events.js` → `window.BTS_EVENTS` (
 { id: "no1", name: "National Open 1 (Rooster)", short: "NO1", start: "2027-03-13", end: "2027-03-14",
   venue: "WPNSA", rigs: [4,6,7], type: "national-open", url: "...", status: "provisional"?, checkNor: true?, optional: true?, note: "" }
 ```
+- `placeholder: true` (BTS only) = dates not set: striped like provisional, sheet says "not open for booking", button is "Register interest" (WhatsApp), and it is left out of the homepage "next trainings".
+- Never add a season-long series as one bar (it takes a lane in every month): use a one-day "opens" marker plus a note.
 - `short` is shown when a bar is narrow, so always give one. `rigs: []` = all rigs or allocated by ranking. `optional` = masters/women's events (hidden by default).
 - BTS camps are duplicated from the live `camps` array in `script.js`, so keep them in sync.
-Types (chips = legend; colours in `beta.css` `--t-*`, all pass AA with white text):
-`bts-camp` brand blue #2463eb · `national-open` teal #0E7C86 · `championship` navy #061a3a with a gold inset edge · `ilca-uk-training` slate #5B6B82 · `international` violet #5E4BB8 · `deadline` white with a red outline and "!". (Retuned 11 Nov 2026 to match the live site; red now means deadlines/warnings only.)
+Types (chips = legend; fill `--t-*` and text `--t-*-tx` in `beta.css`, all AA on the dark theme). James (11 Nov 2026): the muted palette was too bland, "we can afford to use colour here":
+`bts-camp` electric blue #2f6df6 + white text, gradient and glow, always on the top lane (cal-core `PRIORITY`) · `national-open` green #22c993 · `championship` gold #ffc531 · `ilca-uk-training` orange #ff8a3d · `international` violet #b98cff (dark text on these four) · `deadline` dark red fill, red outline, "!" · Masters & women's chip pink #ff7ac6. Red means deadlines/warnings only.
+- Add to calendar = Google Calendar link (`BTSCal.gcal`) + Apple/Outlook `.ics` (`BTSCal.ics`). Never offer only one.
 
 ## UI (built — see STATUS.md for the full list)
 - Engine `beta/calendar/cal-core.js`: `BTSCal.row({start, n, visStart, visEnd, events, minLanes, label})` renders any run of day cells. Bars are positioned in % via `--c/--s/--l/--n`, so zoom only changes `--day-w` and never re-renders. Lane packing is greedy.
@@ -26,6 +29,9 @@ Types (chips = legend; colours in `beta.css` `--t-*`, all pass AA with white tex
 - CSS `bar-in` animation only on the first paint of a view (`render({intro:true})`). Filter and rig changes call `render({fx:true})`: FLIP — snapshot bar rects keyed `id|rowIndex`, re-render, then unchanged bars stay still, moved bars glide (WAAPI translate), removed bars become grey struck-through ghosts in a fixed `.fx-layer` clipped to the view, new bars pop in with an accent ring (`.is-new`), and a `.cal-delta` pill says "+3 shown · −5 hidden". Only on-screen bars animate. The month in view is re-anchored so rows growing/shrinking don't jump the scroll.
 - Year plan is the ONLY scroll area (`html.cal-lock` stops page scroll in year view); mouse click-and-drag pans it (a drag swallows the click).
 - Roadmap (James, 11 Nov 2026): per-event NoR/SI hosted on the event sheet; later parse NoR/SI for registration/start times, format, course area, venue → link to venue guides, live wind (BTS Navigator) and Windfinder historic wind for the event dates.
+
+## Cache-busting
+Every local .js/.css tag in beta HTML carries `?v=<version>`. After changing any beta script, stylesheet or events.js run `python tools/beta-bust.py` (version = today's date; pass `20261111b` for a same-day redeploy). New pages get stamped automatically on the next run.
 
 ## Gotchas learned
 - The sticky toolbar is a grid/flex parent of a horizontally scrolling chip row. It needs `min-width:0` and `grid-template-columns:minmax(0,1fr)`, or mobile browsers widen the layout viewport (we saw 1106px instead of 375px).
