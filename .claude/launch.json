@@ -78,6 +78,16 @@
       ],
       "port": 8775,
       "autoPort": false
+    },
+    {
+      "name": "copy-editor",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/copy-editor/server.py",
+        "8781"
+      ],
+      "port": 8781,
+      "autoPort": false
     }
   ]
 }
