@@ -1,0 +1,15 @@
+{
+  "name": "Beyond the Shift",
+  "short_name": "BTS",
+  "description": "ILCA coaching, season calendar and free advice from James Foster and Kai Wolgram.",
+  "start_url": "/beta/",
+  "scope": "/beta/",
+  "display": "standalone",
+  "background_color": "#03132e",
+  "theme_color": "#03132e",
+  "icons": [
+    { "src": "/beta/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/beta/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/beta/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

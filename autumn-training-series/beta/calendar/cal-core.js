@@ -57,8 +57,8 @@
       const d = addDays(start, i);
       const inside = d >= visStart && d <= visEnd;
       const w = wd(d);
-      const cl = ["cal-cell", inside ? "" : "is-pad", w > 4 ? "is-we" : "", +d === +today ? "is-today" : "", d < today ? "is-past" : ""].join(" ").replace(/\s+/g, " ").trim();
-      cells += `<div class="${cl}"${inside ? ` data-date="${iso(d)}"` : ""}>${inside ? `<span class="cal-num">${String(d.getDate()).padStart(2, "0")}</span>` : ""}</div>`;
+      const cl = ["cal-cell", inside ? "" : "is-pad", w > 4 ? "is-we" : "", w === 0 ? "is-mon" : "", +d === +today ? "is-today" : "", d < today ? "is-past" : ""].join(" ").replace(/\s+/g, " ").trim();
+      cells += `<div class="${cl}"${inside ? ` data-date="${iso(d)}"` : ""}>${inside ? `<span class="cal-num">${d.getDate()}</span>` : ""}</div>`;
     }
     const segs = [];
     events.forEach(e => {
@@ -96,5 +96,32 @@
     return `https://calendar.google.com/calendar/render?${q}`;
   }
 
-  window.BTSCal = { DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics, gcal };
+  /* Reminder the day before a closing date: a 15-minute timed event at 09:00 UK time with an alarm.
+     r = { id, title, details, date (ISO day of the reminder), url } */
+  function reminderIcs(r) {
+    const d = iso(parse(r.date)).replace(/-/g, "");
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+    return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Beyond the Shift//Season calendar//EN", "BEGIN:VEVENT",
+      `UID:remind-${r.id}@beyondtheshift.co.uk`, `DTSTAMP:${stamp}`,
+      `DTSTART:${d}T090000`, `DTEND:${d}T091500`,
+      `SUMMARY:${r.title}`, `DESCRIPTION:${[r.details, r.url].filter(Boolean).join(" — ")}`, r.url ? `URL:${r.url}` : "",
+      "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${r.title}`, "TRIGGER:PT0M", "END:VALARM",
+      "END:VEVENT", "END:VCALENDAR"].filter(Boolean).join("\r\n");
+  }
+  function reminderGcal(r) {
+    const d = iso(parse(r.date)).replace(/-/g, "");
+    const q = new URLSearchParams({ action: "TEMPLATE", text: r.title, dates: `${d}T090000/${d}T091500`, ctz: "Europe/London",
+      details: [r.details, r.url].filter(Boolean).join("\n\n") });
+    return `https://calendar.google.com/calendar/render?${q}`;
+  }
+  function download(name, text) {
+    const blob = new Blob([text], { type: "text/calendar" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  window.BTSCal = { DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics, gcal, reminderIcs, reminderGcal, download };
 })();

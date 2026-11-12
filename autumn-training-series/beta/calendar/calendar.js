@@ -15,13 +15,26 @@
     get(k, d) { try { const v = localStorage.getItem("btscal." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem("btscal." + k, JSON.stringify(v)); } catch (e) { /* private mode */ } }
   };
+  /* First visit shows the events most sailors plan around; the rest are one tap away in Filter.
+     (".v2" so viewers who had every type stored from earlier betas get the new default once.) */
+  const RECOMMENDED = ["bts-camp", "national-open", "championship", "deadline"];
+  const DESC = {
+    "bts-camp": "Our camps. Objectively the best bit.",
+    "national-open": "Ranking events. Where the points live.",
+    "championship": "Nationals, Youth Nats, Inlands. The big ones.",
+    "ilca-uk-training": "National and regional squad training",
+    "international": "Euros, Worlds, Europa Cups. Passport required.",
+    "deadline": "Entries, rankings, selection. Don't miss these."
+  };
   const state = {
     view: store.get("view", mq.matches ? "month" : "year"),
     rig: store.get("rig", "all"),
-    types: store.get("types", Object.keys(TYPES)),
+    types: store.get("types.v2", RECOMMENDED),
     optional: store.get("optional", false),
     dayW: null
   };
+  let booted = false; // true once the first paint and scroll-to-today are done (so those don't count as "the viewer scrolled")
+  const rigOk = e => state.rig === "all" || !e.rigs.length || e.rigs.includes(Number(state.rig));
 
   /* ---------- month range: first → last event month ---------- */
   const first = C.parse(ALL[0].start), last = C.parse(ALL.reduce((m, e) => (e.end > m ? e.end : m), ALL[0].end));
@@ -30,19 +43,28 @@
   const isNow = m => m.getFullYear() === C.today.getFullYear() && m.getMonth() === C.today.getMonth();
   const monthEnd = m => new Date(m.getFullYear(), m.getMonth() + 1, 0);
 
-  const visible = () => ALL.filter(e =>
-    state.types.includes(e.type) &&
-    (!e.optional || state.optional) &&
-    (state.rig === "all" || !e.rigs.length || e.rigs.includes(Number(state.rig))));
+  const visibleWith = (types, optional) => ALL.filter(e => types.includes(e.type) && (!e.optional || optional) && rigOk(e));
+  const visible = () => visibleWith(state.types, state.optional);
+  // counts per type for the current rig (so "BTS training 0" explains an empty ILCA 7 view)
+  function counts(optional) {
+    const c = {};
+    ALL.forEach(e => { if ((!e.optional || optional) && rigOk(e)) c[e.type] = (c[e.type] || 0) + 1; });
+    return c;
+  }
+  function saveFilters() { store.set("types.v2", state.types); store.set("optional", state.optional); }
 
-  /* ---------- toolbar ---------- */
+  /* ---------- toolbar: chips (wide screens) + Filter button (all screens) ---------- */
   const chipsEl = $("[data-type-chips]");
   function renderChips() {
-    const counts = {};
-    ALL.forEach(e => { if (!e.optional || state.optional) counts[e.type] = (counts[e.type] || 0) + 1; });
+    const n = counts(state.optional);
     chipsEl.innerHTML = Object.entries(TYPES).map(([k, t]) =>
-      `<button type="button" class="chip t-${k}" data-type="${k}" aria-pressed="${state.types.includes(k)}">${t.label} <span class="count">${counts[k] || 0}</span></button>`).join("") +
+      `<button type="button" class="chip t-${k}" data-type="${k}" aria-pressed="${state.types.includes(k)}">${t.label} <span class="count">${n[k] || 0}</span></button>`).join("") +
       `<button type="button" class="chip t-optional" data-optional aria-pressed="${state.optional}">Masters &amp; women’s</button>`;
+    // the Filter button carries a dot per type that is on: a mini colour key
+    $("[data-filter-dots]").innerHTML = Object.keys(TYPES).filter(k => state.types.includes(k)).map(k => `<i class="t-${k}"></i>`).join("");
+    $("[data-filter-count]").textContent = `${state.types.length}/${Object.keys(TYPES).length}`;
+    const off = Object.keys(TYPES).length - state.types.length;
+    $("[data-filter-open]").setAttribute("aria-label", `Filter events: ${state.types.length} of ${Object.keys(TYPES).length} types shown${off ? "" : ", all on"}`);
   }
   chipsEl.addEventListener("click", ev => {
     const chip = ev.target.closest(".chip");
@@ -52,20 +74,74 @@
       const k = chip.dataset.type;
       state.types = state.types.includes(k) ? state.types.filter(t => t !== k) : state.types.concat(k);
     }
-    store.set("types", state.types); store.set("optional", state.optional);
+    saveFilters(); hintDone("filter");
     renderChips(); render({ fx: true });
   });
   // double-click a chip to show only that type
   chipsEl.addEventListener("dblclick", ev => {
     const chip = ev.target.closest(".chip[data-type]");
     if (!chip) return;
-    state.types = [chip.dataset.type]; store.set("types", state.types); renderChips(); render({ fx: true });
+    state.types = [chip.dataset.type]; saveFilters(); renderChips(); render({ fx: true });
   });
 
   $$("[data-rig]").forEach(b => b.addEventListener("click", () => {
     if (state.rig === b.dataset.rig) return;
-    state.rig = b.dataset.rig; store.set("rig", state.rig); syncPressed(); render({ fx: true });
+    state.rig = b.dataset.rig; store.set("rig", state.rig); syncPressed(); renderChips(); render({ fx: true });
   }));
+
+  /* ---------- Filter sheet: big tappable rows, presets, applied on close so the change animates ---------- */
+  const fsheet = $("[data-fsheet]"), fList = $("[data-f-list]"), fApply = $("[data-f-apply]");
+  const PRESETS = [["recommended", "Recommended", RECOMMENDED], ["all", "Everything", Object.keys(TYPES)], ["bts", "BTS only", ["bts-camp"]]];
+  let draft = null;
+  function renderFilter() {
+    const n = counts(draft.optional);
+    const same = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+    $("[data-f-presets]").innerHTML = PRESETS.map(([id, label, types]) =>
+      `<button type="button" data-preset="${id}" aria-pressed="${same(types, draft.types)}">${label}</button>`).join("");
+    fList.innerHTML = Object.entries(TYPES).map(([k, t]) => `
+      <label class="frow t-${k}${n[k] ? "" : " is-empty"}">
+        <input type="checkbox" data-ftype="${k}"${draft.types.includes(k) ? " checked" : ""}>
+        <span class="frow-sw" aria-hidden="true"></span>
+        <span class="frow-t"><b>${t.label}</b><small>${n[k] ? DESC[k] : `None for ILCA ${state.rig}`}</small></span>
+        <span class="frow-n">${n[k] || 0}</span>
+        <span class="switch" aria-hidden="true"></span>
+      </label>`).join("") + `
+      <label class="frow t-optional frow-opt">
+        <input type="checkbox" data-fopt${draft.optional ? " checked" : ""}>
+        <span class="frow-sw" aria-hidden="true"></span>
+        <span class="frow-t"><b>Masters &amp; women’s</b><small>Adds these to the types above. Respect your elders.</small></span>
+        <span class="frow-n"></span>
+        <span class="switch" aria-hidden="true"></span>
+      </label>`;
+    const total = visibleWith(draft.types, draft.optional).length;
+    fApply.textContent = total ? `Show ${total} event${total === 1 ? "" : "s"}` : "Show nothing (bold choice)";
+  }
+  function openFilter() {
+    draft = { types: state.types.slice(), optional: state.optional };
+    renderFilter(); hintDone("filter");
+    fsheet.showModal();
+  }
+  $("[data-filter-open]").addEventListener("click", openFilter);
+  fsheet.addEventListener("change", ev => {
+    const t = ev.target;
+    if (t.matches("[data-ftype]")) draft.types = t.checked ? draft.types.concat(t.dataset.ftype) : draft.types.filter(x => x !== t.dataset.ftype);
+    if (t.matches("[data-fopt]")) draft.optional = t.checked;
+    renderFilter();
+    const again = $(`[data-ftype="${t.dataset.ftype}"]`, fsheet) || $("[data-fopt]", fsheet);
+    if (again) again.focus({ preventScroll: true });
+  });
+  fsheet.addEventListener("click", ev => {
+    if (ev.target === fsheet || ev.target.closest("[data-fsheet-close], [data-f-apply]")) { fsheet.close(); return; }
+    const p = ev.target.closest("[data-preset]");
+    if (p) { draft.types = PRESETS.find(x => x[0] === p.dataset.preset)[2].slice(); renderFilter(); }
+  });
+  fsheet.addEventListener("close", () => {
+    if (!draft) return;
+    const changed = draft.optional !== state.optional || draft.types.length !== state.types.length || draft.types.some(t => !state.types.includes(t));
+    state.types = draft.types; state.optional = draft.optional; draft = null;
+    if (changed) { saveFilters(); renderChips(); render({ fx: true }); }
+  });
+  swipeToClose(fsheet, () => fsheet.close());
   $$("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
   function syncPressed() {
     $$("[data-rig]").forEach(b => b.setAttribute("aria-pressed", b.dataset.rig === String(state.rig)));
@@ -105,6 +181,9 @@
     yp.style.setProperty("--day-w", `${w}px`);
     yp.classList.remove("z-xs", "z-s", "z-m", "z-l");
     yp.classList.add(tier(w));
+    // too narrow for every date to fit: number only the Monday of each week
+    yp.classList.toggle("z-thin", w < 22);
+    if (old !== w && booted) hintDone("zoom");
     yp.scrollLeft = contentX * (w / old) - x;
     range.value = toSlider(w);
   }
@@ -165,21 +244,9 @@
   });
   yp.addEventListener("click", ev => { if (swallow) { ev.stopPropagation(); ev.preventDefault(); } }, true);
 
-  // Two-finger pinch on touch screens
-  let pinch = null;
-  const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
-  yp.addEventListener("touchstart", ev => {
-    if (ev.touches.length === 2) {
-      const r = yp.getBoundingClientRect();
-      pinch = { d: dist(ev.touches), w: state.dayW, x: (ev.touches[0].clientX + ev.touches[1].clientX) / 2 - r.left };
-    }
-  }, { passive: true });
-  yp.addEventListener("touchmove", ev => {
-    if (!pinch || ev.touches.length !== 2) return;
-    ev.preventDefault();
-    setZoom(pinch.w * dist(ev.touches) / pinch.d, pinch.x);
-  }, { passive: false });
-  yp.addEventListener("touchend", ev => { if (ev.touches.length < 2) pinch = null; });
+  /* No touch pinch (James, 11 Nov: it only stretched sideways and juddered). Phones use the − / + / Fit
+     buttons; touch-action on .yp stops the browser zooming the whole page instead. */
+  yp.addEventListener("scroll", () => { if (booted) hintDone("swipe"); updateToday(); }, { passive: true });
 
   // Keyboard: + / - zoom, 0 fit
   yp.addEventListener("keydown", ev => {
@@ -197,6 +264,8 @@
      MONTHS
      ============================================================ */
   const jump = $("[data-month-jump]");
+  const EMPTY = ["Nothing on with these filters. Gym month?", "Quiet one. Perfect time to fix that bent top section.",
+    "Nothing here. The boat could do with a polish.", "Empty. Go and do your homework (actual homework).", "Nothing listed. Watch some racing videos instead."];
   function renderMonths(evts, intro) {
     const wdHead = C.WD.map(d => `<span>${d}</span>`).join("");
     mv.innerHTML = months.map((m, idx) => {
@@ -218,7 +287,7 @@
       return `<article class="mcard${isNow(m) ? " is-now" : ""}${intro ? " animate" : ""}" id="m-${idx}" data-m="${idx}">
         <div class="mcard-head"><h2>${C.MONTHS_LONG[m.getMonth()]} ${m.getFullYear()}</h2><span>${evs.length ? evs.length + (evs.length === 1 ? " event" : " events") : ""}</span></div>
         <div class="mcard-wd">${wdHead}</div>${rows}
-        ${evs.length ? `<ul class="mlist">${list}</ul>` : `<p class="mempty">Nothing listed with these filters.</p>`}
+        ${evs.length ? `<ul class="mlist">${list}</ul>` : `<p class="mempty">${EMPTY[idx % EMPTY.length]}</p>`}
       </article>`;
     }).join("");
     jump.innerHTML = months.map((m, idx) =>
@@ -250,7 +319,10 @@
     if (cur) jump.scrollTo({ left: cur.offsetLeft - jump.clientWidth / 2 + cur.offsetWidth / 2, behavior: reduce ? "auto" : "smooth" });
   }
   function observeMonths() { lastIdx = null; requestAnimationFrame(trackMonth); }
-  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(trackMonth); } }, { passive: true });
+  window.addEventListener("scroll", () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(() => { trackMonth(); updateToday(); }); }
+    if (state.view === "month" && booted) hintDone("swipe");
+  }, { passive: true });
 
   /* ============================================================
      VIEW + RENDER
@@ -297,8 +369,11 @@
     Object.assign(fxLayer.style, { left: `${vb.left}px`, top: `${vb.top}px`, width: `${vb.right - vb.left}px`, height: `${vb.bottom - vb.top}px` });
     return fxLayer;
   }
+  /* POLISH-AUDIT #47: a wave crest sweeps left to right; each bar changes as the crest reaches it. */
+  const WAVE_T0 = 40, WAVE_MS = 560, WAVE_W = 180;
   function play(root, before) {
-    const vb = viewBox(), seen = new Set();
+    const vb = viewBox(), seen = new Set(), vw = Math.max(1, vb.right - vb.left);
+    const at = r => WAVE_T0 + Math.min(1, Math.max(0, (r.left + r.width / 2 - vb.left) / vw)) * WAVE_MS;
     $$(".cal-row", root).forEach((row, ri) => $$(".cal-bar", row).forEach(b => {
       const k = `${b.dataset.id}|${ri}`, old = before.bars.get(k);
       seen.add(k);
@@ -307,14 +382,29 @@
       if (old) {
         const dx = old.r.left - r.left, dy = old.r.top - r.top;
         if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5)
-          b.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 520, delay: 160, easing: EASE, fill: "backwards" });
+          b.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 440, delay: at(old.r), easing: EASE, fill: "backwards" });
       } else {
         b.classList.add("is-new");
-        b.animate([{ opacity: 0, transform: "scale(.35)" }, { opacity: 1, transform: "none" }], { duration: 460, delay: 300, easing: EASE, fill: "backwards" });
+        // bobs up out of the water behind the crest
+        b.animate([
+          { opacity: 0, transform: "translateY(9px) scale(.7, .35)" },
+          { opacity: 1, transform: "translateY(-3px) scale(1.02, 1.05)", offset: .6 },
+          { opacity: 1, transform: "none" }
+        ], { duration: 480, delay: at(r) + 40, easing: EASE, fill: "backwards" });
         setTimeout(() => b.classList.toggle("is-new", false), 2600);
       }
     }));
     const layer = ghostLayer(vb);
+    const wave = document.createElement("div");
+    wave.className = "fx-wave";
+    layer.appendChild(wave);
+    const gone = () => wave.remove();
+    wave.animate([
+      { transform: `translateX(${-WAVE_W}px)`, opacity: 0 },
+      { opacity: 1, offset: .08 },
+      { opacity: 1, offset: .85 },
+      { transform: `translateX(${vw - WAVE_W + 40}px)`, opacity: 0 }
+    ], { duration: WAVE_MS + WAVE_T0 + 80, easing: "linear", fill: "forwards" }).finished.then(gone, gone);
     before.bars.forEach((o, k) => {
       if (seen.has(k) || !o.on) return;
       const g = o.el.cloneNode(true);
@@ -324,11 +414,12 @@
       Object.assign(g.style, { left: `${o.r.left - vb.left}px`, top: `${o.r.top - vb.top}px`, width: `${o.r.width}px`, height: `${o.r.height}px` });
       layer.appendChild(g);
       const done = () => layer.contains(g) && layer.removeChild(g);
+      // washed under as the crest passes
       g.animate([
         { opacity: 1, transform: "none", filter: "saturate(1)" },
-        { opacity: .8, transform: "none", filter: "saturate(0) brightness(1.5)", offset: .35 },
-        { opacity: 0, transform: "scale(.9, .3)", filter: "saturate(0) brightness(1.5)" }
-      ], { duration: 560, easing: "ease-in", fill: "forwards" }).finished.then(done, done);
+        { opacity: .8, transform: "translateY(-2px)", filter: "saturate(0) brightness(1.4)", offset: .3 },
+        { opacity: 0, transform: "translateY(10px) scale(.9, .3)", filter: "saturate(0) brightness(1.4)" }
+      ], { duration: 380, delay: Math.max(0, at(o.r) - 60), easing: "ease-in", fill: "forwards" }).finished.then(done, done);
     });
     $$(".mlist button[data-id]", root).forEach(b => {
       if (!before.items.has(`${b.closest("[data-m]").dataset.m}|${b.dataset.id}`)) b.classList.add("is-new");
@@ -343,7 +434,7 @@
     const parts = [];
     if (added) parts.push(`<b class="plus">+${added}</b> shown`);
     if (removed) parts.push(`<b class="minus">−${removed}</b> hidden`);
-    delta.innerHTML = (parts.length ? parts.join(" · ") : "No change") + ` <span>· ${next.size} events</span>`;
+    delta.innerHTML = (parts.length ? parts.join(" · ") : "Nothing changed. Bold move.") + ` <span>· ${next.size} events</span>`;
     delta.classList.add("is-on");
     clearTimeout(deltaT);
     deltaT = setTimeout(() => delta.classList.toggle("is-on", false), 2600);
@@ -363,7 +454,7 @@
     state.view = v; store.set("view", v);
     yp.hidden = v !== "year"; mv.hidden = v !== "month";
     document.documentElement.classList.toggle("cal-lock", v === "year");
-    syncPressed(); size(); render({ intro: true });
+    syncPressed(); renderHints(); size(); render({ intro: true });
     if (v === "year") {
       window.scrollTo(0, 0);
       if (!state.dayW) setZoom(defaultZoom());
@@ -376,10 +467,103 @@
     }
   }
   const defaultZoom = () => (mq.matches ? 30 : Math.max(fitW(), 28));
-  $("[data-today]").addEventListener("click", () => {
+
+  /* "Today" only appears once today has scrolled out of sight. */
+  const todayBtn = $("[data-today]");
+  todayBtn.addEventListener("click", () => {
     if (state.view === "year") scrollYearToToday(true);
     else scrollToMonth(Math.max(0, months.findIndex(isNow)), true);
   });
+  function updateToday() {
+    if (!booted) return;
+    const el = state.view === "year" ? $(".cal-cell.is-today", yp) : $(".mcard.is-now", mv);
+    const away = !!el && !onScreen(el.getBoundingClientRect(), viewBox());
+    if (todayBtn.hidden === away) todayBtn.hidden = !away;
+  }
+
+  /* ---------- Tips: each disappears once it has been done, and never comes back ---------- */
+  const hintEl = $("[data-hint]");
+  const HINTS = touch
+    ? [["tap", "Tap any event for the juicy details"], ["swipe", "Swipe around: it's a big year"], ["filter", "More events are hiding under Filter"]]
+    : [["tap", "Click any event for the juicy details"], ["swipe", "Drag or scroll to move around"], ["zoom", "Ctrl + scroll to zoom"], ["filter", "More events are hiding under Filter"]];
+  const done = new Set(store.get("hints", []));
+  let touring = false;
+  function renderHints() {
+    const left = touring ? [] : HINTS.filter(([k]) => !done.has(k) && !(k === "zoom" && state.view !== "year"));
+    hintEl.hidden = !left.length;
+    // phones: one tip at a time (the next appears when this one is done)
+    hintEl.innerHTML = `<b class="hint-k" aria-hidden="true">Tip</b>` + (mq.matches ? left.slice(0, 1) : left).map(([k, t]) => `<span data-h="${k}">${t}</span>`).join("") +
+      (left.length ? `<button type="button" class="hint-x" data-hint-close aria-label="Hide tips">×</button>` : "");
+  }
+  function hintDone(k) {
+    if (done.has(k)) return;
+    done.add(k); store.set("hints", [...done]);
+    const el = $(`[data-h="${k}"]`, hintEl);
+    if (!el) return;
+    const finish = () => { renderHints(); size(); };
+    if (reduce) finish();
+    else el.animate([{ opacity: 1 }, { opacity: 0, transform: "translateY(-4px)" }], { duration: 300, easing: "ease-in" }).finished.then(finish, finish);
+  }
+  hintEl.addEventListener("click", ev => {
+    if (!ev.target.closest("[data-hint-close]")) return;
+    HINTS.forEach(([k]) => done.add(k)); store.set("hints", [...done]); renderHints(); size();
+  });
+
+  /* ---------- First-visit tour: a spotlight walks through the toolbar, then an event ----------
+     Shown once (btscal.tour); "Show me around again" in the Filter sheet replays it. Tips take over afterwards. */
+  const tourEl = $("[data-tour]"), spot = $("[data-tour-spot]"), card = $("[data-tour-card]");
+  const TOUR = [
+    { h: "Welcome aboard", p: "Your whole ILCA season on one screen. Quick tour? It's shorter than a general recall." },
+    { t: ".seg-rig", h: "Pick your rig", p: "4, 6 or 7 and we'll hide what isn't for you. “All” is for nosy parents and coaches." },
+    { t: "[data-filter-open]", h: "Choose what shows", p: "You're starting on the essentials: our training, National Opens, championships and deadlines. Internationals and the rest are hiding in here." },
+    { t: ".seg-view", h: "Year or months", p: "Year plan for the big picture, Months for a list you can actually read. Swap whenever." },
+    { t: "BAR", h: "Tap any event", p: "Dates, when entries close, a reminder so you don't miss them, and our venue guide where we have one." },
+    { h: "That's it!", p: "Lost somewhere in 2027? The Today button brings you home. Off you go.", last: true }
+  ];
+  let tStep = 0;
+  function tourTarget(step) {
+    if (!step.t) return null;
+    if (step.t !== "BAR") { const el = $(step.t); return el && el.offsetParent ? el : null; }
+    const vb = viewBox();
+    const bars = $$(".cal-bar[data-id], .mlist button[data-id]", state.view === "year" ? yp : mv).filter(b => onScreen(b.getBoundingClientRect(), vb));
+    return bars.find(b => b.matches(".t-bts-camp:not(.is-past)")) || bars.find(b => !b.matches(".is-past")) || bars[0] || null;
+  }
+  function placeTour() {
+    const step = TOUR[tStep], el = tourTarget(step);
+    $("[data-tour-step]").textContent = `${tStep + 1} of ${TOUR.length}`;
+    $("[data-tour-h]").textContent = step.h;
+    $("[data-tour-p]").textContent = step.p;
+    $("[data-tour-next]").textContent = step.last ? "Let's go" : tStep === 0 ? "Show me" : "Next";
+    $("[data-tour-skip]").hidden = !!step.last;
+    tourEl.classList.toggle("is-centred", !el);
+    const cw = Math.min(340, window.innerWidth - 32);
+    card.style.width = `${cw}px`;
+    if (!el) { spot.style.cssText = ""; card.style.left = `${(window.innerWidth - cw) / 2}px`; card.style.top = `${Math.max(16, window.innerHeight / 2 - card.offsetHeight / 2)}px`; return; }
+    const r = el.getBoundingClientRect(), pad = 6;
+    Object.assign(spot.style, { left: `${r.left - pad}px`, top: `${r.top - pad}px`, width: `${r.width + pad * 2}px`, height: `${r.height + pad * 2}px` });
+    const below = r.bottom + 14, ch = card.offsetHeight;
+    const top = below + ch < window.innerHeight - 12 ? below : Math.max(12, r.top - ch - 14);
+    card.style.top = `${top}px`;
+    card.style.left = `${Math.max(16, Math.min(window.innerWidth - cw - 16, r.left + r.width / 2 - cw / 2))}px`;
+  }
+  function startTour() {
+    touring = true; tStep = 0; renderHints(); size();
+    tourEl.hidden = false; placeTour();
+    $("[data-tour-next]").focus({ preventScroll: true });
+  }
+  function endTour() {
+    touring = false; tourEl.hidden = true; store.set("tour", 1);
+    renderHints(); size();
+  }
+  $("[data-tour-next]").addEventListener("click", () => {
+    if (TOUR[tStep].last) { endTour(); return; }
+    tStep++; placeTour();
+    if (!reduce) card.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: EASE });
+  });
+  $("[data-tour-skip]").addEventListener("click", endTour);
+  tourEl.addEventListener("keydown", ev => { if (ev.key === "Escape") endTour(); });
+  window.addEventListener("resize", () => { if (touring) placeTour(); });
+  $("[data-tour-replay]").addEventListener("click", () => { draft = null; fsheet.close(); setTimeout(startTour, 250); });
 
   /* ============================================================
      TOOLTIP (pointer devices) + DETAIL SHEET
@@ -416,11 +600,15 @@
   }
   function relative(e) {
     const s = C.parse(e.start), t = C.parse(e.end);
-    if (t < C.today) return "Finished";
-    if (s <= C.today) return "On now";
+    if (t < C.today) return "Done and dusted";
+    if (s <= C.today) return "Happening right now";
     const d = C.diff(s, C.today);
-    return d === 1 ? "Tomorrow" : d < 14 ? `In ${d} days` : d < 60 ? `In ${Math.round(d / 7)} weeks` : `In ${Math.round(d / 30.4)} months`;
+    return d === 1 ? "Tomorrow! Pack the boat" : d < 14 ? `In ${d} days` : d < 60 ? `In ${Math.round(d / 7)} weeks` : `In ${Math.round(d / 30.4)} months`;
   }
+  const ICON = {
+    cal: `<svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 7h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M8 9v3.4M6.3 10.7h3.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+    bell: `<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z M10 20.5a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`
+  };
   function openSheet(id) {
     const e = byId[id];
     if (!e) return;
@@ -433,6 +621,8 @@
     typePill.textContent = TYPES[e.type].label.replace(/s$/, "");
     $("[data-sheet-title]").textContent = e.name;
     $("[data-sheet-when]").innerHTML = `${C.esc(C.range(e))} <span>· ${days === 1 ? "1 day" : days + " days"} · ${relative(e)}</span>`;
+    const finished = C.parse(e.end) < C.today;
+    const cl = closeOf(e), clDays = cl ? C.diff(cl.date, C.today) : null;
     const facts = [];
     if (e.venue) facts.push(["Venue", C.esc(e.venue)]);
     facts.push(["Rigs", C.esc(C.rigText(e)) + (e.type === "ilca-uk-training" && !e.rigs.length ? " (places by ranking/entry)" : "")]);
@@ -441,30 +631,120 @@
       facts.push(["Price", `${BK.fmt.money(online.price_now)} per sailor${online.late_now ? " (includes late booking fee)" : ""}`]);
       if (BK.fmt.placesText(online)) facts.push(["Places", `<b>${C.esc(BK.fmt.placesText(online))}</b>`]);
     }
+    // entry close: one line, not a whole box (the bell button below sets the reminder)
+    if (cl && e.type !== "deadline" && !finished) {
+      const when = clDays < 0 ? "closed" : clDays === 0 ? "today!" : clDays === 1 ? "tomorrow!" : clDays < 60 ? `in ${clDays} days` : `in ${Math.round(clDays / 7)} weeks`;
+      facts.push(["Entries close", `<span class="${clDays >= 0 && clDays <= 7 ? "warn" : ""}">${cl.est ? "Usually " : ""}${fmtDay(cl.date)}</span> <span class="muted">· ${when}${cl.est ? " · the Sunday before, as a rule" : ""}</span>`]);
+    }
     if (e.note) facts.push(["Notes", C.esc(e.note)]);
-    if (e.checkNor) facts.push(["Check", `<span class="warn">Rigs vary by event — check the NOR</span>`]);
-    if (e.placeholder) facts.push(["Status", `<span class="warn">Placeholder — dates to be set, not open for booking yet</span>`]);
-    else if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional — dates or venue may change</span>`]);
-    $("[data-sheet-facts]").innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
-    const actions = [];
-    if (online) actions.push(`<a class="btn btn-accent arrow" href="../book/?camp=${encodeURIComponent(e.id)}">Book online <span class="beta-tag">Beta</span></a>`);
-    else if (e.type === "bts-camp" && e.placeholder) actions.push(`<a class="btn btn-accent" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Register interest ↗</a>`);
-    else if (e.type === "bts-camp") actions.push(`<a class="btn btn-accent arrow" href="/">Book with BTS</a>`);
-    else if (e.url) actions.push(`<a class="btn btn-accent" href="${C.esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a>`);
-    $("[data-sheet-actions]").innerHTML = actions.join("") +
-      `<div class="add-cal"><span class="add-cal-label">Add to calendar</span>` +
-      `<a class="btn btn-line" href="${C.esc(C.gcal(e))}" target="_blank" rel="noopener">Google</a>` +
-      `<button type="button" class="btn btn-line" data-ics>Apple / Outlook</button></div>`;
-    // Event documents (NoR / SI). Later: hosted copies + parsed key info (registration, first start, format).
+    if (e.checkNor) facts.push(["Check", `<span class="warn">Rigs vary by event, so check the NoR</span>`]);
+    if (e.placeholder) facts.push(["Status", `<span class="warn">Dates still being cooked up. Not bookable yet.</span>`]);
+    else if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional: dates or venue may still move</span>`]);
+    // NoR / SI: links when published, one quiet line when not (BTS camps don't have them)
     const docs = [["nor", "Notice of Race"], ["si", "Sailing Instructions"]].filter(([k]) => e[k]);
-    $("[data-sheet-docs]").innerHTML = docs.length
-      ? `<p class="docs-title">Event documents</p>` + docs.map(([k, label]) => `<a class="doc" href="${C.esc(e[k])}" target="_blank" rel="noopener"><span class="doc-ic" aria-hidden="true">PDF</span><span>${label}</span><span class="doc-go" aria-hidden="true">↗</span></a>`).join("")
-      : `<p class="docs-none">Notice of Race and Sailing Instructions will appear here once published.</p>`;
+    if (docs.length) facts.push(["Docs", docs.map(([k, label]) => `<a class="doc-chip" href="${C.esc(e[k])}" target="_blank" rel="noopener">${label} ↗</a>`).join(" ")]);
+    else if (e.type !== "bts-camp" && e.type !== "deadline" && !finished) facts.push(["NoR", `<span class="muted">They haven't published it yet. We'll pop it here when they do.</span>`]);
+    $("[data-sheet-facts]").innerHTML = facts.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+
+    const actions = [];
+    // Every dated BTS camp books through the new booking page (it explains when a camp isn't open online yet)
+    if (e.type === "bts-camp" && e.placeholder) actions.push(`<a class="btn btn-accent" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Register interest ↗</a>`);
+    else if (e.type === "bts-camp" && !finished) actions.push(`<a class="btn btn-accent arrow" href="../book/?camp=${encodeURIComponent(e.id)}">Book with BTS${online ? ` <span class="beta-tag">Online</span>` : ""}</a>`);
+    else if (e.type !== "bts-camp" && e.url) actions.push(`<a class="btn btn-accent" href="${C.esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a>`);
+    if (cl && clDays >= 1) actions.push(`<button type="button" class="act-btn" data-pop="remind" aria-expanded="false">${ICON.bell}<span>Remind me</span></button>`);
+    if (!finished) actions.push(`<button type="button" class="act-btn act-ic" data-pop="cal" aria-expanded="false" aria-label="Add to calendar" title="Add to calendar">${ICON.cal}</button>`);
+    $("[data-sheet-actions]").innerHTML = actions.join("");
+    const pop = $("[data-sheet-pop]");
+    pop.hidden = true; pop.innerHTML = "";
+
+    renderWho(e, finished);
+    renderVenue(e);
     if (!sheet.open) sheet.showModal();
+    sheet.scrollTop = 0;
+    hintDone("tap");
     history.replaceState(null, "", `#event=${encodeURIComponent(id)}`);
   }
+  /* Small panel under the action row: "add to calendar" or "remind me", each with Google / Apple / Outlook */
+  function showPop(kind, btn) {
+    const pop = $("[data-sheet-pop]"), e = byId[current];
+    const wasOpen = !pop.hidden && pop.dataset.kind === kind;
+    $$("[data-pop]", sheet).forEach(b => b.setAttribute("aria-expanded", "false"));
+    if (wasOpen) { pop.hidden = true; return; }
+    pop.dataset.kind = kind;
+    if (kind === "cal") {
+      pop.innerHTML = `<p>Pop it in your calendar:</p><div class="pop-btns">
+        <a class="btn btn-line" href="${C.esc(C.gcal(e))}" target="_blank" rel="noopener">Google</a>
+        <button type="button" class="btn btn-line" data-ics>Apple</button>
+        <button type="button" class="btn btn-line" data-ics>Outlook</button></div>`;
+    } else {
+      const cl = closeOf(e);
+      pop.innerHTML = `<p>We'll nudge you at 9am on ${fmtDay(C.addDays(cl.date, -1))}, the day before ${e.type === "deadline" ? "the deadline" : "entries close"}. No more “wait, it closed?!”</p><div class="pop-btns">
+        <a class="btn btn-line" href="${C.esc(C.reminderGcal(reminderFor(e, cl)))}" target="_blank" rel="noopener" data-remind-set>Google</a>
+        <button type="button" class="btn btn-line" data-remind-ics>Apple</button>
+        <button type="button" class="btn btn-line" data-remind-ics>Outlook</button></div>`;
+    }
+    pop.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    if (!reduce) pop.animate([{ opacity: 0, transform: "translateY(-6px)" }, { opacity: 1, transform: "none" }], { duration: 240, easing: EASE });
+  }
+
+  /* ---------- Entry-close reminder ----------
+     `entryClose` (ISO) on an event wins. National Opens without one close, as a rule, on the Sunday
+     before the event (James, 12 Nov), shown as "Usually …"; deadline events remind for themselves. */
+  const sundayBefore = d => C.addDays(d, -(d.getDay() || 7));
+  function closeOf(e) {
+    if (e.entryClose) return { date: C.parse(e.entryClose), est: false, what: "Entries close" };
+    if (e.type === "deadline") return { date: C.parse(e.start), est: false, what: e.name };
+    if (e.type === "national-open" && /^no\d$/.test(e.id)) return { date: sundayBefore(C.parse(e.start)), est: true, what: "Entries close" };
+    return null;
+  }
+  const fmtDay = d => `${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.getDay()]} ${d.getDate()} ${C.MONTHS[d.getMonth()]}`;
+  function reminderFor(e, cl) {
+    const short = e.short || e.name;
+    const what = e.type === "deadline" ? e.name : `${e.name} entries close`;
+    return {
+      id: e.id, date: C.iso(C.addDays(cl.date, -1)), url: e.url || "",
+      title: e.type === "deadline" ? `Tomorrow: ${e.name}` : `${short}: entries close tomorrow`,
+      details: `${what} on ${fmtDay(cl.date)}${cl.est ? " (usually the Sunday before: check the exact time on the event page)" : ""}. Event ${C.range(e)}${e.venue ? " at " + e.venue : ""}. Reminder from the Beyond the Shift season calendar.`
+    };
+  }
+
+  /* ---------- Who's going (signed-in parents, BTS camps) ---------- */
+  function renderWho(e, finished) {
+    const host = $("[data-sheet-who]");
+    host.innerHTML = "";
+    if (e.type !== "bts-camp" || e.placeholder || !BK || BK.mode === "off") return;
+    if (!BK.signedIn) {
+      if (!finished) host.innerHTML = `<p class="who-signin"><a href="../account/">Sign in</a> to see who's booked (and who's still “thinking about it”).</p>`;
+      return;
+    }
+    host.innerHTML = `<p class="docs-title">Who's going</p><div data-who-list></div>`;
+    if (window.BTSUI) window.BTSUI.who($("[data-who-list]", host), e.id);
+  }
+
+  /* ---------- Venue guide: icon tiles, straight under the buttons ---------- */
+  const VG_IC = {
+    pays: `<path d="M12 3v18M12 3l-4 4M12 3l4 4"/><path d="M4 15c2.5-1.6 5-1.6 8 0s5.5 1.6 8 0"/>`,
+    rose: `<circle cx="12" cy="12" r="8.5"/><path d="M12 4.5l2.3 7.5L12 19.5 9.7 12z" fill="currentColor" stroke="none"/>`,
+    tide: `<path d="M3 9c2.5-2 4.5-2 7 0s4.5 2 7 0 3-1 4-.5"/><path d="M3 15c2.5-2 4.5-2 7 0s4.5 2 7 0 3-1 4-.5"/>`,
+    slip: `<path d="M3 18l18-8"/><path d="M8 13.5l3-9 3 7z"/><path d="M4 21h16"/>`,
+    parent: `<circle cx="8" cy="6.5" r="2.5"/><circle cx="16.5" cy="9" r="2"/><path d="M3.5 20v-3.5a4.5 4.5 0 0 1 9 0V20M13 20v-2.5a3.5 3.5 0 0 1 7 0V20"/>`,
+    bed: `<path d="M3 19V7M3 15h18v4M3 11h7a3 3 0 0 1 3 3v1M14 11h4.5a2.5 2.5 0 0 1 2.5 2.5V15"/>`
+  };
+  function renderVenue(e) {
+    const host = $("[data-sheet-venue]");
+    const v = e.venue && (window.BTS_VENUES || []).find(x => x.match.test(e.venue));
+    host.hidden = !v;
+    if (!v) { host.innerHTML = ""; return; }
+    const base = "../" + v.url;
+    host.innerHTML = `<a class="vg-head" href="${base}"><span><small>Venue guide</small><b>${C.esc(v.name)}</b><em>${C.esc(v.tagline || v.place)}</em></span><span class="vg-go" aria-hidden="true">Open →</span></a>
+      <ul class="vg-tiles">${v.parts.map(([id, t, d, ic]) => `<li><a class="vg-tile vg-${ic || "pays"}" href="${base}#${id}"><svg viewBox="0 0 24 24" aria-hidden="true">${VG_IC[ic] || VG_IC.pays}</svg><b>${C.esc(t)}</b><small>${C.esc(d)}</small></a></li>`).join("")}</ul>`;
+  }
   function closeSheet() { sheet.close(); }
-  sheet.addEventListener("close", () => { current = null; history.replaceState(null, "", location.pathname + location.search); });
+  sheet.addEventListener("close", () => {
+    if (sheet.open) return; // reopened before the close event ran
+    current = null; history.replaceState(null, "", location.pathname + location.search);
+  });
   sheet.addEventListener("click", ev => {
     if (ev.target === sheet) { closeSheet(); return; } // backdrop
     if (ev.target.closest("[data-sheet-close]")) closeSheet();
@@ -475,20 +755,25 @@
       const next = list[(i + Number(step.dataset.sheetStep) + list.length) % list.length];
       if (next) openSheet(next.id);
     }
-    if (ev.target.closest("[data-ics]")) {
+    if (ev.target.closest("[data-ics]")) { const e = byId[current]; C.download(`${e.id}.ics`, C.ics(e)); }
+    const pb = ev.target.closest("[data-pop]");
+    if (pb) showPop(pb.dataset.pop, pb);
+    const rIcs = ev.target.closest("[data-remind-ics]");
+    if (rIcs || ev.target.closest("[data-remind-set]")) {
       const e = byId[current];
-      const blob = new Blob([C.ics(e)], { type: "text/calendar" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `${e.id}.ics`;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      if (rIcs) C.download(`${e.id}-reminder.ics`, C.reminderIcs(reminderFor(e, closeOf(e))));
+      const rb = $('[data-pop="remind"]', sheet);
+      if (rb) { rb.classList.add("is-set"); rb.innerHTML = `${ICON.bell}<span>Reminder set ✓</span>`; rb.setAttribute("aria-expanded", "false"); }
+      $("[data-sheet-pop]", sheet).hidden = true;
     }
   });
-  // swipe down to close on mobile
-  let sy = null;
-  sheet.addEventListener("touchstart", ev => { sy = sheet.scrollTop <= 0 ? ev.touches[0].clientY : null; }, { passive: true });
-  sheet.addEventListener("touchend", ev => { if (sy != null && ev.changedTouches[0].clientY - sy > 80) closeSheet(); sy = null; });
+  // swipe down to close on mobile (only when the sheet is scrolled to the top)
+  swipeToClose(sheet, closeSheet);
+  function swipeToClose(dlg, close) {
+    let sy = null;
+    dlg.addEventListener("touchstart", ev => { sy = dlg.scrollTop <= 0 ? ev.touches[0].clientY : null; }, { passive: true });
+    dlg.addEventListener("touchend", ev => { if (sy != null && ev.changedTouches[0].clientY - sy > 80) close(); sy = null; });
+  }
   sheet.addEventListener("keydown", ev => {
     if (ev.key === "ArrowRight") $('[data-sheet-step="1"]').click();
     if (ev.key === "ArrowLeft") $('[data-sheet-step="-1"]').click();
@@ -500,14 +785,22 @@
   });
 
   /* ---------- nav (shared look, minimal JS) ---------- */
+  // booking/ui.js already wires the menu button when it is loaded; don't toggle twice
   const nav = $("[data-nav]"), toggle = $("[data-nav-toggle]");
-  toggle.addEventListener("click", () => toggle.setAttribute("aria-expanded", nav.classList.toggle("is-open")));
+  if (!window.BTSUI) toggle.addEventListener("click", () => toggle.setAttribute("aria-expanded", nav.classList.toggle("is-open")));
 
   /* ---------- boot ---------- */
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   renderChips();
+  renderHints();
   syncPressed();
   setView(state.view);
+  // start counting the viewer's own scrolling only after our scroll-to-today has settled (fonts + smooth scroll)
+  Promise.race([document.fonts ? document.fonts.ready : null, new Promise(r => setTimeout(r, 1500))].filter(Boolean))
+    .then(() => setTimeout(() => {
+      booted = true; updateToday();
+      if (!store.get("tour", 0) && !/event=/.test(location.hash)) startTour();
+    }, 800));
   let rz;
   window.addEventListener("resize", () => {
     clearTimeout(rz);

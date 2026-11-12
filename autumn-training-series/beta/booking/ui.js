@@ -217,15 +217,20 @@
     else failed();
   });
 
+  /* Who's going: while it loads, show sailor cards with the names hidden under moving water; once the list
+     arrives, the water wipes off each card in turn to reveal the real names. */
   async function who(host, campId) {
-    host.innerHTML = `<p class="bk-muted bk-loading">Loading who's going…</p>`;
+    const veil = n => `<i class="bk-veil" style="width:${n}%"></i>`;
+    host.innerHTML = `<p class="sr-only" role="status">Loading who's going…</p>
+      <ul class="bk-who is-veiled" aria-hidden="true">${[[72, 54], [58, 66], [80, 48], [64, 60]].map(([a, b], i) =>
+        `<li style="--i:${i}">${veil(a)}${veil(b)}</li>`).join("")}</ul>`;
     try {
       const r = await B.call("whoIsGoing", { camp_id: campId });
       const hidden = r.booked - r.listed.length;
       host.innerHTML = r.booked
-        ? `<ul class="bk-who">${r.listed.map(x => `<li><b>${esc(x.name)}</b><span>${esc(x.club || "")}${x.rig ? ` · ILCA ${esc(x.rig)}` : ""}</span></li>`).join("")}
-            ${hidden > 0 ? `<li class="bk-who-more">+ ${hidden} more sailor${hidden > 1 ? "s" : ""}</li>` : ""}</ul>`
-        : `<p class="bk-muted">No one has booked online yet. Be the first.</p>`;
+        ? `<ul class="bk-who is-revealing">${r.listed.map((x, i) => `<li style="--i:${i}"><b>${esc(x.name)}</b><span>${esc(x.club || "")}${x.rig ? ` · ILCA ${esc(x.rig)}` : ""}</span></li>`).join("")}
+            ${hidden > 0 ? `<li class="bk-who-more" style="--i:${r.listed.length}">+ ${hidden} more sailor${hidden > 1 ? "s" : ""}</li>` : ""}</ul>`
+        : `<p class="bk-muted bk-who-empty">No one has booked online yet. Be the first.</p>`;
     } catch (e) {
       host.innerHTML = `<p class="bk-muted">${esc(e.message)}</p>`;
     }

@@ -32,7 +32,7 @@
   }
 
   async function load() {
-    view.innerHTML = `<p class="bk-muted bk-loading">Loading your bookings…</p>`;
+    view.innerHTML = `<p class="bk-muted bk-loading" data-loader="race">Loading your bookings…</p>`;
     try {
       me = await B.call("me");
     } catch (e) {
@@ -100,7 +100,7 @@
         ${upcoming.length ? upcoming.map(b => card(b, sailorsById[b.sailor_id])).join("") : `
           <div class="bk-card bk-empty"><h2 class="bk-h">No upcoming bookings</h2>
           <p class="bk-muted">Pick a camp from the calendar or the list below.</p></div>`}
-        <section class="bk-card" data-open-camps><h2 class="bk-h3">Open for booking</h2><p class="bk-muted bk-loading">Loading camps…</p></section>
+        <section class="bk-card" data-open-camps><h2 class="bk-h3">Open for booking</h2><p class="bk-muted bk-loading" data-loader="wave">Loading camps…</p></section>
         ${past.length ? `<details class="bk-card bk-details"><summary>Past and cancelled (${past.length})</summary><div class="bk-wrap" style="width:100%">${past.map(b => card(b, sailorsById[b.sailor_id], true)).join("")}</div></details>` : ""}
       </div>`;
 

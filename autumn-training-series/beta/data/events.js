@@ -37,12 +37,12 @@ window.BTS_EVENTS = [
   { id: "skills-week", name: "ILCA Skills Week", short: "Skills Week", start: "2027-07-28", end: "2027-08-01", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
 
   /* ---- National Opens (rigs per NOR — 2026 had single-rig NOs) ---- */
-  { id: "no1", name: "National Open 1 (Rooster)", short: "NO1", start: "2027-03-13", end: "2027-03-14", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", url: "https://portal.ilca.uk/event/2026-NO6-1" },
-  { id: "no2", name: "National Open 2 (Ovington)", short: "NO2", start: "2027-03-20", end: "2027-03-21", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no3", name: "National Open 3 (Sailingfast)", short: "NO3", start: "2027-04-24", end: "2027-04-25", venue: "Hayling Island SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no4", name: "National Open 4 (Rooster)", short: "NO4", start: "2027-10-09", end: "2027-10-10", venue: "Warsash SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no5", name: "National Open 5 (Ovington)", short: "NO5", start: "2027-10-16", end: "2027-10-17", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no6", name: "National Open 6 (Sailingfast)", short: "NO6", start: "2027-10-23", end: "2027-10-24", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no1", name: "National Open 1", sponsor: "Rooster", short: "NO1", start: "2027-03-13", end: "2027-03-14", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", url: "https://portal.ilca.uk/event/2026-NO6-1" },
+  { id: "no2", name: "National Open 2", sponsor: "Ovington", short: "NO2", start: "2027-03-20", end: "2027-03-21", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no3", name: "National Open 3", sponsor: "Sailingfast", short: "NO3", start: "2027-04-24", end: "2027-04-25", venue: "Hayling Island SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no4", name: "National Open 4", sponsor: "Rooster", short: "NO4", start: "2027-10-09", end: "2027-10-10", venue: "Warsash SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no5", name: "National Open 5", sponsor: "Ovington", short: "NO5", start: "2027-10-16", end: "2027-10-17", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no6", name: "National Open 6", sponsor: "Sailingfast", short: "NO6", start: "2027-10-23", end: "2027-10-24", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
 
   /* ---- ILCA UK Grand Prix Series: regional club-run rounds (75+ events in 2026, late Apr to early Oct). 2027 rounds not published. ---- */
   { id: "gp-series-2027", name: "ILCA UK Grand Prix Series opens (regional rounds)", short: "GP Series opens", start: "2027-05-01", end: "2027-05-01", venue: "Clubs in 9 regions", rigs: [4, 6, 7], type: "national-open", status: "provisional", url: "https://portal.ilca.uk/events", note: "Sailingfast ILCA UK Grand Prix Series: regional club open meetings from about late April to early October (one marker here, not every round). 2027 rounds are not published yet; timing follows 2026. Find your region's rounds on the ILCA UK portal." },
@@ -121,3 +121,21 @@ window.BTS_TYPES = {
   "international":    { label: "International",     short: "Intl" },
   "deadline":         { label: "Deadlines",         short: "Deadline" }
 };
+
+/* Venue guides. An event whose venue matches `match` gets a "Venue guide" section in the calendar sheet.
+   `url` is relative to /beta/. `parts` = [section id in the guide, title, one line]. */
+window.BTS_VENUES = [
+  { id: "weymouth", match: /WPNSA|Weymouth|Portland/i, name: "Weymouth & Portland", place: "WPNSA, Osprey Quay",
+    url: "venues/weymouth/",
+    tagline: "Harbour or bay? It changes everything.",
+    intro: "Racing is either inside Portland Harbour (flat water, bendy breeze) or out in Weymouth Bay (swell, steadier pressure). Knowing which one you're in changes almost everything.",
+    /* [section id, tile title, one line, icon] — icons live in calendar.js VG_IC */
+    parts: [
+      ["conditions", "Which side pays", "By wind direction", "pays"],
+      ["history", "Wind rose", "What it usually does", "rose"],
+      ["tide", "Tide & swell", "Flat harbour, lumpy bay", "tide"],
+      ["ashore", "Launch & park", "Slipway & parking", "slip"],
+      ["parents", "Parents' guide", "The weekend + costs", "parent"],
+      ["stay", "Beds & food", "+ where to watch", "bed"]
+    ] }
+];

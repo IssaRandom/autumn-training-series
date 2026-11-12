@@ -57,14 +57,14 @@
     const max = Math.max(...vals.map(x => x.v));
     const R = 120, c = 150, n = vals.length, half = Math.PI / n * 0.82;
     const pt = (r, a) => `${(c + r * Math.sin(a)).toFixed(1)},${(c - r * Math.cos(a)).toFixed(1)}`;
-    const rings = [0.33, 0.66, 1].map(f => `<circle cx="${c}" cy="${c}" r="${R * f}" fill="none" stroke="rgba(143,181,255,.18)"/>`).join("");
+    const rings = [0.33, 0.66, 1].map(f => `<circle cx="${c}" cy="${c}" r="${R * f}" fill="none" style="stroke:var(--line-strong)"/>`).join("");
     const wedges = vals.map((x, i) => {
       const a = i * 2 * Math.PI / n, r = 18 + (R - 18) * x.v / max;
       const top = x.v === max;
-      return `<path d="M${pt(18, a - half)} L${pt(r, a - half)} A${r} ${r} 0 0 1 ${pt(r, a + half)} L${pt(18, a + half)} A18 18 0 0 0 ${pt(18, a - half)}Z" fill="${top ? "#2f6df6" : "rgba(143,181,255,.55)"}"><title>${x.d}: ${x.v}%</title></path>` +
-        `<text x="${pt(R + 18, a).split(",")[0]}" y="${pt(R + 18, a).split(",")[1]}" fill="${top ? "#fff" : "#9aabc4"}" font-size="12" font-weight="800" text-anchor="middle" dominant-baseline="middle">${x.d}</text>`;
+      return `<path d="M${pt(18, a - half)} L${pt(r, a - half)} A${r} ${r} 0 0 1 ${pt(r, a + half)} L${pt(18, a + half)} A18 18 0 0 0 ${pt(18, a - half)}Z" style="fill:${top ? "var(--accent)" : "var(--blue-300)"};fill-opacity:${top ? 1 : .45}"><title>${x.d}: ${x.v}%</title></path>` +
+        `<text x="${pt(R + 18, a).split(",")[0]}" y="${pt(R + 18, a).split(",")[1]}" style="fill:${top ? "var(--heading)" : "var(--muted)"}" font-size="12" font-weight="800" text-anchor="middle" dominant-baseline="middle">${x.d}</text>`;
     }).join("");
-    el.innerHTML = `<svg viewBox="0 0 300 300" aria-hidden="true">${rings}${wedges}<circle cx="${c}" cy="${c}" r="16" fill="#050e22"/></svg>`;
+    el.innerHTML = `<svg viewBox="0 0 300 300" aria-hidden="true">${rings}${wedges}<circle cx="${c}" cy="${c}" r="16" style="fill:var(--bg)"/></svg>`;
   });
 
   /* ---- Cost calculator ---- */

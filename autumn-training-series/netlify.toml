@@ -28,3 +28,9 @@
   for = "/script.js"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Beta: unknown /beta/* paths get the beta-styled 404 (real files still win; force defaults to false)
+[[redirects]]
+  from = "/beta/*"
+  to = "/beta/404.html"
+  status = 404

@@ -6,13 +6,18 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Weymouth &amp; Portland venue guide — Beyond the Shift (beta)</title>
   <meta name="description" content="An ILCA sailor's guide to Weymouth and Portland: what each wind direction does in the harbour and the bay, technique notes, tide and swell, launching, travel costs and a guide for parents.">
-  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../beta.css?v=20261111e">
-  <link rel="stylesheet" href="../../advice/advice.css?v=20261111e">
-  <link rel="stylesheet" href="../venues.css?v=20261111e">
+  <link rel="icon" href="../../icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../../icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../../icons/apple-touch-icon.png">
+  <link rel="manifest" href="../../site.webmanifest">
+  <meta name="theme-color" content="#03132e">
+  <meta name="application-name" content="Beyond the Shift">
+  <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
+  <meta property="og:site_name" content="Beyond the Shift">
+  <link rel="stylesheet" href="../../beta.css?v=20261112r">
+  <link rel="stylesheet" href="../../fx.css?v=20261112r">
+  <link rel="stylesheet" href="../../advice/advice.css?v=20261112r">
+  <link rel="stylesheet" href="../venues.css?v=20261112r">
 </head>
 <body class="guide-page venue-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -54,7 +59,7 @@
         <!-- Audience split: every venue guide has a sailing part and a parents' part -->
         <div class="v-jump">
           <a class="v-jump-card" href="#conditions"><span class="v-jump-k">For sailors</span><b>Wind, technique &amp; tide</b><span class="arrow" aria-hidden="true"></span></a>
-          <a class="v-jump-card" href="#parents"><span class="v-jump-k">For parents</span><b>Stay, eat, watch &amp; costs</b><span class="arrow" aria-hidden="true"></span></a>
+          <a class="v-jump-card" href="#parents"><span class="v-jump-k">For parents</span><b>The weekend, beds, food &amp; costs</b><span class="arrow" aria-hidden="true"></span></a>
         </div>
       </div>
     </section>
@@ -84,7 +89,7 @@
         <!-- ================= PART 1: SAILING ================= -->
         <section class="g-sec" id="glance" data-part="Sailing">
           <h2>At a glance</h2>
-          <p>WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you're in changes almost everything.</p>
+          <p>WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes almost everything.</p>
           <div class="stat-grid">
             <div class="stat"><span class="stat-num">2</span><span class="stat-label">Race areas: harbour and bay</span></div>
             <div class="stat"><span class="stat-num">~2 m</span><span class="stat-label">Spring tide range <span class="verify">check</span></span></div>
@@ -114,8 +119,8 @@
         </section>
 
         <section class="g-sec" id="conditions" data-part="Sailing">
-          <h2>Wind direction by wind direction</h2>
-          <p>Pick the forecast direction. Each card says where you're likely to race, which side has paid, and what to change in the boat. These are our notes from years of training and racing here, not guarantees: think percentages, not rules.</p>
+          <h2>Which side pays, wind by wind</h2>
+          <p>Pick the forecast direction. Each card says where you’re likely to race, which side has paid, and what to change in the boat. These are our notes from years of training and racing here, not guarantees: think percentages, not rules.</p>
 
           <!-- WIND PICKER. Each direction = one button + one panel (data-dir). Directions without notes show the "coming soon" panel. -->
           <div class="wind" data-wind>
@@ -142,7 +147,7 @@
                     <tbody>
                       <tr><td>Upwind, starboard</td><td>Shuffle back about 3 inches. Steer less, work the mainsheet through the waves.</td></tr>
                       <tr><td>Upwind, port</td><td>Move forward and press against the side. Drive it low through the swell.</td></tr>
-                      <tr><td>Downwind</td><td>With a cross swell, don't force port: it's slow. Stay on starboard for the whole leg.</td></tr>
+                      <tr><td>Downwind</td><td>With a cross swell, don’t force port: it’s slow. Stay on starboard for the whole leg.</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -153,7 +158,7 @@
               <div class="wind-panel" role="tabpanel" data-panel="NE" hidden>
                 <p class="wind-head"><span class="area area-bay">Weymouth Bay</span> North-easterly · offshore, puffy</p>
                 <div class="bias" style="--left:70"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Top left about 70:30 <span class="verify">source</span></em></div>
-                <p>Offshore breeze off the land: puffy, with big pressure differences across the course. The top left has come out more often than not, but it's a percentage play, not a certainty. Keep your head out of the boat and connect the pressure.</p>
+                <p>Offshore breeze off the land: puffy, with big pressure differences across the course. The top left has come out more often than not, but it’s a percentage play, not a certainty. Keep your head out of the boat and connect the pressure.</p>
                 <p class="wind-watch"><b>Watch for</b> lanes of pressure coming off the shore.<!-- [PLACEHOLDER] --></p>
               </div>
               <div class="wind-panel" role="tabpanel" data-panel="E" hidden>
@@ -166,22 +171,22 @@
               <div class="wind-panel" role="tabpanel" data-panel="N" hidden>
                 <p class="wind-head"><span class="area area-harbour">Portland Harbour</span> Northerly · a touch of east</p>
                 <div class="bias" style="--left:60"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left bend <span class="verify">add %</span></em></div>
-                <p>A harbour-only feature. On some days the breeze comes in <strong>sticky blocks of pressure</strong> with almost nothing between them. When that happens, get into a block and stay in it: it won't fill in behind you.</p>
-                <p>On the left there's a wind bend. Sail into it and it lifts you, but overstand and you'll pop out the other side too high. See pin 3 on the map.</p>
-                <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn't do this. Check which area your race is in before you plan the first beat.</p></div>
+                <p>A harbour-only feature. On some days the breeze comes in <strong>sticky blocks of pressure</strong> with almost nothing between them. When that happens, get into a block and stay in it: it won’t fill in behind you.</p>
+                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. See pin 3 on the map.</p>
+                <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
               </div>
 
               <!-- Coming soon (shared for any direction without notes) -->
               <div class="wind-panel" role="tabpanel" data-panel="soon" hidden>
                 <p class="wind-head"><span class="area">Notes coming</span> <span data-soon-dir></span></p>
-                <p>We haven't written this direction up yet. If you've sailed here in it, tell us what you saw.</p>
+                <p>We haven’t written this direction up yet. If you’ve sailed here in it, tell us what you saw.</p>
               </div>
             </div>
           </div>
         </section>
 
         <section class="g-sec" id="history" data-part="Sailing">
-          <h2>What the wind usually does</h2>
+          <h2>Wind rose: what it usually does</h2>
           <p>Long-term wind statistics for the area. Use them to guess what an event in a given month is likely to bring, then check the forecast.</p>
           <!-- WIND ROSE. Values = % of observations per direction. [PLACEHOLDER] numbers: replace with Windfinder statistics for the event month. -->
           <figure class="rose-fig">
@@ -212,13 +217,13 @@
 
         <!-- ================= PART 2: PARENTS ================= -->
         <section class="g-sec" id="parents" data-part="Parents">
-          <h2>A weekend at WPNSA</h2>
-          <p>What a typical event day looks like from the shore, so you know when you're needed and when you can grab a coffee.</p>
+          <h2>Parents’ guide: the weekend</h2>
+          <p>What an event day looks like from the shore, so you know when you’re needed, when you can grab a coffee, and roughly what the whole trip will cost (calculator further down).</p>
           <!-- TIMELINE [PLACEHOLDER] times: check against the event NoR -->
           <ol class="timeline">
             <li><time>07:30</time><b>Arrive and park</b><span>The car park fills fast on the first morning.</span></li>
             <li><time>08:00</time><b>Registration</b><span>Usually the morning of day 1 or the evening before.</span></li>
-            <li><time>09:30</time><b>Briefing</b><span>Sailors only. Good time to sort lunch bags.</span></li>
+            <li><time>09:30</time><b>Briefing</b><span>Sailors only. Prime time to sort lunch bags and find the coffee.</span></li>
             <li><time>10:55</time><b>First warning signal</b><span>Boats leave the slipway about an hour before.</span></li>
             <li><time>16:00</time><b>Back ashore</b><span>Help wash down, then results go up online.</span></li>
           </ol>
@@ -226,23 +231,23 @@
         </section>
 
         <section class="g-sec" id="stay" data-part="Parents">
-          <h2>Where to stay, eat and watch</h2>
+          <h2>Beds, food and the best seat in the house</h2>
           <div class="cols-2">
             <div class="mini-card"><h3>Stay: Portland</h3><p><!-- [PLACEHOLDER] -->Closest to the club. Self-catering on Osprey Quay and around Castletown.</p></div>
-            <div class="mini-card"><h3>Stay: Weymouth</h3><p><!-- [PLACEHOLDER] -->More choice and restaurants, 10–15 minutes' drive.</p></div>
+            <div class="mini-card"><h3>Stay: Weymouth</h3><p><!-- [PLACEHOLDER] -->More choice and restaurants, 10–15 minutes’ drive.</p></div>
             <div class="mini-card"><h3>Eat</h3><p><!-- [PLACEHOLDER] -->Café at the club for breakfast; harbourside in Weymouth for dinner. Book on Saturday nights.</p></div>
             <div class="mini-card"><h3>Watch</h3><p><!-- [PLACEHOLDER] -->Racing in the harbour is visible from the sea wall. For the bay, the view from the Nothe is best.</p></div>
           </div>
           <ul class="checklist">
-            <li>Folding chair, flask and a proper coat: it's exposed on the quay.</li>
+            <li>Folding chair, flask and a proper coat: the quay is “bracing”.</li>
             <li>Cash or card for the car park.</li>
             <li>Spare kit and a towel for the drive home.</li>
           </ul>
         </section>
 
         <section class="g-sec" id="costs" data-part="Parents">
-          <h2>Travel and costs</h2>
-          <p>Knowing the real cost makes it easier to plan a season. Put in your own numbers.</p>
+          <h2>What it’ll actually cost</h2>
+          <p>Knowing the real cost makes a season easier to plan (and easier to explain to whoever does the household budget). Put in your own numbers.</p>
           <!-- COST CALCULATOR: reused on every venue guide (international ones add ferry). Defaults are examples. -->
           <form class="calc" data-calc onsubmit="return false">
             <label><span>Miles each way</span><input type="number" inputmode="decimal" min="0" value="150" data-k="miles"></label>
@@ -295,9 +300,10 @@
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../../data/events.js?v=20261111e"></script>
-  <script src="../../calendar/cal-core.js?v=20261111e"></script>
-  <script src="../../advice/advice.js?v=20261111e"></script>
-  <script src="../venues.js?v=20261111e"></script>
+  <script src="../../data/events.js?v=20261112r"></script>
+  <script src="../../calendar/cal-core.js?v=20261112r"></script>
+  <script src="../../advice/advice.js?v=20261112r"></script>
+  <script src="../venues.js?v=20261112r"></script>
+  <script src="../../fx.js?v=20261112r" defer></script>
 </body>
 </html>

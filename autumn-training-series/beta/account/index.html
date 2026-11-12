@@ -6,12 +6,17 @@
   <meta name="robots" content="noindex, nofollow">
   <title>My bookings — Beyond the Shift (beta)</title>
   <meta name="description" content="Sign in to see your Beyond the Shift bookings, payment details and sailors.">
-  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../beta.css?v=20261111e">
-  <link rel="stylesheet" href="../booking/booking.css?v=20261111e">
+  <link rel="icon" href="../icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#03132e">
+  <meta name="application-name" content="Beyond the Shift">
+  <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
+  <meta property="og:site_name" content="Beyond the Shift">
+  <link rel="stylesheet" href="../beta.css?v=20261112r">
+  <link rel="stylesheet" href="../fx.css?v=20261112r">
+  <link rel="stylesheet" href="../booking/booking.css?v=20261112r">
 </head>
 <body class="bk-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -41,7 +46,7 @@
         <button type="button" class="bk-link" data-signout hidden>Sign out</button>
       </div>
       <div data-banner></div>
-      <div data-view><p class="bk-muted bk-loading">Loading…</p></div>
+      <div data-view><p class="bk-muted bk-loading" data-loader="wave">Loading…</p></div>
     </div>
   </main>
 
@@ -57,9 +62,11 @@
     </div>
   </footer>
 
-  <script src="../booking/config.js?v=20261111e"></script>
-  <script src="../booking/api.js?v=20261111e"></script>
-  <script src="../booking/ui.js?v=20261111e"></script>
-  <script src="account.js?v=20261111e"></script>
+  <script src="../booking/config.js?v=20261112r"></script>
+  <script src="../booking/api.js?v=20261112r"></script>
+  <script src="../booking/loader.js?v=20261112r"></script>
+  <script src="../booking/ui.js?v=20261112r"></script>
+  <script src="account.js?v=20261112r"></script>
+  <script src="../fx.js?v=20261112r" defer></script>
 </body>
 </html>

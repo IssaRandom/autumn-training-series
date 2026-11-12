@@ -344,14 +344,12 @@ function sendBookingEmails_({ camp, parent, sailors, created }, s) {
 
   sendMail_(parent.email, `Booking received: ${camp.title} (${created.map(b => b.reference).join(', ')})`, html, s);
 
-  const admins = String(s.notify_emails || '').split(/[,;\s]+/).filter(Boolean);
-  if (admins.length) {
-    const adminHtml = `<p>New booking (online beta)</p><p><strong>${esc_(camp.title)}</strong></p><ul>${created.map(b => `<li>${esc_(b.sailor_name)}: £${b.amount}, ${esc_(b.reference)}, ${b.status}</li>`).join('')}</ul>
+  const adminHtml = `<p>New booking (online beta)</p><p><strong>${esc_(camp.title)}</strong>: ${niceDate_(camp.start)} to ${niceDate_(camp.end)}, ${esc_(camp.venue)}</p><ul>${created.map(b => `<li>${esc_(b.sailor_name)}: £${b.amount}, ${esc_(b.reference)}, ${b.status}</li>`).join('')}</ul>
       <p>Parent: ${esc_(parent.name)}, ${esc_(parent.email)}, ${esc_(parent.phone)}</p>
       <p>Medical form outstanding: ${needsForm.length ? needsForm.map(x => esc_(x.first_name)).join(', ') : 'none'}</p>
+      <p>Reply to this email to reach the parent directly.</p>
       <p><a href="${ss_().getUrl()}">Open the bookings sheet</a></p>`;
-    MailApp.sendEmail({ to: admins.join(','), subject: `New booking: ${camp.title}, ${created.map(b => b.sailor_name).join(', ')}`, htmlBody: adminHtml, name: s.sender_name || 'Beyond the Shift' });
-  }
+  notifyAdmins_(s, `New booking: ${camp.title}, ${created.map(b => b.sailor_name).join(', ')}`, adminHtml, parent.email);
 }
 
 function emailWrap_(inner, s) {
@@ -462,9 +460,21 @@ function sendMedicalReceipt_(x, a, s) {
     `<p>Medical &amp; image release form received for <strong>${esc_(x.first_name)} ${esc_(x.surname)}</strong> (${esc_(x.parent_email)}). Photo consent: ${a.consent ? 'Y' : 'N'}.</p>`);
 }
 
-function notifyAdmins_(s, subject, html) {
-  const admins = String(s.notify_emails || '').split(/[,;\s]+/).filter(Boolean);
-  if (admins.length) MailApp.sendEmail({ to: admins.join(','), subject, htmlBody: html, name: s.sender_name || 'Beyond the Shift' });
+/* Copies to James and Kai (Booking settings ▸ notify_emails). Never throws: the booking or form is already saved,
+ * so a bad address or a full mail quota must not turn a good booking into an error for the parent. */
+function notifyAdmins_(s, subject, html, replyTo) {
+  const admins = String(s.notify_emails || '').split(/[,;\s]+/).filter(a => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a));
+  if (!admins.length) { console.warn('notify_emails is blank: no admin copy sent for "' + subject + '"'); return; }
+  const opts = { to: admins.join(','), subject, htmlBody: html, name: s.sender_name || 'Beyond the Shift' };
+  if (replyTo) opts.replyTo = replyTo;
+  try { MailApp.sendEmail(opts); } catch (e) { console.error('Admin email failed: ' + e); }
+}
+
+/* Run from the editor to check James and Kai both get the new-booking alert. */
+function testNotify() {
+  const s = settings_();
+  notifyAdmins_(s, 'BTS booking alert test', '<p>If you can read this, new-booking alerts reach you.</p><p>Sent to: '
+    + esc_(s.notify_emails || '(blank)') + '</p>');
 }
 
 /* Installable trigger: the medical form was submitted (form trigger, or spreadsheet trigger on the linked tab). */

@@ -6,11 +6,16 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Beyond the Shift — ILCA coaching (beta)</title>
   <meta name="description" content="ILCA 4, 6 and 7 coaching, season calendar and free advice from James Foster and Kai Wolgram.">
-  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="beta.css?v=20261111e">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#03132e">
+  <meta name="application-name" content="Beyond the Shift">
+  <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
+  <meta property="og:site_name" content="Beyond the Shift">
+  <link rel="stylesheet" href="beta.css?v=20261112r">
+  <link rel="stylesheet" href="fx.css?v=20261112r">
 </head>
 <body>
   <a class="sr-only" href="#main">Skip to content</a>
@@ -45,9 +50,10 @@
       <div class="hero-copy wrap">
         <!-- [PLACEHOLDER] headline + intro copy -->
         <h1 data-split-lines><span class="line"><span>Sail faster</span></span><span class="line"><span>by thinking</span></span><span class="line"><span>clearer.</span></span></h1>
-        <p data-hero-fade>ILCA 4, 6 and 7 coaching from James Foster and Kai Wolgram — plus the season calendar and free advice to plan your year.</p>
+        <p class="serif-accent" data-hero-fade>ILCA 4, 6 &amp; 7</p>
+        <p data-hero-fade>ILCA&nbsp;4, 6 and 7 coaching from James Foster and Kai Wolgram — plus the season calendar and free advice to plan your year.</p>
         <div class="hero-actions" data-hero-fade>
-          <a class="btn btn-white arrow" href="calendar/">See the season</a>
+          <a class="btn btn-accent arrow" href="calendar/">See the season</a>
           <a class="btn btn-ghost" href="#trainings">Next trainings</a>
         </div>
       </div>
@@ -69,7 +75,7 @@
             <img src="../assets/images/james-foster-portrait.webp" alt="James Foster" loading="lazy">
             <div class="coach-copy">
               <h3>James Foster</h3>
-              <p>ILCA 7 campaigner chasing the Olympics. Coaches technique, speed and the habits that hold up on race day.</p>
+              <p>ILCA&nbsp;7 campaigner chasing the Olympics. Coaches technique, speed and the habits that hold up on race day.</p>
             </div>
           </article>
           <article class="coach reveal">
@@ -109,7 +115,7 @@
         </div>
         <div class="cards scroll-x">
           <a class="card reveal" href="advice/new-to-ilca/"><div class="card-body"><span class="card-num">01</span><h3>New to ILCA</h3><p>Kit, rigs, clubs and your first open meeting.</p><span class="arrow">Read guide </span></div></a>
-          <a class="card reveal" href="#advice"><div class="card-body"><span class="card-num">02</span><h3>Moving up a rig</h3><p>When to step from ILCA 4 to 6, and 6 to 7.</p><span class="arrow">Read guide </span></div></a>
+          <a class="card reveal" href="#advice"><div class="card-body"><span class="card-num">02</span><h3>Moving up a rig</h3><p>When to step from ILCA&nbsp;4 to 6, and 6 to 7.</p><span class="arrow">Read guide </span></div></a>
           <a class="card reveal" href="#advice"><div class="card-body"><span class="card-num">03</span><h3>Season &amp; qualification</h3><p>How the youth ranking ladders actually work.</p><span class="arrow">Read guide </span></div></a>
           <a class="card reveal" href="#advice"><div class="card-body"><span class="card-num">04</span><h3>Campaign management</h3><p>Budgets, travel, charter boats and planning a year.</p><span class="arrow">Read guide </span></div></a>
           <a class="card reveal" href="#advice"><div class="card-body"><span class="card-num">05</span><h3>Fitness</h3><p>Hiking strength and endurance that lasts a regatta.</p><span class="arrow">Read guide </span></div></a>
@@ -170,10 +176,10 @@
         <div class="reveal">
           <p class="eyebrow">Train with us</p>
           <h2 class="h2">Ready for the next block?</h2>
-          <p class="lede">Weekend and week-long camps for ILCA 4 and 6 sailors at Poole and Weymouth. Small groups, video every day, a written summary after every camp.</p>
+          <p class="lede">Weekend and week-long camps for ILCA&nbsp;4 and 6 sailors at Poole and Weymouth. Small groups, video every day, a written summary after every camp.</p>
         </div>
         <div class="cta-actions reveal">
-          <a class="btn btn-accent arrow" href="/">See camps &amp; book</a>
+          <a class="btn btn-accent arrow" href="/" data-splash>See camps &amp; book</a>
           <a class="btn btn-ghost" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Join the WhatsApp group</a>
         </div>
       </div>
@@ -196,10 +202,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="data/events.js?v=20261111e"></script>
-  <script src="booking/config.js?v=20261111e"></script>
-  <script src="booking/api.js?v=20261111e"></script>
-  <script src="calendar/cal-core.js?v=20261111e"></script>
-  <script src="beta.js?v=20261111e"></script>
+  <script src="data/events.js?v=20261112r"></script>
+  <script src="booking/config.js?v=20261112r"></script>
+  <script src="booking/api.js?v=20261112r"></script>
+  <script src="calendar/cal-core.js?v=20261112r"></script>
+  <script src="beta.js?v=20261112r"></script>
+  <script src="fx.js?v=20261112r" defer></script>
 </body>
 </html>
