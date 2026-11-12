@@ -168,10 +168,9 @@
 @keyframes bk-tap-in { from { opacity: 0; transform: translate(-50%, -30%) scale(.9); } }
 @keyframes bk-tap-out { to { opacity: 0; transform: translate(-50%, -50%) scale(.94); visibility: hidden; } }
 
-/* Start-line loader (data-loader="start"): not interactive, and the note under it is a flag explanation, not a tip */
+/* Start-line loader (data-loader="start"): not interactive */
 .bk-loader.is-start .bk-loader-stage { cursor: default; }
 .bk-loader.is-start .bk-loader-stage:active { transform: none; }
-.bk-loader-tip.is-flag::before { content: none; }
 
 /* Wave loader (booking/loader.js, data-loader="wave") */
 .bk-sb { display: block; overflow: visible; }

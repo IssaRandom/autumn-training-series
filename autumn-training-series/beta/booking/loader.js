@@ -335,20 +335,13 @@
     }
   }
 
-  /* ---------- start — a start line, fleet shuffling below it, committee boat on the right running the sequence ----------
-     Sequence (race clock runs 60x): class flag up = 5:00, P up = 4:00, P down = 1:00, class down = GO. Sometimes a boat
-     is over early and X goes up. Between sequences AP flies (postponed), then drops: "warning signal in one minute". */
+  /* ---------- start — a start line, fleet holding below it, committee boat on the right running the sequence ----------
+     Sequence (race clock runs 60x): class flag up = 5:00, P up = 4:00, P down = 1:00, class down = GO. Between sequences
+     AP flies (postponed), then drops. The fleet sits on starboard, ~10° off the wind with sails flapping, shuffling back
+     and forth, and works through three pre-start skills: scoop, reverse and double tack. Three fixed scenes (no random
+     choreography) are checked for collisions offline; data-scene="1|2|3" picks one, otherwise it's chosen per loader. */
   const SEQ = { prep: 1, one: 4, go: 5, goLen: 2.4, ap: 5 };           // real seconds
   const CYCLE = SEQ.go + SEQ.goLen + SEQ.ap;
-  const NOTES = {
-    warn: "Class flag up: 5 minutes to the start.",
-    prep: "P flag up: 4 minutes. Preparatory signal.",
-    one: "P flag down: 1 minute. Find your gap on the line.",
-    go: "Class flag down. Go!",
-    ocs: "X flag: individual recall. Someone was over early!",
-    ap: "AP flying: postponed. Still waking up the booking system.",
-    apdown: "AP down: warning signal in one minute.",
-  };
   const START_STAGES = [
     [0, null],
     [4.5, "Waking up the booking system…"],
@@ -356,6 +349,73 @@
     [25, "This is taking longer than usual. Check your signal, or refresh the page."],
   ];
   const ease = k => (k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k));
+  const lerp = (a, b, k) => a + (b - a) * k;
+
+  /*SCENES-START (pure: also run by the offline collision check) */
+  const DEG = Math.PI / 180, H0 = -10 * DEG;                          // starboard tack, 10° off the wind
+  /* Moves, in boat lengths (x right, y down the course), u = 0…1. Net displacements cancel over a boat's list:
+     scoop (-0.8, -1) + reverse (0, +1) + double tack (+0.8, 0) = 0, so every 10 s loop ends where it began. */
+  const MOVES = {
+    scoop: { d: 1.8, f: u => {                                         // bear away, sheet in, accelerate, luff back up
+      const h = u < 0.2 ? lerp(H0, -45 * DEG, ease(u / 0.2)) : u < 0.6 ? -45 * DEG : lerp(-45 * DEG, H0, ease((u - 0.6) / 0.25));
+      const p = ease(u);
+      return { x: -0.8 * p, y: -1 * p, h, sail: u > 0.12 && u < 0.7 ? "sheet" : "luff" };
+    } },
+    reverse: { d: 1.6, f: u => {                                       // boom pushed out, sliding backwards
+      const p = ease(u);
+      return { x: 0, y: p, h: H0 + 5 * DEG * Math.sin(Math.PI * u), sail: u > 0.1 && u < 0.85 ? "back" : "luff" };
+    } },
+    double: { d: 2.2, f: u => {                                        // tack onto port, then straight back to starboard
+      const h = u < 0.25 ? lerp(H0, 40 * DEG, ease(u / 0.25)) : u < 0.5 ? 40 * DEG : u < 0.75 ? lerp(40 * DEG, H0, ease((u - 0.5) / 0.25)) : H0;
+      return { x: 0.8 * ease(u), y: -0.35 * Math.sin(Math.PI * u), h, sail: Math.abs(h) > 14 * DEG && u > 0.2 && u < 0.55 ? "sheet" : "luff" };
+    } },
+  };
+  /* Each scene: 7 boats, left (pin) to right (committee boat). dep = boat lengths below the line while milling,
+     near = where it lines up in the last minute, mv = [start s, move] within the 10 s milling loop (0–4 s before the
+     one-minute gun, 5–10 s while AP flies). ocs = the boat that's over at the gun (X flag), or -1. */
+  const SCENES = [
+    { ocs: 3, boats: [
+      { dep: 2.0, near: 0.9, ph: 0.0, mv: [[0.3, "scoop"], [5.3, "reverse"], [7.4, "double"]] },
+      { dep: 3.4, near: 1.0, ph: 1.7, mv: [] },
+      { dep: 1.8, near: 0.8, ph: 3.1, mv: [[0.6, "double"], [5.6, "scoop"], [7.9, "reverse"]] },
+      { dep: 3.3, near: -0.4, ph: 4.4, mv: [[1.2, "reverse"], [5.2, "double"], [7.8, "scoop"]] },
+      { dep: 1.7, near: 0.9, ph: 2.2, mv: [] },
+      { dep: 3.2, near: 1.1, ph: 5.0, mv: [[0.2, "scoop"], [2.2, "reverse"], [6.0, "double"]] },
+      { dep: 2.0, near: 0.8, ph: 0.9, mv: [[5.8, "reverse"], [7.6, "scoop"], [0.8, "double"]] },
+    ] },
+    { ocs: -1, boats: [
+      { dep: 3.2, near: 1.0, ph: 2.6, mv: [[0.5, "reverse"], [5.4, "scoop"], [7.6, "double"]] },
+      { dep: 1.8, near: 0.8, ph: 0.4, mv: [[1.4, "double"], [5.8, "reverse"], [7.8, "scoop"]] },
+      { dep: 3.4, near: 1.0, ph: 3.8, mv: [] },
+      { dep: 1.9, near: 0.9, ph: 1.1, mv: [[0.2, "scoop"], [2.3, "reverse"], [6.6, "double"]] },
+      { dep: 3.3, near: 0.8, ph: 4.9, mv: [[5.2, "double"], [7.7, "reverse"], [1.0, "scoop"]] },
+      { dep: 1.8, near: 1.0, ph: 2.0, mv: [] },
+      { dep: 3.1, near: 0.9, ph: 5.6, mv: [[0.7, "double"], [5.6, "scoop"], [7.8, "reverse"]] },
+    ] },
+    { ocs: 4, boats: [
+      { dep: 1.9, near: 0.8, ph: 1.3, mv: [] },
+      { dep: 3.3, near: 1.0, ph: 4.1, mv: [[0.4, "scoop"], [2.4, "reverse"], [5.6, "double"]] },
+      { dep: 1.8, near: 0.9, ph: 0.6, mv: [[1.1, "reverse"], [5.3, "double"], [7.8, "scoop"]] },
+      { dep: 3.4, near: 1.0, ph: 2.9, mv: [[5.5, "scoop"], [7.6, "reverse"], [0.9, "double"]] },
+      { dep: 2.0, near: -0.4, ph: 5.3, mv: [] },
+      { dep: 3.2, near: 0.8, ph: 3.5, mv: [[0.3, "double"], [5.4, "reverse"], [7.4, "scoop"]] },
+      { dep: 1.9, near: 1.0, ph: 0.2, mv: [[1.3, "scoop"], [5.9, "double"], [8.3, "reverse"]] },
+    ] },
+  ];
+  /* Where boat b is at milling time m (0…10 s, loops): x, y in boat lengths from its lane spot on the line. */
+  function pose(b, m) {
+    m = ((m % 10) + 10) % 10;
+    let x = 0, y = 0, h = H0 + 3 * DEG * Math.sin(m * 1.1 + b.ph), sail = "luff", busy = false;
+    const moves = b.mv.slice().sort((p, q) => p[0] - q[0]);
+    moves.forEach(([at, type]) => {
+      const mv = MOVES[type], end = at + mv.d;
+      if (m >= end) { const e = mv.f(1); x += e.x; y += e.y; }
+      else if (m >= at) { const e = mv.f((m - at) / mv.d); x += e.x; y += e.y; h = e.h; sail = e.sail; busy = true; }
+    });
+    if (!busy) y += 0.22 * Math.sin(m * 1.7 + b.ph);                  // shuffling back and forth, sail flapping
+    return { x, y: b.dep + y, h, sail };
+  }
+  /*SCENES-END*/
 
   /* Flags, drawn once to small canvases, then flown in vertical strips so they ripple. */
   function makeFlag(kind, dpr) {
@@ -381,24 +441,25 @@
 
   function startLine(el) {
     const label = el.textContent.trim() || "Loading…";
+    const pick = Number(el.dataset.scene) - 1;
+    const scene = SCENES[pick >= 0 && pick < SCENES.length ? pick : Math.floor(Math.random() * SCENES.length)];
     const box = document.createElement("div");
     box.className = "bk-loader is-start" + (el.closest(".bk-card") ? " is-compact" : "");
     box.dataset.loader = "1";
     box.innerHTML = `
       <div class="bk-loader-stage" aria-hidden="true"><canvas></canvas></div>
-      <p class="bk-loader-status" role="status" aria-live="polite"></p>
-      <p class="bk-loader-tip is-flag" aria-hidden="true"></p>`;
+      <p class="bk-loader-status" role="status" aria-live="polite"></p>`;
     el.replaceWith(box);
 
     const cv = box.querySelector("canvas"), ctx = cv.getContext("2d");
-    const status = box.querySelector(".bk-loader-status"), note = box.querySelector(".bk-loader-tip");
+    const status = box.querySelector(".bk-loader-status");
     status.textContent = label;
     const css = getComputedStyle(document.documentElement);
     const col = (n, f) => (css.getPropertyValue(n).trim() || f);
     const C = { sail: col("--blue-300", "#8fb5ff"), sailor: col("--t-champ", "#ffc531"), pin: col("--t-train", "#ff8a3d"),
       line: "rgba(230,237,247,.38)", label: "rgba(230,237,247,.72)" };
 
-    let W = 0, H = 0, dpr = 1, flags = null, fleet = [], lineY = 0, pinX = 0, cbX = 0, cycle = -1, ocs = -1, noteKey = "";
+    let W = 0, H = 0, dpr = 1, flags = null, fleet = [], lineY = 0, pinX = 0, cbX = 0, L = 14;
     const t0 = performance.now();
 
     function size() {
@@ -409,20 +470,17 @@
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       flags = { cls: makeFlag("cls", dpr), p: makeFlag("p", dpr), x: makeFlag("x", dpr), ap: makeFlag("ap", dpr) };
-      lineY = Math.round(H * 0.4); pinX = W * 0.08; cbX = W * 0.86;
+      lineY = Math.round(H * 0.36); pinX = W * 0.08; cbX = W * 0.86;
+      L = Math.max(11, Math.min(16, W / 24));
       const n = W < 320 ? 5 : 7, span = cbX - pinX - 44;
-      fleet = Array.from({ length: n }, (_, i) => ({
-        bx: pinX + 18 + span * (i + 0.5) / n + rnd(-4, 4),
-        by: rnd(26, H - lineY - 22),                       // how far below the line it hangs about
-        near: rnd(9, 15),                                  // how close it creeps in the last minute
-        ay: rnd(7, 12), ax: rnd(2, 5), f: rnd(0.9, 1.6), ph: rnd(0, 6),
-      }));
+      // depth is capped so the deepest boats still fit on short stages
+      const maxDep = (H - lineY - L) / L;
+      fleet = scene.boats.slice(0, n).map((b, i) => ({ ...b, dep: Math.min(b.dep, maxDep), lx: pinX + 18 + span * (i + 0.5) / n }));
       return true;
     }
 
-    const L = () => Math.max(13, Math.min(18, W / 22));
-    function drawBoat(x, y, h, luff, side, now, alpha, warn) {
-      const l = L();
+    function drawBoat(x, y, h, sail, now, alpha, warn) {
+      const l = L;
       ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(h);
       if (warn) {                                          // the boat that's over early blinks
         ctx.strokeStyle = `rgba(224,36,43,${(0.55 + 0.45 * Math.sin(now / 90)).toFixed(3)})`; ctx.lineWidth = 2;
@@ -435,12 +493,15 @@
       ctx.lineTo(-l * 0.17, l * 0.4);
       ctx.bezierCurveTo(-l * 0.24, l * 0.3, -l * 0.26, -l * 0.25, 0, -l * 0.62);
       ctx.fill();
-      const ang = luff ? Math.sin(now / 45 + x) * 0.3 : -side * 0.34;
+      // wind is straight down the screen: heading < 0 is starboard tack, so the sail sits to port (left)
+      const side = h >= 0 ? 1 : -1, flap = Math.sin(now / 45 + x * 0.7);
+      const ang = sail === "sheet" ? -side * 0.34 : sail === "back" ? -side * 1.2 + flap * 0.05 : -side * 0.16 + flap * 0.22;
       ctx.save(); ctx.translate(0, -l * 0.2); ctx.rotate(ang);
-      ctx.strokeStyle = C.sail; ctx.lineWidth = 2.4; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo((luff ? 0 : side) * l * 0.18, l * 0.35, 0, l * 0.72); ctx.stroke();
+      ctx.strokeStyle = C.sail; ctx.lineWidth = 2.3; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(sail === "luff" ? flap * l * 0.08 : side * l * 0.16, l * 0.35, 0, l * 0.72); ctx.stroke();
       ctx.restore();
-      ctx.fillStyle = C.sailor; ctx.beginPath(); ctx.arc(-(side || 1) * l * 0.2, l * 0.12, l * 0.11, 0, 7); ctx.fill();
+      ctx.fillStyle = C.sailor; ctx.beginPath(); ctx.arc(-side * l * 0.2, l * 0.12, l * 0.11, 0, 7); ctx.fill();
       ctx.restore();
     }
 
@@ -459,8 +520,7 @@
 
     function draw(now, still) {
       const t = still ? SEQ.prep + 1 : (now - t0) / 1000;
-      const k = Math.floor(t / CYCLE), c = t - k * CYCLE;
-      if (k !== cycle) { cycle = k; ocs = Math.random() < 0.45 ? Math.floor(Math.random() * fleet.length) : -1; }
+      const c = t % CYCLE, ocs = scene.ocs < fleet.length ? scene.ocs : -1;
       const inSeq = c < SEQ.go + SEQ.goLen, g = c - SEQ.go, a = c - SEQ.go - SEQ.goLen;
       const up = (on, off, at) => ease((at - on) / 0.35) * (1 - ease((at - off) / 0.35));
 
@@ -495,55 +555,46 @@
       ctx.strokeStyle = "rgba(230,237,247,.85)"; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(poleX, poleBot); ctx.lineTo(poleX, poleTop - 2); ctx.stroke();
 
-      // flags and the note under the course
-      let key, clock;
+      // flags, and the race clock top left
+      let clock;
       if (inSeq) {
         drawFlag(flags.cls, up(0, SEQ.go, c), 0, now, poleX, poleTop, poleBot);
         drawFlag(flags.p, up(SEQ.prep, SEQ.one, c), 1, now, poleX, poleTop, poleBot);
         if (ocs >= 0) drawFlag(flags.x, up(SEQ.go + 0.15, SEQ.go + 2, c), 1, now, poleX, poleTop, poleBot);
-        key = c < SEQ.prep ? "warn" : c < SEQ.one ? "prep" : c < SEQ.go ? "one" : ocs >= 0 && g < 2 ? "ocs" : "go";
         const left = Math.max(0, Math.ceil(300 - c * 60));
         clock = left > 0 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}` : "GO";
       } else {
         drawFlag(flags.ap, up(0.2, SEQ.ap - 0.8, a), 0, now, poleX, poleTop, poleBot);
-        key = a < SEQ.ap - 0.8 ? "ap" : "apdown"; clock = "AP";
+        clock = "AP";
       }
       ctx.fillStyle = C.label; ctx.font = "700 11px Inter, system-ui, 'Segoe UI', sans-serif"; ctx.textBaseline = "middle";
       ctx.fillText(clock, 10, 14);
-      if (key !== noteKey) {
-        noteKey = key; note.classList.remove("in");
-        setTimeout(() => { note.textContent = NOTES[key]; note.classList.add("in"); }, reduce ? 0 : 160);
-      }
 
-      // the fleet
+      // the fleet: milling time runs 0–5 s before the gun and 5–10 s while AP flies
+      const m = inSeq ? Math.min(c, SEQ.go) : SEQ.go + a;
       fleet.forEach((b, i) => {
-        const s = t * b.f + b.ph;
-        let x = b.bx + Math.sin(s * 0.6 + b.ph) * b.ax, y, h = Math.sin(s * 0.9) * 0.12, luff = true, side = 1, alpha = 1;
         const isOcs = i === ocs;
+        let x, y, h, sail, alpha = 1;
         if (inSeq && c >= SEQ.go) {
           // GO: sheet in and sail off upwind on starboard tack
-          const goT = isOcs ? g - 1.4 : g;
-          const y0 = lineY + (isOcs ? -6 : b.near);
+          const goT = isOcs ? g - 1.4 : g, y0 = lineY + b.near * L;
+          x = b.lx; sail = "sheet";
           if (isOcs && g < 1.4) {                             // over early: dip back round the line, then go
             const q = Math.sin(Math.PI * g / 1.4);
-            h = Math.PI * q; y = y0 + 22 * q; luff = false; side = -1;
+            h = H0 + (Math.PI - H0) * q; y = y0 + 1.6 * L * q;
           } else {
             const hk = ease(goT / 0.4), d = 34 * goT + 26 * goT * goT;
-            h = -0.6 * hk; luff = false; side = -1;
+            h = lerp(H0, -0.6, hk);
             x += Math.sin(h) * d; y = y0 - Math.cos(h) * d;
             alpha = 1 - ease((goT - 1.4) / 0.6);
           }
         } else {
-          // milling about: drifting back with the sail flapping, then sheeting in to creep forward again
-          const close = inSeq ? ease(c - SEQ.one) : 0;
-          const target = isOcs ? -6 : b.near, base = b.by + (target - b.by) * close;
-          const amp = b.ay * (1 - 0.75 * close) * (inSeq ? 1 : 1.3);
-          y = lineY + base + Math.sin(s) * amp;
-          const forward = Math.cos(s) > 0.15;               // moving up the screen
-          luff = !forward; side = Math.sin(s * 0.5) > 0 ? 1 : -1;
+          // milling: the scene's moves; in the last minute everyone closes up to their spot on the line
+          const p = pose(b, m), close = inSeq ? ease(c - SEQ.one) : 0;
+          x = b.lx + p.x * L * (1 - close); y = lineY + lerp(p.y, b.near, close) * L; h = p.h; sail = p.sail;
           if (!inSeq) alpha = ease(a / 0.6);                // the fleet comes back for the next sequence
         }
-        if (alpha > 0.01) drawBoat(x, y, h, luff, side, now, alpha, isOcs && inSeq && c >= SEQ.go && g < 2);
+        if (alpha > 0.01) drawBoat(x, y, h, sail, now, alpha, isOcs && inSeq && c >= SEQ.go && g < 2);
       });
     }
 

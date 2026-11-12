@@ -6,8 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Loader test — Beyond the Shift (beta)</title>
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../beta.css?v=20261112s">
-  <link rel="stylesheet" href="../booking/booking.css?v=20261112s">
+  <link rel="stylesheet" href="../beta.css?v=20261112t">
+  <link rel="stylesheet" href="../booking/booking.css?v=20261112t">
   <style>
     .lt-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .lt-bar label { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
@@ -45,23 +45,30 @@
           <option value="card">Inside a card (compact)</option>
           <option value="both">Both</option>
         </select></label>
+        <label>Scene <select data-scene>
+          <option value="">Random</option>
+          <option value="1">1 · X recall</option>
+          <option value="2">2 · Clean start</option>
+          <option value="3">3 · Over near the boat end</option>
+        </select></label>
         <button class="btn btn-accent" type="button" data-replay>Replay</button>
         <span class="lt-timer" data-timer></span>
       </div>
       <div class="lt-panels" data-panels></div>
     </div>
   </main>
-  <script src="../booking/config.js?v=20261112s"></script>
-  <script src="../booking/api.js?v=20261112s"></script>
-  <script src="../booking/loader.js?v=20261112s"></script>
-  <script src="../booking/ui.js?v=20261112s"></script>
+  <script src="../booking/config.js?v=20261112t"></script>
+  <script src="../booking/api.js?v=20261112t"></script>
+  <script src="../booking/loader.js?v=20261112t"></script>
+  <script src="../booking/ui.js?v=20261112t"></script>
   <script>
   (() => {
     const q = new URLSearchParams(location.search);
-    const waitSel = document.querySelector("[data-wait]"), layoutSel = document.querySelector("[data-layout]"), styleSel = document.querySelector("[data-style]");
+    const waitSel = document.querySelector("[data-wait]"), layoutSel = document.querySelector("[data-layout]"), styleSel = document.querySelector("[data-style]"), sceneSel = document.querySelector("[data-scene]");
     if (q.get("style")) styleSel.value = q.get("style");
     if (q.get("wait")) { if (![...waitSel.options].some(o => o.value === q.get("wait"))) waitSel.add(new Option(q.get("wait") + " s", q.get("wait"))); waitSel.value = q.get("wait"); }
     if (q.get("layout")) layoutSel.value = q.get("layout");
+    if (q.get("scene")) sceneSel.value = q.get("scene");
     const panels = document.querySelector("[data-panels]"), timer = document.querySelector("[data-timer]");
     let run = 0;
     function start() {
@@ -79,8 +86,8 @@
       const styles = styleSel.value === "all" ? ["race", "start", "wave"] : [styleSel.value];
       const name = { race: "Race", start: "Start line", wave: "Wave" };
       const head = st => styles.length > 1 ? `<p class="eyebrow" style="margin:8px 0 0">${name[st]}</p>` : "";
-      const full = st => `${head(st)}<div data-slot><p class="bk-muted bk-loading" data-loader="${st}">Loading camp…</p></div>`;
-      const card = st => `${styles.length > 1 && layout === "card" ? head(st) : ""}<section class="bk-card" data-slot><h2 class="bk-h3">Open for booking</h2><p class="bk-muted bk-loading" data-loader="${st}">Loading camps…</p></section>`;
+      const full = st => `${head(st)}<div data-slot><p class="bk-muted bk-loading" data-loader="${st}" data-scene="${sceneSel.value}">Loading camp…</p></div>`;
+      const card = st => `${styles.length > 1 && layout === "card" ? head(st) : ""}<section class="bk-card" data-slot><h2 class="bk-h3">Open for booking</h2><p class="bk-muted bk-loading" data-loader="${st}" data-scene="${sceneSel.value}">Loading camps…</p></section>`;
       if (styleSel.value !== "who") panels.innerHTML = styles.map(st => layout === "full" ? full(st) : layout === "card" ? card(st) : full(st) + card(st)).join("");
       const tick = setInterval(() => { if (id !== run) return clearInterval(tick); timer.textContent = ((performance.now() - t0) / 1000).toFixed(1) + " s"; }, 100);
       setTimeout(() => {
@@ -93,10 +100,10 @@
             `<p class="bk-muted">Sat 21 – Sun 22 Nov · ILCA 4 / 6 / 7 · 4 places left</p>`;
         });
       }, wait);
-      const u = new URL(location); u.searchParams.set("wait", waitSel.value); u.searchParams.set("layout", layout); u.searchParams.set("style", styleSel.value); history.replaceState(null, "", u);
+      const u = new URL(location); u.searchParams.set("wait", waitSel.value); u.searchParams.set("layout", layout); u.searchParams.set("style", styleSel.value); u.searchParams.set("scene", sceneSel.value); history.replaceState(null, "", u);
     }
     document.querySelector("[data-replay]").addEventListener("click", start);
-    waitSel.addEventListener("change", start); styleSel.addEventListener("change", start); layoutSel.addEventListener("change", start);
+    waitSel.addEventListener("change", start); styleSel.addEventListener("change", start); layoutSel.addEventListener("change", start); sceneSel.addEventListener("change", start);
     start();
   })();
   </script>
