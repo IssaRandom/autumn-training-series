@@ -90,8 +90,8 @@ _12 Nov 2026. A list of the small details that make a site feel hand-built by a 
 | 38 | **"Updated 12 Nov by James"** stamps on guides and the calendar, plus a small "What's new" note | Trust | S | ⬜ |
 | 39 | **Forms done properly**: `autocomplete` and `inputmode` attributes, checks run when you leave a field, saved drafts, Enter submits, and the button shows progress and then success | | M | 🟡 |
 | 40 | **Colophon page**: how the site was built, the fonts, the boat sounds and why | Developer-site tradition, and a nice story | S | ⬜ |
-| 46 | **Splash on high-impact buttons** (Book a camp, Confirm booking, hero CTA): on press a small spray of droplets bursts from the tap point and a ripple ring spreads, in under 400 ms. Only these few buttons, never everyday ones. Reduced motion: a quick ring only. | Bow wave hitting a chop | S | ⬜ |
-| 47 | **Wave on calendar refresh**: when filters or rig change, a soft wave crest sweeps across the calendar left to right and the bars re-settle behind it, like a set rolling through. Replaces the current filter transition, under 500 ms. | A swell line | M | ⬜ |
+| 46 | **Splash on high-impact buttons** (Book a camp, Confirm booking, hero CTA): on press a small spray of droplets bursts from the tap point and a ripple ring spreads, in under 400 ms. Only these few buttons, never everyday ones. Reduced motion: a quick ring only. | Bow wave hitting a chop | S | ✅ (12 Nov) |
+| 47 | **Wave on calendar refresh**: when filters or rig change, a soft wave crest sweeps across the calendar left to right and the bars re-settle behind it, like a set rolling through. Replaces the current filter transition, under 500 ms. | A swell line | M | ✅ (12 Nov) |
 | 41 | **Styled scrollbars** on the calendar scroller and `overscroll-behavior: contain` on sheets | | S | ⬜ |
 
 ## P3 · Ambitious (later, once the basics are perfect)
@@ -124,7 +124,7 @@ _12 Nov 2026. A list of the small details that make a site feel hand-built by a 
 4. #15 View Transitions
 5. #19 Start-sequence countdowns and #20 the beat progress bar
 6. #26 Console message and logo easter egg, #27 flag favicon
-6b. **#46 splash on booking buttons, #47 wave on calendar refresh** (James's ideas, no input needed)
+6b. ✅ **#46 splash on booking buttons, #47 wave on calendar refresh** (done 12 Nov)
 7. #16 Live wind badge (needs a Navigator data endpoint)
 
 **What I need from you:** 10–20 one-liners in your voice (wins, coaching mantras, dry jokes), a photo of each coach, and a "currently" line.
