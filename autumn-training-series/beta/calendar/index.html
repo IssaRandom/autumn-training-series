@@ -14,10 +14,13 @@
   <meta name="application-name" content="Beyond the Shift">
   <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
   <meta property="og:site_name" content="Beyond the Shift">
-  <link rel="stylesheet" href="../beta.css?v=20261112t">
-  <link rel="stylesheet" href="../fx.css?v=20261112t">
-  <link rel="stylesheet" href="../booking/booking.css?v=20261112t">
-  <link rel="stylesheet" href="calendar.css?v=20261112t">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../beta.css?v=20261112wv2">
+  <link rel="stylesheet" href="../fx.css?v=20261112wv2">
+  <link rel="stylesheet" href="../booking/booking.css?v=20261112wv2">
+  <link rel="stylesheet" href="calendar.css?v=20261112wv2">
 </head>
 <body class="cal-page theme-dark">
   <header class="nav is-solid" data-nav>
@@ -27,7 +30,7 @@
         <ul class="nav-links" id="nav-links">
           <li><a href="../#advice">Advice</a></li>
           <li><a href="./" aria-current="page">Calendar</a></li>
-          <li><a href="../#venues">Venues</a></li>
+          <li><a href="../venues/">Venues</a></li>
           <li><a href="../#about">About</a></li>
           <li><a href="../account/">My bookings</a></li>
           <li class="mobile-only"><a href="../">Home</a></li>
@@ -65,9 +68,9 @@
       <div class="tb-row tb-filters">
         <div class="chips" role="group" aria-label="Event types (also the colour key)" data-type-chips><span class="skel skel-pill" style="--w:118px" aria-hidden="true"></span><span class="skel skel-pill" style="--w:104px;--i:1" aria-hidden="true"></span><span class="skel skel-pill" style="--w:126px;--i:2" aria-hidden="true"></span><span class="skel skel-pill" style="--w:96px;--i:3" aria-hidden="true"></span><span class="skel skel-pill" style="--w:110px;--i:4" aria-hidden="true"></span></div>
         <div class="zoom" data-zoom-ui hidden>
-          <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out">−</button>
+          <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
           <input type="range" min="0" max="100" value="0" aria-label="Zoom" data-zoom-range>
-          <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in">+</button>
+          <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
           <button type="button" class="tb-btn tb-sm" data-zoom="fit">Fit</button>
         </div>
       </div>
@@ -140,7 +143,7 @@
     <div class="sheet-grip" aria-hidden="true"></div>
     <div class="sheet-top">
       <h2 id="fsheet-title">Show on the calendar</h2>
-      <button type="button" class="tb-icon" data-fsheet-close aria-label="Close">×</button>
+      <button type="button" class="tb-icon" data-fsheet-close aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="f-presets" role="group" aria-label="Quick choices" data-f-presets></div>
     <div class="f-list" data-f-list></div>
@@ -154,9 +157,9 @@
     <div class="sheet-top">
       <span class="pill" data-sheet-type></span>
       <div class="sheet-nav">
-        <button type="button" class="tb-icon" data-sheet-step="-1" aria-label="Previous event">‹</button>
-        <button type="button" class="tb-icon" data-sheet-step="1" aria-label="Next event">›</button>
-        <button type="button" class="tb-icon" data-sheet-close aria-label="Close">×</button>
+        <button type="button" class="tb-icon" data-sheet-step="-1" aria-label="Previous event"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="tb-icon" data-sheet-step="1" aria-label="Next event"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button type="button" class="tb-icon" data-sheet-close aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
     </div>
     <h2 id="sheet-title" data-sheet-title></h2>
@@ -180,13 +183,14 @@
   </div>
 
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
-  <script src="../data/events.js?v=20261112t"></script>
-  <script src="../booking/config.js?v=20261112t"></script>
-  <script src="../booking/api.js?v=20261112t"></script>
-  <script src="../booking/loader.js?v=20261112t"></script>
-  <script src="../booking/ui.js?v=20261112t"></script>
-  <script src="cal-core.js?v=20261112t"></script>
-  <script src="calendar.js?v=20261112t"></script>
-  <script src="../fx.js?v=20261112t" defer></script>
+  <script src="../data/events.js?v=20261112wv2"></script>
+  <script src="../booking/config.js?v=20261112wv2"></script>
+  <script src="../booking/api.js?v=20261112wv2"></script>
+  <script src="../booking/loader.js?v=20261112wv2"></script>
+  <script src="../booking/ui.js?v=20261112wv2"></script>
+  <script src="cal-core.js?v=20261112wv2"></script>
+  <script src="../swash.js?v=20261112wv2"></script>
+  <script src="calendar.js?v=20261112wv2"></script>
+  <script src="../fx.js?v=20261112wv2" defer></script>
 </body>
 </html>

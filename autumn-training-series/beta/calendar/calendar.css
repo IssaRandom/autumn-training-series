@@ -194,7 +194,11 @@ html.cal-lock .cal-source { display: none; }
 
 /* ---------- Filter transitions (calendar.js play()) ---------- */
 .fx-layer { position: fixed; z-index: 15; overflow: hidden; pointer-events: none; }
-.fx-layer .cal-bar.is-ghost { position: absolute; margin: 0; box-shadow: none; text-decoration: line-through; }
+/* bars afloat on the swash (calendar.js play): drawn above the water, with a soft shadow on it */
+.fx-layer .cal-bar:is(.is-ghost, .is-float) { position: absolute; z-index: 1; margin: 0; transform-origin: 50% 70%; will-change: transform; box-shadow: 0 5px 12px rgba(0, 18, 34, .38); }
+/* incoming bars: crisp dark rim + deeper shadow so they stand out against the white foam they ride on */
+.fx-layer .cal-bar.is-float { box-shadow: 0 0 0 1.5px rgba(4, 20, 40, .9), 0 0 0 3px rgba(255, 255, 255, .55), 0 8px 18px rgba(0, 18, 34, .55); filter: saturate(1.15) brightness(1.06); z-index: 2; }
+.fx-layer .cal-bar.is-ghost { text-decoration: line-through; filter: saturate(.75); }
 .cal-bar.is-new { z-index: 3; animation: new-ring 2.4s var(--ease) .3s both; }
 @keyframes new-ring {
   0%, 55% { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #fff, 0 0 18px rgba(255, 255, 255, .45); }
@@ -425,3 +429,12 @@ html.cal-lock .cal-source { display: none; }
 .seg button, .tb-icon, .tb-btn, .tb-filter, .tour-skip, .chip, .hint-x { position: relative; }
 .seg button::after, .tb-icon::after, .tb-btn::after, .tb-filter::after, .tour-skip::after, .chip::after { content: ""; position: absolute; inset: -5px 0; }
 .hint-x::after { content: ""; position: absolute; inset: -10px -8px; }
+
+/* Icon glyphs (James 12 Nov: text ‹ › × sat off-centre). SVG strokes centre exactly in the round buttons. */
+.ic { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.tb-icon { padding: 0; }
+.tb-icon .ic { margin: auto; }
+.hint-x { display: inline-grid; place-items: center; padding: 4px; }
+.hint-x .ic { width: 16px; height: 16px; }
+/* Calendar type (James 12 Nov): back to the rounder Montserrat look throughout; no condensed caps in the UI */
+.cal-page h1, .cal-page h2, .cal-page h3, .cal-page h4 { font-family: var(--font); text-transform: none; letter-spacing: -.015em; line-height: 1.15; font-weight: 800; }

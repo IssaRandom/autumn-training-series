@@ -17,16 +17,16 @@ Start every session by reading `STATUS.md` (repo root). Update it before ending.
 - All beta code in `autumn-training-series/beta/`: `index.html`, `beta.css`, `beta.js`, sub-pages as folders (`beta/calendar/`, `beta/advice/…`, `beta/venues/…`). Shared images from `../assets/` ok; beta-only media in `beta/media/`.
 - `<meta name="robots" content="noindex">` on every beta page; never add beta to sitemap.xml.
 - Placeholders: images `https://picsum.photos/seed/<word>/1600/900` (or local grey SVG), text clearly marked `[PLACEHOLDER]` in HTML comments + realistic draft copy. Keep a list of placeholders in STATUS.md.
-- **Theme = the live site** (James, 12 Nov 2026: "no real difference in appearance" from beyondtheshift.co.uk). This replaced the all-dark beta of 11 Nov. Full rules in the "Live-site theme" section below. Red only for deadlines/warnings. No anchors/rope/cartoon nautical. British English, no serial comma.
+- **Theme = DARK** (James, 12 Nov 2026 late: prefers the dark beta; the light live-site retheme was reverted). Structure, buttons, kicker and hero copy the live site; colours are the dark set (`:root` is in the dark scope in beta.css). Red only for deadlines/warnings. No anchors/rope/cartoon nautical. British English, no serial comma.
 
-## Live-site theme (source of truth: live `styles.css` :root)
+## Live-site structure, dark colours (the light section rhythm below is HISTORY: every page is now dark)
 - **Section rhythm like live:** navy `#03132e` hero → white → navy → white → mist `#f6f8fc` → … → navy CTA → navy footer. Classes: `.section` (white), `.section.bg-grey` (mist), `.section.bg-navy` (navy). Sub-page heroes (`.g-hero`) are navy; page bodies light. Booking pages: mist page, white cards. **The calendar page and 404 stay dark** (`<body class="cal-page theme-dark">`).
 - **Two token scopes, same names.** `:root` = light set (`--bg` #fff, `--bg-2` mist, `--surface` #fff, `--surface-2` ice #eef4fb, `--line` #d8e1ee, `--ink` #0a1830, `--ink-2` long-form text, `--heading` #0a1830, `--muted` #52627a, `--blue-300` = "accent text" #2463eb). The **dark scope** selector in beta.css (`.theme-dark, .on-dark, .bg-navy, .hero, .g-hero, .nav, .footer, .coach, .takeaways, .bk-camp, .bk-loader-stage`) redefines them (`--blue-300` #8fb5ff, `--heading` #fff, `--muted` #a3b3cb, surfaces #0a2148/#10295a…). A new navy component = add its selector there or give it `class="on-dark"`. **Never hard-code `#fff` text or dark rgba fills**; use `--heading`, `--ink`, `--muted`, `--surface`, `--overlay` (sticky frosted bars), `--shadow`/`--shadow-sm`, and the status pairs `--ok-tx/--ok-bg`, `--warn-tx/--warn-bg`, `--info-tx/--info-bg`, `--violet-tx/--violet-bg`, `--orange-tx`. White text on `--accent` fills is fine. SVG drawn in JS uses `style="fill:var(--x)"` (attributes can't take var()).
-- **Type (no web fonts, same as live):** body `var(--font)` = Inter → system-ui stack, 16px/1.65. All `h1–h4` = `var(--font-display)` = "Arial Narrow", "Roboto Condensed", Impact; weight 800, UPPERCASE, letter-spacing -.025em, line-height .98 (h3 1.1). Hero h1 clamp(4rem, 9vw, 8rem), line-height .79, -.045em. Section titles `.h2` clamp(2.45rem, 5vw, 4.75rem). Big numbers (dates, totals, stats) use `--font-display` too.
+- **Type:** body + all small text `var(--font)` = **Montserrat** (Google Fonts link on every page). Condensed display ONLY for big type: `h1`, `h2`/`.h2`, `.quote`, big dates, coach names. h3/h4, buttons, labels = Montserrat, normal case. Calendar page = Montserrat only. (Old rule, superseded: all `h1–h4` = `var(--font-display)` = "Arial Narrow", "Roboto Condensed", Impact; weight 800, UPPERCASE, letter-spacing -.025em, line-height .98 (h3 1.1). Hero h1 clamp(4rem, 9vw, 8rem), line-height .79, -.045em. Section titles `.h2` clamp(2.45rem, 5vw, 4.75rem). Big numbers (dates, totals, stats) use `--font-display` too.
 - **Kicker** `.eyebrow` = live `.section-kicker`: .77rem, 800, .18em tracking, caps, blue-600 on light / #8fb5ff on navy (automatic via `--blue-300`).
 - **Georgia italic accent** `.serif-accent` (live "ILCA 4 & 6" line): #7ea8ff on navy. Use once per hero at most.
 - **Buttons** = live `.button`: 5px corners (`--radius-sm`), 1px border, condensed caps .92rem 800 .045em, min-height 48, padding 13px 22px; primary `.btn-accent` #2463eb → hover #174dc4 + lift + blue shadow; `.btn-ghost` transparent with 55% currentColor border. Nav CTA = live `.button-small`.
-- **Corners:** cards/panels `--radius` 6px, controls 5px, tags/pills 3px. No 99px pills on buttons or tabs (round dots/switches are fine).
+- **Corners:** cards/panels `--radius` 12px, controls 7px, tags 3px (James found 6px "sharp"). No 99px pills on buttons or tabs (round dots/switches are fine).
 - **Nav** = live header: navy fade gradient over the hero, `rgba(3,19,46,.97)` once scrolled; brand in tracked caps (`.logo`, `<b>` part light blue, weight 400); links .73rem 750 caps with a blue-500 underline that wipes in.
 - **Focus ring** 3px #ffca3a (live). Cards: white, 1px line, `--shadow-sm`, hover `--shadow`.
 - Before shipping a new part, compare against the live page side by side (Chrome: beyondtheshift.co.uk) and check it inside both a light and a navy section.
@@ -38,7 +38,7 @@ Start every session by reading `STATUS.md` (repo root). Update it before ending.
 - `prefers-reduced-motion` → no scrub/parallax, static poster. Mobile: lighter video, no pinning on small screens if janky.
 
 ## Page map
-Home (hub) · Coaching (current training/booking, tidied) · Calendar (see bts-calendar) · Advice Hub (see bts-advice-content) · Venue Guides · About.
+Home (hub; hero + coach cards ported from the live index.html, CSS-only entrance, no pin/scrub) · Coaching (current training/booking, tidied) · Calendar (see bts-calendar) · Advice Hub (see bts-advice-content) · Venue Guides · About.
 Nav: Advice, Calendar, Venues, About, then discreet "Coaching" button.
 
 ## Homepage sections (in order)

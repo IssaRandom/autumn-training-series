@@ -369,58 +369,118 @@
     Object.assign(fxLayer.style, { left: `${vb.left}px`, top: `${vb.top}px`, width: `${vb.right - vb.left}px`, height: `${vb.bottom - vb.top}px` });
     return fxLayer;
   }
-  /* POLISH-AUDIT #47: a wave crest sweeps left to right; each bar changes as the crest reaches it. */
-  const WAVE_T0 = 40, WAVE_MS = 560, WAVE_W = 180;
+  /* POLISH-AUDIT #47 (v4, James 12 Nov): swash washes DOWN from the top like a wave running up a beach, pauses,
+     then drains back UP, thinning and stretching seawards (drawn by ../swash.js). Everything that moves floats:
+     - added bars ride in on the foam from the top, get carried a little PAST their slot, bob there while the
+       water is in, then the backwash drags them back and sets them down as the front uncovers their slot
+     - removed bars are lifted onto the wave as it reaches them, carried down bobbing, then sucked back out
+       to sea off the top of the view
+     - bars that were already there don't move at all.  ~2.8 s in all (slowed ~20%, 12 Nov). */
+  const SWASH = 960, HOLD = 320, BACK = 1560, TOTAL = SWASH + HOLD + BACK;
+  const clamp01 = f => Math.min(1, Math.max(0, f));
+  let floatRun = null;   // the bars currently afloat; cancelled if the calendar redraws mid-wash
+  function floater(src, cls, x, y, w, h) {
+    const g = src.cloneNode(true);
+    g.removeAttribute("data-id"); g.removeAttribute("title"); g.tabIndex = -1;
+    g.classList.remove("is-new");
+    g.classList.add(cls);
+    if (h < 14) g.textContent = "";
+    // the clone leaves .yp, so carry over the zoom level's type and padding or its label renders at the wrong size
+    const cs = getComputedStyle(src);
+    Object.assign(g.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px`,
+      fontSize: cs.fontSize, padding: cs.padding, justifyContent: cs.justifyContent, borderRadius: cs.borderRadius });
+    return g;
+  }
   function play(root, before) {
-    const vb = viewBox(), seen = new Set(), vw = Math.max(1, vb.right - vb.left);
-    const at = r => WAVE_T0 + Math.min(1, Math.max(0, (r.left + r.width / 2 - vb.left) / vw)) * WAVE_MS;
+    if (floatRun) floatRun.cancel();
+    const vb = viewBox(), seen = new Set(), vh = Math.max(1, vb.bottom - vb.top);
+    const layer = ghostLayer(vb);
+    const sw = window.BTSswash && window.BTSswash(layer, { swash: SWASH, hold: HOLD, back: BACK });
+    const F = sw ? sw.foam : 40, rnd = (a, b) => a + Math.random() * (b - a);
+    const floats = [];
+    // each floater: where it sits in the foam (off), its own bob and roll, and which way it's going
+    const afloat = (el, kind, x, top, w, h, real) => floats.push({
+      // new bars ride right on the bright lip so they read clearly; leaving bars sink deeper into the foam
+      el, kind, x, top, w, h, real, cx: x + w / 2, y: top, off: kind === "in" ? rnd(.02, .22) * F : rnd(.15, .85) * F,
+      over: Math.min(70, vh * .14) * rnd(.6, 1.1), floor: vh - h - 6 - rnd(0, .7) * F,
+      ph: rnd(0, 6.3), ph2: rnd(0, 6.3), bw: rnd(.0045, .0075), rw: rnd(.003, .005), tilt: rnd(3, 6) * (Math.random() < .5 ? -1 : 1)
+    });
     $$(".cal-row", root).forEach((row, ri) => $$(".cal-bar", row).forEach(b => {
       const k = `${b.dataset.id}|${ri}`, old = before.bars.get(k);
       seen.add(k);
       const r = b.getBoundingClientRect();
       if (!onScreen(r, vb) && !(old && old.on)) return;
-      if (old) {
-        const dx = old.r.left - r.left, dy = old.r.top - r.top;
-        if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5)
-          b.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }], { duration: 440, delay: at(old.r), easing: EASE, fill: "backwards" });
+      // bars that were already there stay still (James 12 Nov): only added and removed bars ride the wave
+      if (old) return;
+      if (sw) {
+        // rides in on the wave: the real bar stays hidden until it's set down
+        const x = r.left - vb.left, top = r.top - vb.top;
+        b.style.visibility = "hidden";
+        const g = floater(b, "is-float", x, top, r.width, r.height);
+        layer.appendChild(g);
+        afloat(g, "in", x, top, r.width, r.height, b);
       } else {
         b.classList.add("is-new");
-        // bobs up out of the water behind the crest
-        b.animate([
-          { opacity: 0, transform: "translateY(9px) scale(.7, .35)" },
-          { opacity: 1, transform: "translateY(-3px) scale(1.02, 1.05)", offset: .6 },
-          { opacity: 1, transform: "none" }
-        ], { duration: 480, delay: at(r) + 40, easing: EASE, fill: "backwards" });
-        setTimeout(() => b.classList.toggle("is-new", false), 2600);
+        setTimeout(() => b.classList.toggle("is-new", false), 3200);
       }
     }));
-    const layer = ghostLayer(vb);
-    const wave = document.createElement("div");
-    wave.className = "fx-wave";
-    layer.appendChild(wave);
-    const gone = () => wave.remove();
-    wave.animate([
-      { transform: `translateX(${-WAVE_W}px)`, opacity: 0 },
-      { opacity: 1, offset: .08 },
-      { opacity: 1, offset: .85 },
-      { transform: `translateX(${vw - WAVE_W + 40}px)`, opacity: 0 }
-    ], { duration: WAVE_MS + WAVE_T0 + 80, easing: "linear", fill: "forwards" }).finished.then(gone, gone);
     before.bars.forEach((o, k) => {
       if (seen.has(k) || !o.on) return;
-      const g = o.el.cloneNode(true);
-      g.removeAttribute("data-id"); g.removeAttribute("title"); g.tabIndex = -1;
-      g.classList.add("is-ghost");
-      if (o.r.height < 14) g.textContent = "";
-      Object.assign(g.style, { left: `${o.r.left - vb.left}px`, top: `${o.r.top - vb.top}px`, width: `${o.r.width}px`, height: `${o.r.height}px` });
+      const x = o.r.left - vb.left, top = o.r.top - vb.top;
+      const g = floater(o.el, "is-ghost", x, top, o.r.width, o.r.height);
       layer.appendChild(g);
-      const done = () => layer.contains(g) && layer.removeChild(g);
-      // washed under as the crest passes
-      g.animate([
-        { opacity: 1, transform: "none", filter: "saturate(1)" },
-        { opacity: .8, transform: "translateY(-2px)", filter: "saturate(0) brightness(1.4)", offset: .3 },
-        { opacity: 0, transform: "translateY(10px) scale(.9, .3)", filter: "saturate(0) brightness(1.4)" }
-      ], { duration: 380, delay: Math.max(0, at(o.r) - 60), easing: "ease-in", fill: "forwards" }).finished.then(done, done);
+      if (sw) afloat(g, "out", x, top, o.r.width, o.r.height);
+      else g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: "forwards" }).finished.then(() => g.remove(), () => g.remove());
     });
+    if (sw && floats.length) {
+      let raf = 0;
+      // set the real bar down where the floater is, with a little settle
+      const land = f => {
+        f.landed = true;
+        f.el.remove();
+        f.real.style.visibility = "";
+        f.real.classList.add("is-new");
+        f.real.animate([
+          { transform: "translateY(-3px) rotate(1.5deg) scale(1.03, .96)" },
+          { transform: "translateY(1px) rotate(-.5deg) scale(.99, 1.02)", offset: .5 },
+          { transform: "none" }
+        ], { duration: 420, easing: EASE });
+        setTimeout(() => f.real.classList.toggle("is-new", false), 3200);
+      };
+      const finish = () => {
+        cancelAnimationFrame(raf);
+        floats.forEach(f => { if (f.kind === "in" && !f.landed) land(f); else f.el.remove(); });
+        floatRun = null;
+      };
+      const tick = () => {
+        const t = sw.time(), back = t > SWASH + HOLD;
+        if (t >= TOTAL + 80) return finish();
+        for (const f of floats) {
+          if (f.landed) continue;
+          const ride = sw.front(f.cx, t) - f.off - f.h / 2;   // sitting in the foam just behind the front
+          let y, lift;
+          if (f.kind === "in") {
+            // carried down past its slot, then dragged back and set down when the front uncovers it
+            y = back ? Math.max(f.top, Math.min(f.top + f.over, ride)) : Math.min(ride, f.top + f.over);
+            if (back && ride <= f.top) { land(f); continue; }
+            lift = back ? clamp01((y - f.top) / 18) : 1;
+          } else {
+            // picked up as the front reaches it, carried down, then sucked back out over the top
+            y = Math.min(back ? ride : Math.max(f.top, ride), Math.max(f.top, f.floor));
+            lift = back ? 1 : clamp01((y - f.top) / 14);
+          }
+          const bob = Math.sin(t * f.bw + f.ph) * 3 * lift;
+          const sway = Math.sin(t * f.rw * .8 + f.ph2) * 6 * lift;
+          const rot = (Math.sin(t * f.rw + f.ph2) * f.tilt + (f.kind === "out" ? (back ? -2 : 2) : 0)) * lift;
+          const sc = f.kind === "in" ? 1 + .07 * lift : 1;   // a touch bigger while afloat, easing back to size as it lands
+          f.el.style.transform = `translate(${sway.toFixed(1)}px, ${(y - f.top + bob).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+          if (f.kind === "out") f.el.style.opacity = y + f.h < 0 ? 0 : 1;
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      floatRun = { cancel: finish };
+      tick();
+    }
     $$(".mlist button[data-id]", root).forEach(b => {
       if (!before.items.has(`${b.closest("[data-m]").dataset.m}|${b.dataset.id}`)) b.classList.add("is-new");
     });
@@ -493,7 +553,7 @@
     hintEl.hidden = !left.length;
     // phones: one tip at a time (the next appears when this one is done)
     hintEl.innerHTML = `<b class="hint-k" aria-hidden="true">Tip</b>` + (mq.matches ? left.slice(0, 1) : left).map(([k, t]) => `<span data-h="${k}">${t}</span>`).join("") +
-      (left.length ? `<button type="button" class="hint-x" data-hint-close aria-label="Hide tips">×</button>` : "");
+      (left.length ? `<button type="button" class="hint-x" data-hint-close aria-label="Hide tips"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>` : "");
   }
   function hintDone(k) {
     if (done.has(k)) return;

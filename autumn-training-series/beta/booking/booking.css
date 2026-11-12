@@ -1,6 +1,6 @@
 /* Online booking (beta): /beta/account/ and /beta/book/. Builds on beta.css tokens. Mobile first. */
 .bk-page [hidden] { display: none !important; }
-.bk-page { background: var(--mist); min-height: 100vh; display: flex; flex-direction: column; }
+.bk-page { background: var(--bg-2); min-height: 100vh; display: flex; flex-direction: column; }
 .bk-page main { flex: 1; padding: calc(68px + clamp(20px, 4vw, 40px)) 0 clamp(48px, 8vw, 96px); }
 .bk-wrap { width: min(100% - 2 * var(--gutter), 760px); margin-inline: auto; display: grid; gap: 18px; }
 .bk-wrap.is-wide { width: min(100% - 2 * var(--gutter), 1000px); }

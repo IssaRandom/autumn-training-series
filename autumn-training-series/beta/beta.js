@@ -44,6 +44,26 @@
     }).catch(() => {});
   }
 
+  /* ---------- Hero "Next camps" strip (live .next-camps), from events.js ---------- */
+  const nextWrap = document.querySelector("[data-next-camps]"), nextRow = document.querySelector("[data-next-camps-row]");
+  if (nextWrap && nextRow && C) {
+    const up = events.filter(e => e.type === "bts-camp" && !e.placeholder && C.parse(e.end) >= C.today).sort((a, b) => C.parse(a.start) - C.parse(b.start)).slice(0, 3);
+    const when = e => {
+      const s = C.parse(e.start), days = Math.round((s - C.today) / 864e5);
+      if (days <= 0) return "On the water now";
+      if (days === 1) return "Starts tomorrow";
+      return days < 14 ? `Starts in ${days} days` : `Starts in ${Math.round(days / 7)} weeks`;
+    };
+    if (up.length) {
+      nextRow.innerHTML = up.map(e => {
+        const s = C.parse(e.start), en = C.parse(e.end);
+        const dd = +s === +en ? `${s.getDate()}` : `${s.getDate()}–${en.getDate()}`;
+        return `<a class="next-camp" href="calendar/#event=${encodeURIComponent(e.id)}"><span class="next-camp-date">${C.MONTHS_LONG[s.getMonth()].slice(0, 3)}<b>${dd}</b></span><span class="next-camp-body"><strong>${C.esc(e.name)}</strong><small>${C.esc(e.venue)} · ${when(e)}</small></span></a>`;
+      }).join("");
+      nextWrap.hidden = false;
+    }
+  }
+
   /* ---------- Calendar teaser: 8-week strip from this Monday ---------- */
   const strip = document.querySelector("[data-teaser-scroll]");
   if (strip && C) {
@@ -87,25 +107,8 @@
     }));
   }
 
-  // Hero intro
-  gsap.from("[data-split-lines] .line > span", { yPercent: 110, duration: 1.2, ease: "expo.out", stagger: 0.09, delay: 0.15 });
-  gsap.from("[data-hero-fade]", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.1, delay: 0.55 });
-
-  // Hero scroll: scrub video if a source is set, otherwise slow zoom on the poster.
-  const hero = document.querySelector("[data-hero]");
-  const video = hero.querySelector("[data-hero-video]");
-  const src = small ? (video.dataset.srcMobile || video.dataset.src) : video.dataset.src;
-  const st = { trigger: hero, start: "top top", end: small ? "bottom top" : "+=120%", scrub: true, pin: !small };
-  if (src) {
-    video.src = src; video.hidden = false;
-    video.addEventListener("loadedmetadata", () => {
-      hero.querySelector("[data-hero-poster]").hidden = true;
-      gsap.to(video, { currentTime: video.duration || 1, ease: "none", scrollTrigger: st });
-    }, { once: true });
-  } else {
-    gsap.fromTo("[data-hero-poster]", { scale: 1.12 }, { scale: 1, yPercent: 6, ease: "none", scrollTrigger: st });
-  }
-  gsap.to(".hero-copy", { yPercent: -18, opacity: 0, ease: "none", scrollTrigger: { trigger: hero, start: "top top", end: small ? "60% top" : "+=70%", scrub: true } });
+  // Hero: CSS-only entrance copied from the live site (beta.css "Hero"). No pin or scrub: pinning added
+  // 120% of spacer after load, which made anchor links from other pages land, then jump.
 
   // Philosophy: words light up as you scroll
   const q = document.querySelector("[data-split-words]");
@@ -124,7 +127,4 @@
     wrapWords(q);
     gsap.to(q.querySelectorAll(".w"), { opacity: 1, stagger: 0.1, ease: "none", scrollTrigger: { trigger: q, start: "top 80%", end: "bottom 45%", scrub: true } });
   }
-
-  // Parallax on coach photos
-  gsap.utils.toArray(".coach img").forEach(img => gsap.fromTo(img, { yPercent: -5, scale: 1.12 }, { yPercent: 5, scale: 1.12, ease: "none", scrollTrigger: { trigger: img.parentElement, scrub: true } }));
 })();

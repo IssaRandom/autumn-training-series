@@ -14,8 +14,12 @@
   <meta name="application-name" content="Beyond the Shift">
   <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
   <meta property="og:site_name" content="Beyond the Shift">
-  <link rel="stylesheet" href="beta.css?v=20261112t">
-  <link rel="stylesheet" href="fx.css?v=20261112t">
+  <script>document.documentElement.classList.add("js");if(location.hash.length>1)document.documentElement.classList.add("no-intro");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="beta.css?v=20261112wv2">
+  <link rel="stylesheet" href="fx.css?v=20261112wv2">
 </head>
 <body>
   <a class="sr-only" href="#main">Skip to content</a>
@@ -27,7 +31,7 @@
         <ul class="nav-links" id="nav-links">
           <li><a href="#advice">Advice</a></li>
           <li><a href="calendar/">Calendar</a></li>
-          <li><a href="#venues">Venues</a></li>
+          <li><a href="venues/">Venues</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="account/">My bookings</a></li>
           <li class="mobile-only"><a href="/">Coaching &amp; booking</a></li>
@@ -39,50 +43,81 @@
   </header>
 
   <main id="main">
-    <!-- 1. HERO — [PLACEHOLDER] media: poster image until slow-mo footage arrives.
-         Add data-src (1080p, all-keyframe encode) and data-src-mobile (720p) to the <video> to enable scroll-scrub. -->
-    <section class="hero" data-hero>
-      <img class="hero-media" data-hero-poster src="../assets/images/hero-sailing-2048.webp"
-           srcset="../assets/images/hero-sailing-800.webp 800w, ../assets/images/hero-sailing-1280.webp 1280w, ../assets/images/hero-sailing-2048.webp 2048w"
-           sizes="100vw" alt="ILCA sailors hiking upwind in a breeze" fetchpriority="high">
-      <video class="hero-media" data-hero-video muted playsinline preload="auto" hidden
-             data-src="" data-src-mobile=""></video>
-      <div class="hero-copy wrap">
+    <!-- 1. HERO: built from the live landing page hero (James 12 Nov: "almost copying exactly" the live one).
+         Static photo that settles, title lines slide up from a mask, copy rises in, blue start-line rule draws.
+         No pinning or scroll-scrub any more (that caused the clunky first-picture jump). -->
+    <section class="hero" data-hero aria-labelledby="hero-title">
+      <picture>
+        <source type="image/webp" srcset="../assets/images/hero-sailing-800.webp 800w, ../assets/images/hero-sailing-1280.webp 1280w, ../assets/images/hero-sailing-2048.webp 2048w" sizes="100vw">
+        <img class="hero-image" src="../assets/images/hero-sailing-1280.jpg" srcset="../assets/images/hero-sailing-800.jpg 800w, ../assets/images/hero-sailing-1280.jpg 1280w, ../assets/images/hero-sailing-2048.jpg 2048w" sizes="100vw" alt="ILCA sailor hiking hard upwind at speed with a racing fleet behind" width="2048" height="1365" fetchpriority="high" decoding="async">
+      </picture>
+      <div class="hero-overlay"></div>
+      <div class="wrap hero-content">
+        <a class="hero-badge hero-in" style="--d:0" href="calendar/"><span>NEW</span> 2026/27 season calendar <b aria-hidden="true">→</b></a>
         <!-- [PLACEHOLDER] headline + intro copy -->
-        <h1 data-split-lines><span class="line"><span>Sail faster</span></span><span class="line"><span>by thinking</span></span><span class="line"><span>clearer.</span></span></h1>
-        <p class="serif-accent" data-hero-fade>ILCA 4, 6 &amp; 7</p>
-        <p data-hero-fade>ILCA&nbsp;4, 6 and 7 coaching from James Foster and Kai Wolgram — plus the season calendar and free advice to plan your year.</p>
-        <div class="hero-actions" data-hero-fade>
-          <a class="btn btn-accent arrow" href="calendar/">See the season</a>
-          <a class="btn btn-ghost" href="#trainings">Next trainings</a>
+        <h1 id="hero-title"><span class="title-line"><span style="--d:1">Sail faster</span></span><span class="title-line"><span style="--d:2">by thinking</span></span><span class="title-line"><span style="--d:3">clearer.</span></span></h1>
+        <p class="serif-accent hero-class hero-in" style="--d:4">ILCA 4, 6 &amp; 7</p>
+        <p class="hero-text hero-in" style="--d:5">Coaching from British Sailing Squad sailors James Foster and Kai Wolgram, plus the season calendar and free advice to plan your year.</p>
+        <div class="hero-actions hero-in" style="--d:6">
+          <a class="btn btn-accent" href="/">Book a camp <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-ghost" href="calendar/">See the season</a>
+        </div>
+        <div class="next-camps hero-in" style="--d:7" data-next-camps hidden>
+          <p class="next-camps-label">Next camps</p>
+          <div class="next-camps-row" data-next-camps-row></div>
         </div>
       </div>
-      <span class="scroll-cue" aria-hidden="true">Scroll</span>
     </section>
 
-    <!-- 2. COACHES -->
-    <section class="section" id="about">
+    <!-- 2. COACHES: live-site coach cards (photo + caption, bio, highlights). Copy taken from the live page. -->
+    <section class="section bg-grey" id="about">
       <div class="wrap">
         <div class="section-head reveal">
           <div>
-            <p class="eyebrow">The coaches</p>
-            <h2 class="h2">Two coaches.<br>One process.</h2>
+            <p class="eyebrow">Experience on the water</p>
+            <h2 class="h2">Your coaches</h2>
+            <p class="lede">Two current British Sailing Squad sailors. One shared approach to clear, modern and technically detailed coaching.</p>
           </div>
         </div>
-        <div class="coaches">
-          <!-- [PLACEHOLDER] one-liners -->
-          <article class="coach reveal">
-            <img src="../assets/images/james-foster-portrait.webp" alt="James Foster" loading="lazy">
-            <div class="coach-copy">
-              <h3>James Foster</h3>
-              <p>ILCA&nbsp;7 campaigner chasing the Olympics. Coaches technique, speed and the habits that hold up on race day.</p>
+        <div class="coach-grid">
+          <article class="coach-card reveal">
+            <div class="coach-photo">
+              <img src="../assets/images/james-foster-portrait.webp" alt="Coach James Foster, British Sailing Squad ILCA 7 sailor" width="1200" height="900" loading="lazy" decoding="async" style="--focus:50% 22%;--fit:1.16">
+              <div class="coach-caption">
+                <p class="coach-role">ILCA 7 · British Sailing Squad</p>
+                <h3>James Foster</h3>
+              </div>
+            </div>
+            <div class="coach-card-body">
+              <p>James progressed through the British sailing pathway from junior racing to senior squad level. His Ship Science engineering degree supports a technical approach to sailing performance, helping sailors understand both what to change and why it works.</p>
+              <h4>Highlights</h4>
+              <ul>
+                <li>2023 Inland National Champion</li>
+                <li>2022 ILCA 7 National Champion</li>
+                <li>2019 Laser Radial Youth National Champion</li>
+                <li>Represented Great Britain at the 2019 Youth World Championships</li>
+                <li>Top-10 ILCA 4 World Championship result</li>
+              </ul>
             </div>
           </article>
-          <article class="coach reveal">
-            <img src="../assets/images/kai-wolgram.webp" alt="Kai Wolgram" loading="lazy">
-            <div class="coach-copy">
-              <h3>Kai Wolgram</h3>
-              <p>Racecraft and decision-making. Turns what sailors know into what they do when the pressure is on.</p>
+          <article class="coach-card reveal">
+            <div class="coach-photo">
+              <img src="../assets/images/kai-wolgram.webp" alt="Coach Kai Wolgram, British Sailing Squad ILCA 7 sailor" width="900" height="900" loading="lazy" decoding="async" style="--focus:50% 30%">
+              <div class="coach-caption">
+                <p class="coach-role">ILCA 7 · British Sailing Squad</p>
+                <h3>Kai Wolgram</h3>
+              </div>
+            </div>
+            <div class="coach-card-body">
+              <p>Kai combines more than four years of RYA Squad coaching experience with current international ILCA 7 campaigning. He has coached with the Welsh ILCA Squad, ILCA UK and the Andrew Simpson Centre Performance Academy.</p>
+              <h4>Highlights</h4>
+              <ul>
+                <li>ILCA UK National Training Group coach</li>
+                <li>Performance Academy invitation training</li>
+                <li>Coach at the 2026 ILCA 4 Youth Europeans</li>
+                <li>Three top-10 finishes at U21 World and European Championships</li>
+                <li>U19 National Champion</li>
+              </ul>
             </div>
           </article>
         </div>
@@ -110,7 +145,7 @@
           <div>
             <p class="eyebrow">Advice hub</p>
             <h2 class="h2">Free advice for<br>every stage.</h2>
-            <p class="lede">Straight answers from coaches who have been through it — from first regatta to campaign planning.</p>
+            <p class="lede">Straight answers from coaches who have been through it - from first regatta to campaign planning.</p>
           </div>
         </div>
         <div class="cards scroll-x">
@@ -152,12 +187,13 @@
             <p class="eyebrow">Venue guides</p>
             <h2 class="h2">Know the venue<br>before you arrive.</h2>
           </div>
+          <a class="link-more arrow" href="venues/">All venue guides</a>
         </div>
         <div class="cards scroll-x">
           <a class="card reveal" href="venues/weymouth/"><div class="card-img"><img src="https://picsum.photos/seed/weymouth/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">New guide</span><h3>Weymouth &amp; Portland</h3><p>Tide, wind shifts and where to launch at WPNSA.</p></div></a>
-          <a class="card reveal" href="#venues"><div class="card-img"><img src="https://picsum.photos/seed/poole/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Poole Harbour</h3><p>Shallows, channels and the harbour sea breeze.</p></div></a>
-          <a class="card reveal" href="#venues"><div class="card-img"><img src="https://picsum.photos/seed/hayling/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island</h3><p>Bar, tide gates and the Solent approach.</p></div></a>
-          <a class="card reveal" href="#venues"><div class="card-img"><img src="https://picsum.photos/seed/rutland/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Rutland Water</h3><p>Inland shifts and pressure lines for the Inlands.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/poole/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Poole Harbour</h3><p>Shallows, channels and the harbour sea breeze.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/hayling/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island</h3><p>Bar, tide gates and the Solent approach.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/rutland/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Rutland Water</h3><p>Inland shifts and pressure lines for the Inlands.</p></div></a>
         </div>
       </div>
     </section>
@@ -202,11 +238,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="data/events.js?v=20261112t"></script>
-  <script src="booking/config.js?v=20261112t"></script>
-  <script src="booking/api.js?v=20261112t"></script>
-  <script src="calendar/cal-core.js?v=20261112t"></script>
-  <script src="beta.js?v=20261112t"></script>
-  <script src="fx.js?v=20261112t" defer></script>
+  <script src="data/events.js?v=20261112wv2"></script>
+  <script src="booking/config.js?v=20261112wv2"></script>
+  <script src="booking/api.js?v=20261112wv2"></script>
+  <script src="calendar/cal-core.js?v=20261112wv2"></script>
+  <script src="beta.js?v=20261112wv2"></script>
+  <script src="fx.js?v=20261112wv2" defer></script>
 </body>
 </html>

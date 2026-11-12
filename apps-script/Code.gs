@@ -88,7 +88,7 @@ function requestCode_(email) {
   const hourKey = 'req:all:' + Utilities.formatDate(new Date(), TZ, 'yyyyMMddHH');
   const hourCount = Number(cache.get(hourKey) || 0);
   if (hourCount >= MAX_CODES_PER_HOUR || MailApp.getRemainingDailyQuota() <= MAIL_RESERVE) {
-    fail_('Sign-in is busy right now. Please try again later, or use the booking form.', 'BUSY');
+    fail_('Too many people are trying to book! Please try again later, or use the booking form.', 'BUSY');
   }
   cache.put(hourKey, String(hourCount + 1), 3600);
   cache.put(key, String(count + 1), CODE_MINUTES * 60);
