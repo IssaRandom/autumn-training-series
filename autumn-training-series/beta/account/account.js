@@ -32,7 +32,7 @@
   }
 
   async function load() {
-    view.innerHTML = `<p class="bk-muted bk-loading" data-loader="race">Loading your bookings…</p>`;
+    view.innerHTML = `<p class="bk-muted bk-loading" data-loader="start">Loading your bookings…</p>`;
     try {
       me = await B.call("me");
     } catch (e) {

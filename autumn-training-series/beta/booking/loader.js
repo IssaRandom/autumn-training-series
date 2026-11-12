@@ -46,13 +46,15 @@
   /* Two styles, chosen per element with data-loader="race|wave":
      race — the interactive course, for the first, main wait on a page (an Apps Script call, ~3–4 s+)
      wave — a boat riding a rolling sea, for shorter or secondary loads inside a page that's already showing
-     Where each is used: race on /book "Loading camp…" and /account "Loading your bookings…"; wave for
+     start — the fleet shuffling on a start line while the committee boat (right) runs the flag sequence
+     Where each is used: race on /book "Loading camp…", start on /account "Loading your bookings…"; wave for
      /account "Loading…" (gone as soon as the script runs), "Loading camps…" and /book "Loading your account…".
      No data-loader means race. ("Who's going" has its own veiled-names placeholder in ui.js.) */
   function upgrade(el) {
     if (el.dataset.loader === "1" || el.dataset.upgraded) return;
     const style = el.dataset.loader || "race";
     if (style === "wave") return wave(el);
+    if (style === "start") return startLine(el);
     const label = el.textContent.trim() || "Loading…";
     const compact = !!el.closest(".bk-card");
     const box = document.createElement("div");
@@ -330,6 +332,236 @@
         if (!box.isConnected) return document.removeEventListener("keydown", onKey);
         if (ev.code === "Space" && document.activeElement === document.body) { ev.preventDefault(); tack(performance.now(), false); }
       });
+    }
+  }
+
+  /* ---------- start — a start line, fleet shuffling below it, committee boat on the right running the sequence ----------
+     Sequence (race clock runs 60x): class flag up = 5:00, P up = 4:00, P down = 1:00, class down = GO. Sometimes a boat
+     is over early and X goes up. Between sequences AP flies (postponed), then drops: "warning signal in one minute". */
+  const SEQ = { prep: 1, one: 4, go: 5, goLen: 2.4, ap: 5 };           // real seconds
+  const CYCLE = SEQ.go + SEQ.goLen + SEQ.ap;
+  const NOTES = {
+    warn: "Class flag up: 5 minutes to the start.",
+    prep: "P flag up: 4 minutes. Preparatory signal.",
+    one: "P flag down: 1 minute. Find your gap on the line.",
+    go: "Class flag down. Go!",
+    ocs: "X flag: individual recall. Someone was over early!",
+    ap: "AP flying: postponed. Still waking up the booking system.",
+    apdown: "AP down: warning signal in one minute.",
+  };
+  const START_STAGES = [
+    [0, null],
+    [4.5, "Waking up the booking system…"],
+    [12, "Race officer's checking the line. Nearly there…"],
+    [25, "This is taking longer than usual. Check your signal, or refresh the page."],
+  ];
+  const ease = k => (k <= 0 ? 0 : k >= 1 ? 1 : k * k * (3 - 2 * k));
+
+  /* Flags, drawn once to small canvases, then flown in vertical strips so they ripple. */
+  function makeFlag(kind, dpr) {
+    const w = kind === "ap" ? 30 : 24, h = 16;
+    const c = document.createElement("canvas");
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+    const g = c.getContext("2d"); g.scale(dpr, dpr);
+    if (kind === "ap") {                                   // answering pennant: tapered, red and white stripes
+      g.beginPath(); g.moveTo(0, 0); g.lineTo(w, h * 0.32); g.lineTo(w, h * 0.68); g.lineTo(0, h); g.closePath(); g.clip();
+      for (let i = 0; i < 5; i++) { g.fillStyle = i % 2 ? "#ffffff" : "#e0242b"; g.fillRect(i * w / 5, 0, w / 5 + 0.5, h); }
+    } else if (kind === "p") {                             // P: blue with a white square
+      g.fillStyle = "#1d4ed8"; g.fillRect(0, 0, w, h); g.fillStyle = "#fff"; g.fillRect(w / 3, h / 3, w / 3, h / 3);
+    } else if (kind === "x") {                             // X: white with a blue cross
+      g.fillStyle = "#fff"; g.fillRect(0, 0, w, h); g.fillStyle = "#1d4ed8";
+      g.fillRect(w / 2 - 2, 0, 4, h); g.fillRect(0, h / 2 - 2, w, 4);
+    } else {                                               // class flag
+      g.fillStyle = "#ffc531"; g.fillRect(0, 0, w, h); g.fillStyle = "#03132e";
+      g.font = "800 7px Inter, system-ui, sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+      g.fillText("ILCA", w / 2, h / 2 + 0.5);
+    }
+    return { c, w, h };
+  }
+
+  function startLine(el) {
+    const label = el.textContent.trim() || "Loading…";
+    const box = document.createElement("div");
+    box.className = "bk-loader is-start" + (el.closest(".bk-card") ? " is-compact" : "");
+    box.dataset.loader = "1";
+    box.innerHTML = `
+      <div class="bk-loader-stage" aria-hidden="true"><canvas></canvas></div>
+      <p class="bk-loader-status" role="status" aria-live="polite"></p>
+      <p class="bk-loader-tip is-flag" aria-hidden="true"></p>`;
+    el.replaceWith(box);
+
+    const cv = box.querySelector("canvas"), ctx = cv.getContext("2d");
+    const status = box.querySelector(".bk-loader-status"), note = box.querySelector(".bk-loader-tip");
+    status.textContent = label;
+    const css = getComputedStyle(document.documentElement);
+    const col = (n, f) => (css.getPropertyValue(n).trim() || f);
+    const C = { sail: col("--blue-300", "#8fb5ff"), sailor: col("--t-champ", "#ffc531"), pin: col("--t-train", "#ff8a3d"),
+      line: "rgba(230,237,247,.38)", label: "rgba(230,237,247,.72)" };
+
+    let W = 0, H = 0, dpr = 1, flags = null, fleet = [], lineY = 0, pinX = 0, cbX = 0, cycle = -1, ocs = -1, noteKey = "";
+    const t0 = performance.now();
+
+    function size() {
+      const w = cv.clientWidth, h = cv.clientHeight;
+      if (!w || !h) return false;
+      if (w === W && h === H) return true;
+      W = w; H = h; dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      flags = { cls: makeFlag("cls", dpr), p: makeFlag("p", dpr), x: makeFlag("x", dpr), ap: makeFlag("ap", dpr) };
+      lineY = Math.round(H * 0.4); pinX = W * 0.08; cbX = W * 0.86;
+      const n = W < 320 ? 5 : 7, span = cbX - pinX - 44;
+      fleet = Array.from({ length: n }, (_, i) => ({
+        bx: pinX + 18 + span * (i + 0.5) / n + rnd(-4, 4),
+        by: rnd(26, H - lineY - 22),                       // how far below the line it hangs about
+        near: rnd(9, 15),                                  // how close it creeps in the last minute
+        ay: rnd(7, 12), ax: rnd(2, 5), f: rnd(0.9, 1.6), ph: rnd(0, 6),
+      }));
+      return true;
+    }
+
+    const L = () => Math.max(13, Math.min(18, W / 22));
+    function drawBoat(x, y, h, luff, side, now, alpha, warn) {
+      const l = L();
+      ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(h);
+      if (warn) {                                          // the boat that's over early blinks
+        ctx.strokeStyle = `rgba(224,36,43,${(0.55 + 0.45 * Math.sin(now / 90)).toFixed(3)})`; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, 0, l * 0.85, 0, 7); ctx.stroke();
+      }
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.moveTo(0, -l * 0.62);
+      ctx.bezierCurveTo(l * 0.26, -l * 0.25, l * 0.24, l * 0.3, l * 0.17, l * 0.4);
+      ctx.lineTo(-l * 0.17, l * 0.4);
+      ctx.bezierCurveTo(-l * 0.24, l * 0.3, -l * 0.26, -l * 0.25, 0, -l * 0.62);
+      ctx.fill();
+      const ang = luff ? Math.sin(now / 45 + x) * 0.3 : -side * 0.34;
+      ctx.save(); ctx.translate(0, -l * 0.2); ctx.rotate(ang);
+      ctx.strokeStyle = C.sail; ctx.lineWidth = 2.4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo((luff ? 0 : side) * l * 0.18, l * 0.35, 0, l * 0.72); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = C.sailor; ctx.beginPath(); ctx.arc(-(side || 1) * l * 0.2, l * 0.12, l * 0.11, 0, 7); ctx.fill();
+      ctx.restore();
+    }
+
+    // a flag on the committee boat's pole: p = 0 (lowered) … 1 (close up), slot 0 = top
+    function drawFlag(f, p, slot, now, poleX, poleTop, poleBot) {
+      if (p <= 0) return;
+      const y = poleBot - 16 + (poleTop + slot * 20 - (poleBot - 16)) * p;
+      const strip = 2;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p * 3);
+      for (let i = 0; i < f.w; i += strip) {
+        const off = Math.sin(i * 0.28 - now / 110) * (i / f.w) * 2.2;
+        ctx.drawImage(f.c, i * dpr, 0, strip * dpr, f.h * dpr, poleX - f.w + i - 1, y + off, strip + 0.4, f.h);
+      }
+      ctx.restore();
+    }
+
+    function draw(now, still) {
+      const t = still ? SEQ.prep + 1 : (now - t0) / 1000;
+      const k = Math.floor(t / CYCLE), c = t - k * CYCLE;
+      if (k !== cycle) { cycle = k; ocs = Math.random() < 0.45 ? Math.floor(Math.random() * fleet.length) : -1; }
+      const inSeq = c < SEQ.go + SEQ.goLen, g = c - SEQ.go, a = c - SEQ.go - SEQ.goLen;
+      const up = (on, off, at) => ease((at - on) / 0.35) * (1 - ease((at - off) / 0.35));
+
+      ctx.clearRect(0, 0, W, H);
+      // light ripples drifting down the course with the wind
+      ctx.strokeStyle = "rgba(230,237,247,.12)"; ctx.lineWidth = 1;
+      for (let i = 0; i < 14; i++) {
+        const x = (i * 97.3) % W, y = ((i * 53.1 + (still ? 0 : t * 14)) % (H + 20)) - 10;
+        ctx.beginPath(); ctx.moveTo(x - 5, y); ctx.quadraticCurveTo(x, y - 2, x + 5, y); ctx.stroke();
+      }
+
+      // the line: pin end (left) to the committee boat's flagpole (right)
+      ctx.setLineDash([3, 5]); ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pinX, lineY); ctx.lineTo(cbX, lineY); ctx.stroke(); ctx.setLineDash([]);
+      const bob = still ? 0 : Math.sin(t * 2.6) * 1.2;
+      ctx.fillStyle = "rgba(255,138,61,.2)"; ctx.beginPath(); ctx.arc(pinX, lineY + bob, 9, 0, 7); ctx.fill();
+      ctx.fillStyle = C.pin; ctx.beginPath(); ctx.arc(pinX, lineY + bob, 5, 0, 7); ctx.fill();
+
+      // committee boat, head to wind on its anchor, with a cabin
+      const cbL = Math.max(30, Math.min(44, W / 9)), cbY = lineY + cbL * 0.12 + bob * 0.5;
+      ctx.save(); ctx.translate(cbX, cbY);
+      ctx.fillStyle = "#dfe7f3";
+      ctx.beginPath();
+      ctx.moveTo(0, -cbL * 0.55);
+      ctx.bezierCurveTo(cbL * 0.3, -cbL * 0.25, cbL * 0.27, cbL * 0.32, cbL * 0.22, cbL * 0.45);
+      ctx.lineTo(-cbL * 0.22, cbL * 0.45);
+      ctx.bezierCurveTo(-cbL * 0.27, cbL * 0.32, -cbL * 0.3, -cbL * 0.25, 0, -cbL * 0.55);
+      ctx.fill();
+      ctx.fillStyle = "#8aa3c7"; ctx.fillRect(-cbL * 0.13, -cbL * 0.1, cbL * 0.26, cbL * 0.3);
+      ctx.restore();
+      const poleX = cbX, poleTop = 8, poleBot = cbY - cbL * 0.3;
+      ctx.strokeStyle = "rgba(230,237,247,.85)"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(poleX, poleBot); ctx.lineTo(poleX, poleTop - 2); ctx.stroke();
+
+      // flags and the note under the course
+      let key, clock;
+      if (inSeq) {
+        drawFlag(flags.cls, up(0, SEQ.go, c), 0, now, poleX, poleTop, poleBot);
+        drawFlag(flags.p, up(SEQ.prep, SEQ.one, c), 1, now, poleX, poleTop, poleBot);
+        if (ocs >= 0) drawFlag(flags.x, up(SEQ.go + 0.15, SEQ.go + 2, c), 1, now, poleX, poleTop, poleBot);
+        key = c < SEQ.prep ? "warn" : c < SEQ.one ? "prep" : c < SEQ.go ? "one" : ocs >= 0 && g < 2 ? "ocs" : "go";
+        const left = Math.max(0, Math.ceil(300 - c * 60));
+        clock = left > 0 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}` : "GO";
+      } else {
+        drawFlag(flags.ap, up(0.2, SEQ.ap - 0.8, a), 0, now, poleX, poleTop, poleBot);
+        key = a < SEQ.ap - 0.8 ? "ap" : "apdown"; clock = "AP";
+      }
+      ctx.fillStyle = C.label; ctx.font = "700 11px Inter, system-ui, 'Segoe UI', sans-serif"; ctx.textBaseline = "middle";
+      ctx.fillText(clock, 10, 14);
+      if (key !== noteKey) {
+        noteKey = key; note.classList.remove("in");
+        setTimeout(() => { note.textContent = NOTES[key]; note.classList.add("in"); }, reduce ? 0 : 160);
+      }
+
+      // the fleet
+      fleet.forEach((b, i) => {
+        const s = t * b.f + b.ph;
+        let x = b.bx + Math.sin(s * 0.6 + b.ph) * b.ax, y, h = Math.sin(s * 0.9) * 0.12, luff = true, side = 1, alpha = 1;
+        const isOcs = i === ocs;
+        if (inSeq && c >= SEQ.go) {
+          // GO: sheet in and sail off upwind on starboard tack
+          const goT = isOcs ? g - 1.4 : g;
+          const y0 = lineY + (isOcs ? -6 : b.near);
+          if (isOcs && g < 1.4) {                             // over early: dip back round the line, then go
+            const q = Math.sin(Math.PI * g / 1.4);
+            h = Math.PI * q; y = y0 + 22 * q; luff = false; side = -1;
+          } else {
+            const hk = ease(goT / 0.4), d = 34 * goT + 26 * goT * goT;
+            h = -0.6 * hk; luff = false; side = -1;
+            x += Math.sin(h) * d; y = y0 - Math.cos(h) * d;
+            alpha = 1 - ease((goT - 1.4) / 0.6);
+          }
+        } else {
+          // milling about: drifting back with the sail flapping, then sheeting in to creep forward again
+          const close = inSeq ? ease(c - SEQ.one) : 0;
+          const target = isOcs ? -6 : b.near, base = b.by + (target - b.by) * close;
+          const amp = b.ay * (1 - 0.75 * close) * (inSeq ? 1 : 1.3);
+          y = lineY + base + Math.sin(s) * amp;
+          const forward = Math.cos(s) > 0.15;               // moving up the screen
+          luff = !forward; side = Math.sin(s * 0.5) > 0 ? 1 : -1;
+          if (!inSeq) alpha = ease(a / 0.6);                // the fleet comes back for the next sequence
+        }
+        if (alpha > 0.01) drawBoat(x, y, h, luff, side, now, alpha, isOcs && inSeq && c >= SEQ.go && g < 2);
+      });
+    }
+
+    let raf = 0;
+    const stop = () => { cancelAnimationFrame(raf); clearInterval(slowTimer); };
+    let stageIdx = 0;
+    const slowTimer = setInterval(() => {
+      if (!box.isConnected) return stop();
+      const s = (performance.now() - t0) / 1000;
+      while (stageIdx + 1 < START_STAGES.length && s >= START_STAGES[stageIdx + 1][0]) {
+        stageIdx++; status.textContent = START_STAGES[stageIdx][1];
+        box.classList.toggle("is-slow", stageIdx === START_STAGES.length - 1);
+      }
+    }, 500);
+    if (reduce) requestAnimationFrame(now => { if (size()) draw(now, true); });
+    else {
+      const loop = now => { if (!box.isConnected) return stop(); if (size()) draw(now, false); raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
     }
   }
 
