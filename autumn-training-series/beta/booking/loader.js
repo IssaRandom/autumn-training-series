@@ -47,12 +47,16 @@
      race — the interactive course, for the first, main wait on a page (an Apps Script call, ~3–4 s+)
      wave — a boat riding a rolling sea, for shorter or secondary loads inside a page that's already showing
      start — the fleet shuffling on a start line while the committee boat (right) runs the flag sequence
-     Where each is used: race on /book "Loading camp…", start on /account "Loading your bookings…"; wave for
-     /account "Loading…" (gone as soon as the script runs), "Loading camps…" and /book "Loading your account…".
+     Where each is used: race on /book "Loading camp…", start on /account "Loading your bookings…", beat on /book
+     "Loading your account…". /account's first "Opening your bookings" is the same beat as static HTML, and "Open for
+     booking" uses skeleton rows (fx.css #9). wave is kept for the loader-test page.
+     beat — the small version of race (POLISH-AUDIT #14): a boat tacking up to the mark plus a coach line from
+            data-line. Same markup as the static one on the calendar and guides; styles in fx.css.
      No data-loader means race. ("Who's going" has its own veiled-names placeholder in ui.js.) */
   function upgrade(el) {
     if (el.dataset.loader === "1" || el.dataset.upgraded) return;
     const style = el.dataset.loader || "race";
+    if (style === "beat") return beat(el);
     if (style === "wave") return wave(el);
     if (style === "start") return startLine(el);
     const label = el.textContent.trim() || "Loading…";
@@ -70,6 +74,18 @@
       <p class="bk-loader-hint" aria-hidden="true">${reduce ? "" : "Tap the course to tack"}<span data-tacks></span></p>`;
     el.replaceWith(box);
     run(box, label);
+  }
+
+  /* Keep in step with the static copies in calendar/index.html and the guides. */
+  const BEAT_SVG = `<svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg>`;
+  function beat(el) {
+    const box = document.createElement("div");
+    box.className = "beat";
+    box.dataset.upgraded = "1";
+    box.innerHTML = `${BEAT_SVG}<p class="beat-line" role="status"><b></b> <span></span></p>`;
+    box.querySelector("b").textContent = el.textContent.trim() || "Loading…";
+    box.querySelector("span").textContent = el.dataset.line || "";
+    el.replaceWith(box);
   }
 
   function wave(el) {

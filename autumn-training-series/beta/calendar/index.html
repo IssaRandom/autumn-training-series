@@ -63,8 +63,8 @@
       </div>
 
       <div class="tb-row tb-filters">
-        <div class="chips" role="group" aria-label="Event types (also the colour key)" data-type-chips></div>
-        <div class="zoom" data-zoom-ui>
+        <div class="chips" role="group" aria-label="Event types (also the colour key)" data-type-chips><span class="skel skel-pill" style="--w:118px" aria-hidden="true"></span><span class="skel skel-pill" style="--w:104px;--i:1" aria-hidden="true"></span><span class="skel skel-pill" style="--w:126px;--i:2" aria-hidden="true"></span><span class="skel skel-pill" style="--w:96px;--i:3" aria-hidden="true"></span><span class="skel skel-pill" style="--w:110px;--i:4" aria-hidden="true"></span></div>
+        <div class="zoom" data-zoom-ui hidden>
           <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out">−</button>
           <input type="range" min="0" max="100" value="0" aria-label="Zoom" data-zoom-range>
           <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in">+</button>
@@ -79,10 +79,53 @@
     <div class="cal-hint" data-hint hidden></div>
 
     <!-- Year plan: weekday-aligned month rows (desktop default) -->
-    <section class="yp" data-year-view aria-label="Year plan" tabindex="0"></section>
+    <!-- Both start with a skeleton (fx.css #9) that calendar.js swaps out on its first render. Until then fx.css shows
+         the year plan on desktop and the month cards on phones; setView() then hides whichever isn't in use. -->
+    <section class="yp" data-year-view aria-label="Year plan" tabindex="0">
+      <div class="skel-cal">
+        <div class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Calendar loading.</b> Plan the season, then sail it.</p></div>
+        <div aria-hidden="true">
+          <div class="skel-row"><span class="skel" style="--i:0"></span><span class="skel" style="--i:0"><i class="skel-bar" style="--l:23%;--w:14%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:1"></span><span class="skel" style="--i:1"><i class="skel-bar" style="--l:13%;--w:21%;--c:var(--t-bts)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:2"></span><span class="skel" style="--i:2"><i class="skel-bar" style="--l:50%;--w:17%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:3"></span><span class="skel" style="--i:3"><i class="skel-bar" style="--l:31%;--w:8%;--c:var(--t-train)"></i><i class="skel-bar" style="--l:59%;--w:14%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:4"></span><span class="skel" style="--i:4"><i class="skel-bar" style="--l:15%;--w:16%;--c:var(--t-intl)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:5"></span><span class="skel" style="--i:5"><i class="skel-bar" style="--l:19%;--w:11%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:6"></span><span class="skel" style="--i:6"><i class="skel-bar" style="--l:11%;--w:17%;--c:var(--t-bts)"></i><i class="skel-bar" style="--l:54%;--w:8%;--c:var(--t-no)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:7"></span><span class="skel" style="--i:7"><i class="skel-bar" style="--l:21%;--w:12%;--c:var(--t-intl)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:8"></span><span class="skel" style="--i:8"><i class="skel-bar" style="--l:19%;--w:17%;--c:var(--t-champ)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:9"></span><span class="skel" style="--i:9"><i class="skel-bar" style="--l:27%;--w:9%;--c:var(--t-bts)"></i><i class="skel-bar" style="--l:52%;--w:13%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:10"></span><span class="skel" style="--i:10"><i class="skel-bar" style="--l:12%;--w:17%;--c:var(--t-train)"></i><i class="skel-bar" style="--l:36%;--w:15%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:11"></span><span class="skel" style="--i:11"><i class="skel-bar" style="--l:24%;--w:17%;--c:var(--t-intl)"></i><i class="skel-bar" style="--l:58%;--w:20%;--c:var(--t-champ)"></i></span></div>
+        </div>
+      </div>
+    </section>
 
     <!-- Months: classic 7-column month grids + readable list (mobile default) -->
-    <section class="mv" data-month-view aria-label="Months" hidden></section>
+    <section class="mv" data-month-view aria-label="Months">
+      <div class="skel-cal">
+        <div class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Calendar loading.</b> Plan the season, then sail it.</p></div>
+        <div class="mcard skel-mcard" aria-hidden="true">
+          <span class="skel skel-line" style="--w:48%;font-size:20px"></span>
+          <span class="skel skel-week" style="--i:1"></span>
+          <span class="skel skel-week" style="--i:2"><i class="skel-bar" style="--l:30%;--w:40%;--c:var(--t-train)"></i></span>
+          <span class="skel skel-week" style="--i:3"></span>
+          <span class="skel skel-week" style="--i:4"><i class="skel-bar" style="--l:58%;--w:30%;--c:var(--t-champ)"></i></span>
+          <span class="skel skel-week" style="--i:5"></span>
+          <span class="skel skel-line" style="--w:72%;--i:6;margin-top:16px"></span>
+          <span class="skel skel-line" style="--w:56%;--i:7"></span>
+        </div>
+        <div class="mcard skel-mcard" aria-hidden="true">
+          <span class="skel skel-line" style="--w:40%;font-size:20px"></span>
+          <span class="skel skel-week" style="--i:1"><i class="skel-bar" style="--l:4%;--w:26%;--c:var(--t-bts)"></i></span>
+          <span class="skel skel-week" style="--i:2"></span>
+          <span class="skel skel-week" style="--i:3"><i class="skel-bar" style="--l:44%;--w:42%;--c:var(--t-no)"></i></span>
+          <span class="skel skel-week" style="--i:4"></span>
+          <span class="skel skel-week" style="--i:5"></span>
+          <span class="skel skel-line" style="--w:64%;--i:6;margin-top:16px"></span>
+        </div>
+      </div>
+    </section>
 
     <p class="cal-source wrap">Dates from ILCA UK, ILCA and EurILCA, checked 11 Nov 2026. Striped = provisional (posh for “probably”). Always check the Notice of Race before entering.</p>
   </main>

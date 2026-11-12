@@ -58,4 +58,11 @@
   });
 
   window.BTSfx = Object.assign(window.BTSfx || {}, { splash });
+
+  /* #9 picture skeletons: fx.css runs a wind-streak shimmer behind an image until it's here (or failed). */
+  document.querySelectorAll("img").forEach(img => {
+    const done = () => img.classList.add("is-loaded");
+    if (img.complete) done();
+    else { img.addEventListener("load", done, { once: true }); img.addEventListener("error", done, { once: true }); }
+  });
 })();

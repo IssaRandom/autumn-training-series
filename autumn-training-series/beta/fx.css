@@ -39,3 +39,86 @@
   .fx-ring { animation-duration: 200ms; }
   .fx-drop, .fx-wave { display: none; }
 }
+
+/* ---------- #9 Skeletons that hold their shape ----------
+   Grey blocks sized like the real content, put in the container the JS later fills (innerHTML swaps them out, so no
+   extra code and no layout shift). The shimmer is a wind streak: a soft, slanted band blowing left to right.
+   Stagger a group with style="--i:n". */
+.skel { position: relative; display: block; overflow: hidden; isolation: isolate; border-radius: var(--radius-sm); background: var(--surface-2); }
+.skel::after {
+  content: ""; position: absolute; inset: 0 -30%; pointer-events: none;
+  background: linear-gradient(90deg, transparent 20%, color-mix(in srgb, var(--blue-300) 12%, transparent) 40%,
+    color-mix(in srgb, var(--blue-300) 28%, transparent) 50%, color-mix(in srgb, var(--blue-300) 12%, transparent) 60%, transparent 80%);
+  transform: translateX(-100%) skewX(-20deg);
+  animation: skel-streak 1.8s var(--ease) infinite; animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes skel-streak { 0% { transform: translateX(-100%) skewX(-20deg); } 70%, 100% { transform: translateX(100%) skewX(-20deg); } }
+.skel-line { height: .7em; margin: .475em 0; width: var(--w, 100%); border-radius: 99px; }
+/* a line that only exists where the real text wraps onto it (phones) */
+@media (min-width: 521px) { .skel-phone { display: none; } }
+.skel-pill { display: inline-block; height: 32px; width: var(--w, 96px); border-radius: 8px; }
+/* the colour-key hint inside calendar skeletons: faint type colours where the bars will be */
+.skel-bar { position: absolute; left: var(--l); width: var(--w); bottom: 7px; height: 9px; border-radius: 99px; background: color-mix(in srgb, var(--c, var(--blue-300)) 40%, transparent); }
+
+/* Pictures: the same streak runs behind the image until it arrives (fx.js marks it .is-loaded). */
+:is(.card-img, .g-figure, .v-map-img, .feature-img, .coach-photo) img:not(.is-loaded) {
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, var(--blue-300) 22%, transparent) 50%, transparent 62%) no-repeat var(--surface-2);
+  background-size: 250% 100%; animation: skel-img 1.8s var(--ease) infinite;
+}
+@keyframes skel-img { 0% { background-position: 105% 0; } 70%, 100% { background-position: -5% 0; } }
+
+/* ---------- #14 One loader language: the small "beat to the mark" ----------
+   The booking loader's course, shrunk: laylines, the windward mark and a boat tacking up to it, plus a coach line.
+   Static HTML where a page fills itself in (calendar, guides); booking/loader.js builds the same markup for
+   data-loader="beat" (account). Only ever shown while something is really loading. */
+.beat { display: grid; justify-items: center; align-content: center; gap: 10px; padding: 18px 12px; text-align: center; }
+.beat-course { display: block; width: 60px; height: 70px; overflow: visible; }
+.beat-lay { fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 2 3; }
+.beat-mark { fill: var(--t-train, var(--accent)); transform-box: fill-box; transform-origin: center; animation: beat-bob 1.4s ease-in-out infinite; }
+.beat-boat { animation: beat-sail 3.6s linear infinite; }
+.beat-hull { fill: var(--heading); }
+.beat-sail { fill: none; stroke: var(--blue-300); stroke-width: 1.5; stroke-linecap: round; animation: beat-flip 3.6s steps(1) infinite; }
+.beat-line { margin: 0; max-width: 34ch; font-size: 14px; line-height: 1.45; color: var(--muted); }
+.beat-line b { display: block; font-weight: 700; color: var(--heading); }
+@keyframes beat-bob { 50% { transform: translateY(1px) scale(1.12); } }
+/* Three legs at 40° to the wind (dx = 0.84·dy); the second tack is on the layline, the last leg fetches the mark. */
+@keyframes beat-sail {
+  0% { transform: translate(10.3px, 52px) rotate(40deg); opacity: 0; }
+  6% { opacity: 1; }
+  34% { transform: translate(23.7px, 36px) rotate(40deg); }
+  40% { transform: translate(23.7px, 35.5px) rotate(-40deg); }
+  64% { transform: translate(12.4px, 22px) rotate(-40deg); }
+  70% { transform: translate(12.4px, 21.5px) rotate(40deg); }
+  88% { transform: translate(22.6px, 9.5px) rotate(40deg); opacity: 1; }
+  100% { transform: translate(25px, 7px) rotate(80deg); opacity: 0; }
+}
+@keyframes beat-flip { 0% { transform: scaleX(1); } 37% { transform: scaleX(-1); } 67% { transform: scaleX(1); } }
+
+/* Calendar (calendar/index.html): a year-plan skeleton in .yp and month cards in .mv. The JS render replaces both;
+   until then the wrong one for the screen width is hidden, so phones see month cards and desktops the year plan. */
+@media (min-width: 701px) { .mv:has(> .skel-cal) { display: none; } }
+@media (max-width: 700px) { .yp:has(> .skel-cal) { display: none; } }
+.skel-cal { position: relative; padding: 38px 12px 12px; }
+.skel-cal > .beat { position: absolute; z-index: 1; left: 50%; top: 22%; transform: translateX(-50%); width: min(92%, 360px); border-radius: var(--radius); background: color-mix(in srgb, var(--bg-2) 88%, transparent); box-shadow: 0 0 0 1px var(--line); }
+.skel-row { display: flex; gap: 10px; align-items: stretch; height: 44px; margin-top: 8px; }
+.skel-row > .skel:first-child { flex: 0 0 40px; }
+.skel-row > .skel:last-child { flex: 1; border-radius: 4px; }
+.mv > .skel-cal { padding: 0; display: grid; gap: 18px; }
+.mv > .skel-cal > .beat { position: static; transform: none; width: auto; box-shadow: none; background: none; padding-bottom: 0; }
+.skel-mcard { padding: 14px 16px 12px; }
+.skel-mcard .skel-week { position: relative; height: 46px; margin-top: 6px; }
+/* Guides: the contents list and the venue events list hold their height too */
+.toc-list .skel-line { margin: 10px 0; }
+.v-events .skel { height: 62px; }
+@media (max-width: 520px) { .v-events .skel { height: 92px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* calm fade instead of the streak and the sailing boat */
+  .skel::after { display: none; }
+  .skel, .beat-course { animation: skel-fade 2.4s ease-in-out infinite alternate; }
+  :is(.card-img, .g-figure, .v-map-img, .feature-img, .coach-photo) img:not(.is-loaded) { animation: none; background-image: none; }
+  .beat-boat { animation: none; transform: translate(18px, 31px) rotate(-40deg); }
+  .beat-sail { animation: none; transform: scaleX(-1); }
+  .beat-mark { animation: none; }
+}
+@keyframes skel-fade { from { opacity: .55; } to { opacity: 1; } }

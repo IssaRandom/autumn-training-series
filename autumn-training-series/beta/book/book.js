@@ -68,7 +68,7 @@
       return;
     }
     if (!me) {
-      step.innerHTML = `<p class="bk-muted bk-loading" data-loader="wave">Loading your account…</p>`;
+      step.innerHTML = `<p class="bk-muted bk-loading" data-loader="beat" data-line="Check the kit list while you wait.">Loading your account…</p>`;
       try { me = await B.call("me"); }
       catch (e) {
         if (e.code === "AUTH") { me = null; next(); return; }

@@ -100,7 +100,8 @@
         ${upcoming.length ? upcoming.map(b => card(b, sailorsById[b.sailor_id])).join("") : `
           <div class="bk-card bk-empty"><h2 class="bk-h">No upcoming bookings</h2>
           <p class="bk-muted">Pick a camp from the calendar or the list below.</p></div>`}
-        <section class="bk-card" data-open-camps><h2 class="bk-h3">Open for booking</h2><p class="bk-muted bk-loading" data-loader="wave">Loading camps…</p></section>
+        <section class="bk-card" data-open-camps><h2 class="bk-h3">Open for booking</h2><p class="sr-only" role="status">Loading camps…</p>
+          <div class="bk-pick" aria-hidden="true">${[[62, 80], [48, 70], [55, 76]].map(([a, b], i) => `<div class="bk-pick-item"><span style="flex:1"><span class="skel skel-line" style="--w:${a}%;--i:${i}"></span><span class="skel skel-line" style="--w:${b}%;--i:${i};font-size:14px"></span><span class="skel skel-line skel-phone" style="--w:${b - 30}%;--i:${i};font-size:14px"></span></span><span class="skel skel-line" style="--w:44px;--i:${i}"></span></div>`).join("")}</div></section>
         ${past.length ? `<details class="bk-card bk-details"><summary>Past and cancelled (${past.length})</summary><div class="bk-wrap" style="width:100%">${past.map(b => card(b, sailorsById[b.sailor_id], true)).join("")}</div></details>` : ""}
       </div>`;
 
