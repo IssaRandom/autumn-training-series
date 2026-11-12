@@ -195,7 +195,15 @@ html.cal-lock .cal-source { display: none; }
 /* ---------- Filter transitions (calendar.js play()) ---------- */
 .fx-layer { position: fixed; z-index: 15; overflow: hidden; pointer-events: none; }
 /* bars afloat on the swash (calendar.js play): drawn above the water, with a soft shadow on it */
-.fx-layer .cal-bar:is(.is-ghost, .is-float) { position: absolute; z-index: 1; margin: 0; transform-origin: 50% 70%; will-change: transform; box-shadow: 0 5px 12px rgba(0, 18, 34, .38); }
+/* transition: none — .cal-bar's own 0.2 s transform transition made floaters lag the foam and show in their slot
+   below the wave before it arrived (James 12 Nov: "appearing beneath the wave") */
+.fx-layer .cal-bar:is(.is-ghost, .is-float) { position: absolute; z-index: 1; margin: 0; transform-origin: 50% 70%; will-change: transform; transition: none; box-shadow: 0 5px 12px rgba(0, 18, 34, .38); }
+/* phone month cards: event list rows float in and out too. The row is wrapped in a bare .mlist so it keeps its layout */
+.fx-layer .fx-item { position: absolute; z-index: 2; margin: 0; padding: 0; border: 0; transform-origin: 50% 70%; will-change: transform; transition: none; }
+.fx-layer .fx-item button { height: 100%; background: var(--surface-2); transition: none; box-shadow: 0 0 0 1.5px rgba(4, 20, 40, .9), 0 0 0 3px rgba(255, 255, 255, .5), 0 8px 18px rgba(0, 18, 34, .55); }
+.fx-layer .fx-item.is-ghost { z-index: 1; }
+.fx-layer .fx-item.is-ghost button { box-shadow: 0 5px 12px rgba(0, 18, 34, .38); }
+.fx-layer .fx-item.is-ghost .n { text-decoration: line-through; }
 /* incoming bars: crisp dark rim + deeper shadow so they stand out against the white foam they ride on */
 .fx-layer .cal-bar.is-float { box-shadow: 0 0 0 1.5px rgba(4, 20, 40, .9), 0 0 0 3px rgba(255, 255, 255, .55), 0 8px 18px rgba(0, 18, 34, .55); filter: saturate(1.15) brightness(1.06); z-index: 2; }
 .fx-layer .cal-bar.is-ghost { text-decoration: line-through; filter: saturate(.75); }

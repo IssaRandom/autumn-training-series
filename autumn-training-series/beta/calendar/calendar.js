@@ -342,12 +342,16 @@
   }
   const onScreen = (r, vb) => r.bottom > vb.top && r.top < vb.bottom && r.right > vb.left && r.left < vb.right;
   function snapshot(root) {
-    const vb = viewBox(), bars = new Map(), items = new Set();
+    const vb = viewBox(), bars = new Map(), items = new Map();
     $$(".cal-row", root).forEach((row, ri) => $$(".cal-bar", row).forEach(b => {
       const r = b.getBoundingClientRect();
       bars.set(`${b.dataset.id}|${ri}`, { el: b, r, on: onScreen(r, vb) });
     }));
-    $$(".mlist button[data-id]", root).forEach(b => items.add(`${b.closest("[data-m]").dataset.m}|${b.dataset.id}`));
+    // list rows keep their element and place too, so removed ones can be floated off by the wave
+    $$(".mlist button[data-id]", root).forEach(b => {
+      const r = b.getBoundingClientRect();
+      items.set(`${b.closest("[data-m]").dataset.m}|${b.dataset.id}`, { el: b, r, on: onScreen(r, vb) });
+    });
     return { bars, items };
   }
   // keep the month you are looking at in the same place while rows grow or shrink
@@ -391,6 +395,16 @@
       fontSize: cs.fontSize, padding: cs.padding, justifyContent: cs.justifyContent, borderRadius: cs.borderRadius });
     return g;
   }
+  // a month-list row afloat: the button only looks right inside .mlist, so wrap the clone in a bare one
+  function floaterRow(src, cls, x, y, w, h) {
+    const wrap = document.createElement("div"), g = src.cloneNode(true);
+    wrap.className = `mlist fx-item ${cls}`;
+    g.removeAttribute("data-id"); g.tabIndex = -1;
+    g.classList.remove("is-new");
+    wrap.appendChild(g);
+    Object.assign(wrap.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
+    return wrap;
+  }
   function play(root, before) {
     if (floatRun) floatRun.cancel();
     const vb = viewBox(), seen = new Set(), vh = Math.max(1, vb.bottom - vb.top);
@@ -403,6 +417,8 @@
       // new bars ride right on the bright lip so they read clearly; leaving bars sink deeper into the foam
       el, kind, x, top, w, h, real, cx: x + w / 2, y: top, off: kind === "in" ? rnd(.02, .22) * F : rnd(.15, .85) * F,
       over: Math.min(70, vh * .14) * rnd(.6, 1.1), floor: vh - h - 6 - rnd(0, .7) * F,
+      // wide things (phone list rows) roll and grow less, or their ends swing a long way
+      wide: Math.min(1, 140 / Math.max(1, w)),
       ph: rnd(0, 6.3), ph2: rnd(0, 6.3), bw: rnd(.0045, .0075), rw: rnd(.003, .005), tilt: rnd(3, 6) * (Math.random() < .5 ? -1 : 1)
     });
     $$(".cal-row", root).forEach((row, ri) => $$(".cal-bar", row).forEach(b => {
@@ -431,6 +447,27 @@
       layer.appendChild(g);
       if (sw) afloat(g, "out", x, top, o.r.width, o.r.height);
       else g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: "forwards" }).finished.then(() => g.remove(), () => g.remove());
+    });
+    // phone month cards: new list rows ride in on the wave and are dropped off as it drains, gone ones float away
+    const seenItems = new Set();
+    $$(".mlist button[data-id]", root).forEach(b => {
+      const k = `${b.closest("[data-m]").dataset.m}|${b.dataset.id}`;
+      seenItems.add(k);
+      if (before.items.has(k)) return;
+      const r = b.getBoundingClientRect();
+      if (!sw || !onScreen(r, vb)) { b.classList.add("is-new"); return; }
+      const x = r.left - vb.left, top = r.top - vb.top;
+      b.style.visibility = "hidden";
+      const g = floaterRow(b, "is-float", x, top, r.width, r.height);
+      layer.appendChild(g);
+      afloat(g, "in", x, top, r.width, r.height, b);
+    });
+    if (sw) before.items.forEach((o, k) => {
+      if (seenItems.has(k) || !o.on) return;
+      const x = o.r.left - vb.left, top = o.r.top - vb.top;
+      const g = floaterRow(o.el, "is-ghost", x, top, o.r.width, o.r.height);
+      layer.appendChild(g);
+      afloat(g, "out", x, top, o.r.width, o.r.height);
     });
     if (sw && floats.length) {
       let raf = 0;
@@ -471,8 +508,8 @@
           }
           const bob = Math.sin(t * f.bw + f.ph) * 3 * lift;
           const sway = Math.sin(t * f.rw * .8 + f.ph2) * 6 * lift;
-          const rot = (Math.sin(t * f.rw + f.ph2) * f.tilt + (f.kind === "out" ? (back ? -2 : 2) : 0)) * lift;
-          const sc = f.kind === "in" ? 1 + .07 * lift : 1;   // a touch bigger while afloat, easing back to size as it lands
+          const rot = (Math.sin(t * f.rw + f.ph2) * f.tilt + (f.kind === "out" ? (back ? -2 : 2) : 0)) * lift * f.wide;
+          const sc = f.kind === "in" ? 1 + .07 * lift * f.wide : 1;   // a touch bigger while afloat, easing back to size as it lands
           f.el.style.transform = `translate(${sway.toFixed(1)}px, ${(y - f.top + bob).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
           if (f.kind === "out") f.el.style.opacity = y + f.h < 0 ? 0 : 1;
         }
@@ -481,9 +518,6 @@
       floatRun = { cancel: finish };
       tick();
     }
-    $$(".mlist button[data-id]", root).forEach(b => {
-      if (!before.items.has(`${b.closest("[data-m]").dataset.m}|${b.dataset.id}`)) b.classList.add("is-new");
-    });
   }
   const delta = $("[data-delta]");
   let deltaT;
