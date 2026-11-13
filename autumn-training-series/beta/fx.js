@@ -19,20 +19,24 @@
     ring.style.setProperty("--s", Math.ceil(Math.hypot(r.width, r.height) / 7));
     btn.appendChild(ring);
     ring.addEventListener("animationend", () => ring.remove(), { once: true });
-    if (reduce.matches) return;
+    spray(x, y);
+  }
 
-    // spray: droplets thrown up and out like a bow wave hitting a chop, then falling back
-    const n = 13 + Math.round(Math.random() * 4);
+  // spray: droplets thrown up and out like a bow wave hitting a chop, then falling back.
+  // o.n droplets, o.size / o.power scale them down for small things (calendar bars landing, 13 Nov)
+  function spray(x, y, o = {}) {
+    if (reduce.matches) return;
+    const n = o.n || 13 + Math.round(Math.random() * 4), sz = o.size || 1, pw = o.power || 1;
     for (let i = 0; i < n; i++) {
       const d = document.createElement("span");
       d.className = "fx-drop"; d.setAttribute("aria-hidden", "true");
-      const size = 6 + Math.random() * 6;
+      const size = (6 + Math.random() * 6) * sz;
       d.style.setProperty("--d", `${size}px`);
       document.body.appendChild(d);
       const ang = (-90 + (Math.random() * 2 - 1) * 78) * Math.PI / 180;   // mostly upward fan
-      const v = 48 + Math.random() * 56;
+      const v = (48 + Math.random() * 56) * pw;
       const dx = Math.cos(ang) * v, dy = Math.sin(ang) * v;
-      const fall = 26 + Math.random() * 30;
+      const fall = (26 + Math.random() * 30) * pw;
       const x0 = x - size / 2, y0 = y - size / 2;
       const dur = 460 + Math.random() * 180;
       d.animate([
@@ -57,7 +61,7 @@
     if (btn && !btn.disabled) splash(btn);
   });
 
-  window.BTSfx = Object.assign(window.BTSfx || {}, { splash });
+  window.BTSfx = Object.assign(window.BTSfx || {}, { splash, spray });
 
   /* #9 picture skeletons: fx.css runs a wind-streak shimmer behind an image until it's here (or failed). */
   document.querySelectorAll("img").forEach(img => {

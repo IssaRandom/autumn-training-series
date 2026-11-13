@@ -223,6 +223,31 @@ html.cal-lock .cal-source { display: none; }
 .cal-delta span { opacity: .65; font-weight: 500; }
 @media (max-width: 700px) { .cal-delta { bottom: 56px; } }
 
+/* Off-screen change pointers (calendar.js pointTo, James 13 Nov): a pill at the edge of the calendar for changes you
+   can't see, arrow bobbing the way to go. Tap to scroll there; the month/bars flash when you arrive. */
+.cal-point { position: fixed; z-index: 35; display: inline-flex; align-items: center; gap: 7px; margin: 0; padding: 7px 13px 7px 9px;
+  border: 0; border-radius: 99px; background: var(--accent); color: #fff; font: inherit; font-size: 13px; font-weight: 600; line-height: 1;
+  white-space: nowrap; cursor: pointer; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 8px 22px rgba(0, 0, 0, .45);
+  animation: cal-point-in .38s var(--ease) both; transition: opacity .25s, scale .25s; }
+.cal-point:hover { filter: brightness(1.1); }
+.cal-point:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.cal-point.is-up, .cal-point.is-down { translate: -50% 0; }
+.cal-point.is-left, .cal-point.is-right { translate: 0 -50%; }
+.cal-point.is-gone { opacity: 0; scale: .85; pointer-events: none; }
+.cal-point i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 255, 255, .2);
+  animation: cal-point-bob 1.1s ease-in-out infinite; }
+.cal-point svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.cal-point.is-up { --bx: 0; --by: -3px; } .cal-point.is-up svg { rotate: 180deg; }
+.cal-point.is-down { --bx: 0; --by: 3px; }
+.cal-point.is-left { --bx: -3px; --by: 0; } .cal-point.is-left svg { rotate: 90deg; }
+.cal-point.is-right { --bx: 3px; --by: 0; } .cal-point.is-right svg { rotate: -90deg; }
+@keyframes cal-point-in { from { opacity: 0; scale: .7; } }
+@keyframes cal-point-bob { 50% { transform: translate(var(--bx), var(--by)); } }
+/* where they landed: the month gets a brief accent outline */
+.yp-month.is-here, .mcard.is-here { animation: cal-here 1.8s var(--ease) both; }
+@keyframes cal-here { 0%, 45% { outline: 2px solid var(--accent); outline-offset: -2px; } 100% { outline: 2px solid transparent; outline-offset: -2px; } }
+@media (prefers-reduced-motion: reduce) { .cal-point, .cal-point i { animation: none; } }
+
 /* ============================================================
    Round 5 (11 Nov): compact top, Filter sheet, Today pill,
    entry-close reminder, Who's going, venue guide in the sheet

@@ -11,6 +11,9 @@
    across from the left (1) or right (-1) edge and fades out as it leaves, no hold or backwash. The wave is drawn in its
    own "wave space" (x' along the front, y' the way it travels) and turned onto the screen with a base transform, so
    front(x', t) takes the cross-axis position (screen y) and returns how far the front has travelled from its edge.
+   v6 (13 Nov): the side sweep runs at a slight angle (opt.tilt, random lean each wash) so it reads as swash, not a wipe;
+   phones and touch screens get a lite drawing (no blurred shadows, 1x canvas, coarser front, fewer holes) so it
+   holds its frame rate; starting a new wash releases the old one, which fades out over ~180 ms instead of vanishing.
    front()/time() let callers float things on the water (calendar.js rides bars in and out on it).
    reach() gives the coverage fraction p (0..1) at which the front crosses (x, y) so callers can time things to it. */
 (function () {
@@ -66,14 +69,17 @@
   window.BTSswash = function (layer, opt) {
     const SX = layer.clientWidth, SY = layer.clientHeight;
     if (!SX || !SY || !document.createElement("canvas").getContext) return null;
-    if (live) live.stop();
+    if (live) live.release();
     const dir = opt.dir === 1 || opt.dir === -1 ? opt.dir : 0;
     const W = dir ? SY : SX, H = dir ? SX : SY;   // wave space: W along the front, H the way it travels
     const SW = dir ? opt.sweep : opt.swash, HO = dir ? 0 : opt.hold, BA = dir ? opt.fade : opt.back;
     const TOTAL = dir ? SW + BA * .5 : SW + HO + BA;   // sideways the fade starts while the front is leaving
     const rand = rng((Math.random() * 1e9) | 0);
     const L = Math.min(60, Math.max(18, H * .08));   // how far tongues of water run ahead of the mean line
-    const M = L + 14;                                 // start and finish fully off the top, end the run fully past the bottom
+    // lean of the front across the screen (rise per px); sideways only, random way each wash
+    const slope = dir ? (opt.tilt != null ? opt.tilt : .07) * (rand() < .5 ? -1 : 1) : 0;
+    const M = L + 14 + Math.abs(slope) * W / 2;      // start and finish fully off the top, end the run fully past the bottom
+    const lite = opt.lite != null ? opt.lite : window.innerWidth < 760 || matchMedia("(pointer: coarse)").matches;
     const F0 = Math.min(110, Math.max(32, H * .16)); // foam band thickness at its fullest
 
     const edgeF = field(rand, [[3, W * .45, W * 1.3, 1, .0007], [4, 70, 170, .32, .0018], [6, 12, 30, .08, .004]]);
@@ -93,11 +99,11 @@
     }
     const ampOf = s => L * (s.b ? 1 - .35 * s.b : .5 + .5 * s.g);   // tongues grow on the run up, flatten on the drain
     const reach = (x, y, back) => {
-      const t = dir ? SW * .5 : back ? SW + HO + BA * .5 : SW * .5, off = edgeF(x, t) * ampOf(phase(t));
+      const t = dir ? SW * .5 : back ? SW + HO + BA * .5 : SW * .5, off = edgeF(x, t) * ampOf(phase(t)) + slope * (x - W / 2);
       return Math.min(1, Math.max(0, (y - off + M) / (H + 2 * M)));
     };
 
-    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    const dpr = lite ? 1 : Math.min(1.5, window.devicePixelRatio || 1);
     // wave space -> screen: (x', y') -> (y', x') from the left, (SX - y', x') from the right
     const base = dir ? [0, dpr, dir * dpr, 0, dir < 0 ? SX * dpr : 0, 0] : [dpr, 0, 0, dpr, 0, 0];
     // shadows ignore the transform, so point their offset the way the wave is travelling
@@ -113,7 +119,7 @@
     const caustic2 = ctx.createPattern(T.deep, "repeat");
     const foamNet = fx.createPattern(T.foam, "repeat");
 
-    const STEP = 6, xs = [];
+    const STEP = lite ? 10 : 6, xs = [];
     for (let x = -STEP; x <= W + STEP; x += STEP) xs.push(x);
     const n = xs.length, ys = new Float32Array(n), fb = new Float32Array(n), lb = new Float32Array(n);
     const at = x => Math.min(n - 1, Math.max(0, Math.round((x + STEP) / STEP)));
@@ -121,7 +127,7 @@
     // holes in the foam: d = depth into the band (0 front, 1 back); bigger towards the back, like the footage
     // each hole is a lumpy 7-sided blob, not a circle
     const holes = [];
-    for (let i = Math.round(W * .17); i--;) {
+    for (let i = Math.round(W * (lite ? .1 : .17)); i--;) {
       const d = Math.pow(rand(), .65), sh = [];
       for (let j = 0; j < 7; j++) sh.push(.7 + rand() * .55);
       holes.push({ x: rand() * W, d, r: (.9 + rand() * (1 + 5.5 * d * d)) * F0 / 60, rot: rand() * TAU, sq: .55 + rand() * .45, sh });
@@ -138,13 +144,14 @@
 
     function frame(t) {
       const s = phase(t), A = ampOf(s), mean = -M + s.p * (H + 2 * M), b = s.b;
-      const fade = dir ? Math.max(0, Math.min(1, t / 60, 1 - b * b * (3 - 2 * b)))
-        : Math.max(0, Math.min(1, t / 90, (TOTAL - t) / 160));
+      const rf = rel ? Math.max(0, 1 - (performance.now() - rel) / 180) : 1;   // released: quick fade out
+      const fade = rf * (dir ? Math.max(0, Math.min(1, t / 60, 1 - b * b * (3 - 2 * b)))
+        : Math.max(0, Math.min(1, t / 90, (TOTAL - t) / 160)));
       const thick = F0 * (b ? 1 - .62 * b : .55 + .45 * s.g);
       const net = F0 * (.3 + 1.3 * b);
       for (let i = 0; i < n; i++) {
         const x = xs[i];
-        ys[i] = mean + edgeF(x, t) * A;
+        ys[i] = mean + edgeF(x, t) * A + slope * (x - W / 2);
         fb[i] = ys[i] - thick * (.75 + .5 * foamF(x, t));
         lb[i] = fb[i] - net * (.7 + .5 * laceF(x, t));
       }
@@ -161,7 +168,7 @@
       // 1. wet sand: the water's shadow cast just ahead of it; widens into a soft band on the drain
       ctx.save();
       ctx.shadowColor = `rgba(0,6,18,${.55 + .15 * b})`;
-      ctx.shadowBlur = (4 + 24 * b) * dpr;
+      ctx.shadowBlur = lite ? 0 : (4 + 24 * b) * dpr;   // blur is the costliest thing on a phone; a hard edge reads fine
       shOff(ctx, (2 + 9 * b) * dpr);
       ctx.fillStyle = "#000";
       ctx.fill(water);
@@ -194,7 +201,7 @@
       ctx.fillStyle = caustic;
       ctx.globalAlpha = fade * .4;
       const back = new Float32Array(n);
-      for (const k of [1.3, 2.3, 3.6]) {
+      for (const k of lite ? [2.3] : [1.3, 2.3, 3.6]) {
         for (let i = 0; i < n; i++) back[i] = ys[i] - F0 * k * (.8 + .4 * laceF(xs[i] * 1.7, t));
         ctx.fill(strip(ys, back));
       }
@@ -253,14 +260,14 @@
       ctx.save();
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.globalAlpha = fade;
-      ctx.shadowColor = "rgba(0,24,40,.32)";
-      ctx.shadowBlur = 3 * dpr;
+      ctx.shadowColor = lite ? "transparent" : "rgba(0,24,40,.32)";
+      ctx.shadowBlur = lite ? 0 : 3 * dpr;
       shOff(ctx, 1.5 * dpr);
       ctx.drawImage(fc, 0, 0);
       ctx.restore();
     }
 
-    let raf = 0, t0 = 0, stopped = false;
+    let raf = 0, t0 = 0, stopped = false, rel = 0;
     const stop = () => {
       if (stopped) return;
       stopped = true;
@@ -272,7 +279,7 @@
       if (stopped) return;
       if (!t0) t0 = now;
       const t = now - t0;
-      if (t >= TOTAL) return stop();
+      if (t >= TOTAL || (rel && now - rel > 180)) return stop();
       frame(t);
       raf = requestAnimationFrame(loop);
     };
@@ -280,8 +287,10 @@
     // opt.still: draw frames on demand only (loader-test style scrubbing), no clock
     if (!opt.still) raf = requestAnimationFrame(loop);
     // front(x, t): y of the leading edge at time t; time(): ms since the wash started (0 until the first frame)
-    const front = (x, t) => { const s = phase(t); return -M + s.p * (H + 2 * M) + edgeF(x, t) * ampOf(s); };
-    const api = { reach, stop, draw: frame, total: TOTAL, front, foam: F0, dir, len: H, fadeAt: TOTAL - BA, time: () => (t0 ? performance.now() - t0 : 0) };
+    const front = (x, t) => { const s = phase(t); return -M + s.p * (H + 2 * M) + edgeF(x, t) * ampOf(s) + slope * (x - W / 2); };
+    // let go of this wash (a newer one is starting): fade it out quickly rather than cutting it
+    const release = () => { if (stopped || rel) return; if (opt.still) return stop(); rel = performance.now(); if (live === api) live = null; };
+    const api = { reach, stop, release, lite, draw: frame, total: TOTAL, front, foam: F0, dir, len: H, fadeAt: TOTAL - BA, time: () => (t0 ? performance.now() - t0 : 0) };
     live = api;
     return api;
   };
