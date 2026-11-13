@@ -265,7 +265,7 @@
 .diag-list > li::before { content: counter(part); position: absolute; left: 0; top: 20px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
   font: 800 14px/1 var(--font); color: #2b1200; background: var(--hl); }
 /* on: the section pins full-bleed; scrolling down slides the cards across, the boat pans to each part */
-.hz.hz-on { height: var(--hz-h, 500svh); width: 100vw; margin-left: calc(50% - 50vw); }
+.hz.hz-on { height: var(--hz-h, 500svh); width: var(--fw, 100vw); margin-left: var(--ml, 0); }   /* full-bleed: JS sets --fw/--ml from the column's position */
 .hz-on .hz-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--bg); }
 .hz-on .hz-grid { display: block; position: absolute; inset: 0 -160px 0 0; transform: translate3d(var(--gx, 0), 0, 0);
   background-image: linear-gradient(rgba(143, 181, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 181, 255, .08) 1px, transparent 1px);
@@ -313,11 +313,12 @@
 .trip__card h3 .arr { color: var(--hl); }
 .art-page .trip__card p:last-child { margin: 0; font-size: 16px; }
 @media (max-width: 760px) {
-  /* phones: the map is the backdrop, the cards scroll over it */
+  /* phones: the map pins across the top half, the cards scroll up underneath it */
   .trip { display: block; }
-  .trip__map { top: 0; height: 100svh; margin: 0 calc(-1 * var(--gutter)) -100svh; padding: 64px 22px 24px; }
+  .trip__map { top: 0; z-index: 7; height: 46svh; margin: 0 calc(-1 * var(--gutter)); padding: 12px 22px 10px;
+    background: linear-gradient(var(--bg) 85%, transparent); }
   .art-page.nav-hid .trip__map { transform: none; }
-  .trip__cards { position: relative; z-index: 1; padding: 52svh 0 30svh; gap: 55svh; }
+  .trip__cards { padding: 4svh 0 22svh; gap: 34svh; }
 }
 
 /* ---------- Training: season board (pinned) + polaroid photos ---------- */
