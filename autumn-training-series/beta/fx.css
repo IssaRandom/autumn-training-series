@@ -114,3 +114,49 @@
   .beat-mark { animation: none; }
 }
 @keyframes skel-fade { from { opacity: .55; } to { opacity: 1; } }
+
+/* ---------- #15 Page transitions: the wake ----------
+   Cross-document view transitions (Chrome/Edge 126+, Safari 18.2+; others just load the page as before).
+   The new page washes in from the left behind a soft feathered edge, a foam band (.vt-wake, added by vt.js)
+   rides that edge, and the old page eases back a touch. The nav is its own group, so it stays put.
+   Going Back (html.vt-back, vt.js) washes the other way. About 0.45 s, mostly in the first half (the BTS ease). */
+@view-transition { navigation: auto; }
+.nav { view-transition-name: nav; }
+.vt-wake {
+  position: fixed; z-index: 2147483647; top: 0; left: 0; width: 140px; height: 100vh; pointer-events: none;
+  view-transition-name: wake;   /* vt.js adds it before the first frame and removes it when done */
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 22%, transparent) 45%,
+    color-mix(in srgb, #fff 38%, transparent) 72%, color-mix(in srgb, #fff 12%, transparent) 86%, transparent);
+}
+::view-transition-group(root), ::view-transition-group(nav) { animation-duration: 460ms; animation-timing-function: var(--ease); }
+::view-transition-old(root) { animation: vt-ease-back 460ms var(--ease) both; }
+::view-transition-new(root) {
+  animation: vt-wash 460ms var(--ease) both;
+  -webkit-mask-image: linear-gradient(90deg, #000 45%, transparent 55%); mask-image: linear-gradient(90deg, #000 45%, transparent 55%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+::view-transition-new(wake) { animation: vt-wake 460ms var(--ease) both; }
+::view-transition-old(wake) { display: none; }
+/* mask-position 100% → 0% moves the feathered edge (its centre) from -25vw to 125vw; the wake band follows it */
+@keyframes vt-wash { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+@keyframes vt-wake { from { transform: translateX(calc(-25vw - 70px)); opacity: 1; } 80% { opacity: 1; } to { transform: translateX(calc(125vw - 70px)); opacity: 0; } }
+@keyframes vt-ease-back { to { transform: translateX(-3vw); opacity: .55; } }
+/* Back: mirror it (edge runs right to left, old page eases the other way) */
+html.vt-back::view-transition-new(root) {
+  -webkit-mask-image: linear-gradient(270deg, #000 45%, transparent 55%); mask-image: linear-gradient(270deg, #000 45%, transparent 55%);
+  animation-name: vt-wash-back;
+}
+html.vt-back::view-transition-old(root) { animation-name: vt-ease-fwd; }
+html.vt-back::view-transition-new(wake) { animation-name: vt-wake-back; }
+@keyframes vt-wash-back { from { -webkit-mask-position: 0 0; mask-position: 0 0; } to { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
+@keyframes vt-wake-back { from { transform: translateX(calc(125vw - 70px)) scaleX(-1); opacity: 1; } 80% { opacity: 1; } to { transform: translateX(calc(-25vw - 70px)) scaleX(-1); opacity: 0; } }
+@keyframes vt-ease-fwd { to { transform: translateX(3vw); opacity: .55; } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* calm alternative: a short cross-fade, no movement */
+  ::view-transition-group(*) { animation-duration: 180ms; }
+  ::view-transition-old(root), html.vt-back::view-transition-old(root) { animation: vt-fade-out 180ms ease both; }
+  ::view-transition-new(root), html.vt-back::view-transition-new(root) { animation: vt-fade-in 180ms ease both; -webkit-mask-image: none; mask-image: none; }
+}
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }

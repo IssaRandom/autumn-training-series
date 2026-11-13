@@ -59,7 +59,7 @@ _12 Nov 2026. A list of the small details that make a site feel hand-built by a 
 |---|---|---|---|---|
 | 13 | **First-visit intro** (once per session, under 1.2 s, skippable, never holds content back) | A wind line draws across the screen, a boat tacks once and the logo settles. On later visits, nothing. | M | ⬜ |
 | 14 | **One loader language site-wide**: reuse the beat-to-the-mark loader for the calendar, account and guides (small version) | Tips and remarks already rotate ✅, so add coach-voice lines per page ("Calendar loading. Plan the season, then sail it.") | S | ✅ 12 Nov: small "beat" (boat tacking to the mark + coach line) on calendar, account, /book account step, venue guide; `data-loader="beat"` in loader.js |
-| 15 | **Page transitions** with the View Transitions API (`@view-transition { navigation: auto }`). Pure CSS, ignored by older browsers. | A short horizontal "wake" wipe between pages; the calendar event bar morphs into the sheet | M | ⬜ |
+| 15 | **Page transitions** with the View Transitions API (`@view-transition { navigation: auto }`). Pure CSS, ignored by older browsers. | A short horizontal "wake" wipe between pages; the calendar event bar morphs into the sheet | M | 🟡 13 Nov: wake wipe between all beta pages (fx.css + vt.js), Back mirrors it, reduced motion = fade. Bar→sheet morph not done |
 | 16 | **Live wind badge** in the nav or footer: "Portland now · 14 kn SW ↗" from Navigator, arrow rotated to the real direction | The single most "made by a sailor" detail on the list | M | ⬜ |
 | 17 | **Microcopy voice pass**: playful in empty, loading and success states; plain and calm in errors, payments and medical forms | Empty filter: "Flat calm. No events match, so try fewer filters." Booked: "You're on the start line." Sign-in: "Welcome back aboard." 404: "Off the layline" ✅ | M | 🟡 |
 | 18 | **Booking-confirmed celebration**: a short burst, then gone. Off under reduced motion. | Signal-flag confetti (B, T, S flags), a boat crossing a chequered line . No sound. | M | ⬜ |
@@ -121,7 +121,7 @@ _12 Nov 2026. A list of the small details that make a site feel hand-built by a 
 1. ✅ P0 basics: #1–5, #7, #11 (done 12 Nov)
 2. #17 Microcopy voice pass (needs 30 min of your lines)
 3. ✅ #14 Loader language site-wide, plus #9 skeletons (done 12 Nov)
-4. #15 View Transitions
+4. 🟡 #15 View Transitions (page wake done 13 Nov; bar→sheet morph later)
 5. #19 Start-sequence countdowns and #20 the beat progress bar
 6. #26 Console message and logo easter egg, #27 flag favicon
 6b. ✅ **#46 splash on booking buttons, #47 wave on calendar refresh** (done 12 Nov)
