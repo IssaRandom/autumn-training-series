@@ -1,0 +1,386 @@
+/* Article-design patterns for long advice guides (article-design skill, Phase 4).
+   Loaded after advice.css, only by pages that use these patterns (New to ILCAs first).
+   Patterns: 18 title band, 13→21 chart table, 21 pair list, 20 aside, 03 figure cards,
+   16 diagram that builds, photo placeholder, 12 ending object. Presentation only: Kai's text is unchanged. */
+
+.art-page {
+  --rig-4: #22c993;   /* ILCA 4 */
+  --rig-6: #8fb5ff;   /* ILCA 6 */
+  --rig-7: #ffc531;   /* ILCA 7 */
+  --hl: #ff8a3d;      /* diagram highlight (same orange as the finish buoys) */
+}
+
+/* ---------- 18 Chapter title band ---------- */
+.art-page .g-body { counter-reset: band; }
+.band {
+  counter-increment: band;
+  position: relative; display: grid; align-content: end;
+  min-height: 30svh; padding: 2.5rem 28px 1.6rem; margin: 0 0 1.8rem;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(120% 80% at 85% 120%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 60%),
+    repeating-radial-gradient(ellipse 140% 60% at 100% 130%, transparent 0 22px, color-mix(in srgb, var(--blue) 9%, transparent) 22px 23px),
+    var(--bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.band::before {
+  content: counter(band, decimal-leading-zero); display: block; margin-bottom: .45rem;
+  font: 700 .8rem/1 var(--font); letter-spacing: .18em; color: var(--blue);
+}
+.art-page .band h2 { margin: 0; color: var(--heading); text-wrap: balance; font-size: clamp(2.2rem, 7vw, 4.4rem); line-height: .95; }
+.art-page .band h2 strong { font-weight: inherit; }
+.art-page .g-sec { padding-top: clamp(40px, 6vw, 72px); }
+.art-page .g-sec:first-of-type { padding-top: 0; }
+@media (max-width: 900px) {
+  .band { margin-inline: calc(-1 * var(--gutter)); border-radius: 0; border-inline: 0; padding-inline: var(--gutter); min-height: 28svh; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .band > * { opacity: 0; transform: translateY(20px); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); }
+  .js-art .band::before { opacity: 0; transition: opacity var(--dur-slow) var(--ease); }
+  .js-art .band.is-in > *, .js-art .band.is-in::before { opacity: 1; transform: none; }
+}
+/* The page's own section fade would hide the band twice: switch it off here. */
+.art-page .g-sec.pre { opacity: 1; transform: none; }
+
+/* ---------- 13 → 21 Chart table (a real table, drawn as bars) ---------- */
+.chart { margin: 20px 0 24px; padding: 18px 18px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.chart table { display: block; width: 100%; border-collapse: collapse; font-size: 15px; }
+.chart thead, .chart tbody { display: block; }
+.chart tr { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 8.5rem; align-items: center; gap: 4px 14px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.chart tbody tr:last-child { border-bottom: 0; }
+.chart thead tr { padding-top: 0; }
+.chart th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+.chart thead th:last-child { grid-column: 3; }
+.chart td { padding: 0; }
+.chart td:first-child { font-weight: 700; color: var(--heading); white-space: nowrap; }
+.chart td:last-child { grid-column: 3; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; text-align: right; }
+/* the bar: track in column 2, drawn from the row's --lo/--hi on the chart's --min/--max scale */
+.chart tbody tr::before {
+  content: ""; grid-column: 2; grid-row: 1; height: 12px; border-radius: 6px;
+  background: var(--surface-2);
+}
+.chart tbody tr::after {
+  content: ""; grid-column: 2; grid-row: 1; height: 12px; border-radius: 6px;
+  margin-left: calc((var(--lo) - var(--min)) / (var(--max) - var(--min)) * 100%);
+  width: calc((var(--hi) - var(--lo)) / (var(--max) - var(--min)) * 100%);
+  min-width: 10px; background: var(--c, var(--blue));
+  transform-origin: left; transition: transform 600ms var(--ease);
+}
+.chart tr.open::after { background: linear-gradient(90deg, var(--c) 0 55%, transparent); }  /* "+50kg": open-ended */
+.chart tr.no-bar::after { display: none; }
+.chart tr[data-rig="4"], .chart tr.is-new { --c: var(--rig-4); }
+.chart tr[data-rig="6"] { --c: var(--rig-6); }
+.chart tr[data-rig="7"] { --c: var(--rig-7); }
+.chart-axis { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 8.5rem; gap: 14px; margin-top: 4px; }
+.chart-axis ol { grid-column: 2; display: flex; justify-content: space-between; list-style: none; margin: 0; padding: 0; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .chart:not(.is-in) tbody tr::after { transform: scaleX(0); }
+  .chart tbody tr:nth-child(2)::after { transition-delay: 60ms; }
+  .chart tbody tr:nth-child(3)::after { transition-delay: 120ms; }
+  .chart tbody tr:nth-child(4)::after { transition-delay: 180ms; }
+  .chart tbody tr:nth-child(5)::after { transition-delay: 240ms; }
+}
+/* 21: phones re-compose each row into label + value, bar full width underneath */
+@media (max-width: 560px) {
+  .chart { padding: 14px 14px 10px; }
+  .chart tr { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; padding: 9px 0; }
+  .chart thead th:last-child, .chart td:last-child { grid-column: 2; }
+  .chart tbody tr::before, .chart tbody tr::after { grid-column: 1 / -1; grid-row: 2; }
+  .chart-axis { grid-template-columns: minmax(0, 1fr); }
+  .chart-axis ol { grid-column: 1; }
+  .chart td .wip { white-space: normal; }
+}
+
+/* ---------- Photo placeholder (swap for real photos) ---------- */
+.ph { position: relative; margin: 28px 0; aspect-ratio: 16 / 9; border-radius: var(--radius); border: 1px dashed var(--line-strong); overflow: hidden;
+  background: repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--blue) 6%, transparent) 14px 15px), var(--surface); display: grid; place-items: center; }
+.ph-label { display: flex; align-items: center; gap: 10px; max-width: 80%; font-size: 13px; font-weight: 600; color: var(--muted); text-align: left; }
+.ph-label::before { content: ""; flex: none; width: 28px; height: 22px; border: 2px solid currentColor; border-radius: 5px;
+  background: radial-gradient(circle at 50% 55%, currentColor 0 4px, transparent 5px); opacity: .8; }
+
+/* ---------- 03 Figure cards (hull repairs, towing upside down) ---------- */
+.figs { list-style: none; margin: 22px 0 26px; padding: 0; counter-reset: fig; display: grid; gap: 14px; }
+.art-page .figs > li { margin: 0; }
+.fig { counter-increment: fig; display: grid; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.fig .ph { margin: 0; border: 0; border-radius: 0; aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); }
+.fig__body { padding: 16px 20px 18px; }
+.fig__body::before { content: "Fig " counter(fig); display: block; margin-bottom: 4px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); }
+.art-page .fig__body h3 { margin: 0 0 8px; font: 800 clamp(1.5rem, 5vw, 2rem)/1 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.fig__body h3 .arr { color: var(--blue); }
+.art-page .fig__body p { margin: 0; font-size: 16px; }
+/* hull trio: Kai's own grading, as a coloured edge */
+.figs-grade .fig { border-top: 4px solid var(--g); }
+.figs-grade .fig:nth-child(1) { --g: var(--t-no); }
+.figs-grade .fig:nth-child(2) { --g: var(--t-champ); }
+.figs-grade .fig:nth-child(3) { --g: var(--t-dl); }
+.figs-grade .fig__body::before { color: var(--g); }
+@media (min-width: 760px) {
+  .figs-steps .fig { grid-template-columns: 2fr 3fr; }
+  .figs-steps .fig .ph { aspect-ratio: auto; min-height: 100%; border-bottom: 0; border-right: 1px solid var(--line); }
+  .figs-steps .fig:nth-child(even) { grid-template-columns: 3fr 2fr; }
+  .figs-steps .fig:nth-child(even) .ph { order: 2; border-right: 0; border-left: 1px solid var(--line); }
+  .figs-grade { grid-template-columns: repeat(3, 1fr); }
+  .figs-grade .fig { align-content: start; }
+  .art-page .figs-grade .fig__body p { font-size: 15px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .fig { opacity: 0; transform: translateY(16px); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease); }
+  .js-art .fig.is-in { opacity: 1; transform: none; }
+}
+
+/* ---------- 12 Ending object ---------- */
+.finish { margin-top: clamp(40px, 6vw, 64px); }
+.finish__line { display: block; width: 100%; height: 28px; margin: 0 0 28px; overflow: visible; }
+.finish__line .chequer { stroke: var(--ink); stroke-width: 10; stroke-dasharray: 10 10; }
+.finish__line .chequer + .chequer { stroke-dashoffset: 10; }
+.finish__line .buoy { fill: var(--hl); }
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .finish .draw { clip-path: inset(0 100% 0 0); transition: clip-path 900ms var(--ease); }
+  .js-art .finish.is-in .draw { clip-path: inset(0 0 0 0); }
+}
+.art-page .g-end { margin-top: 0; padding-top: 0; border-top: 0; }
+.related { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 760px) { .related { grid-template-columns: 1fr; } }
+.finish__nudge { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; justify-content: space-between; margin-top: 22px; padding: 18px 20px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); }
+.art-page .finish__nudge p { margin: 0; color: var(--ink-2); font-size: 15px; }
+.finish__nudge p a { color: var(--blue); font-weight: 700; }
+
+/* phone chapter pill: "Chapter 3 of 5" */
+.toc-count { display: none; }
+@media (max-width: 900px) { .toc-count { display: inline; font-size: 11px; font-weight: 700; color: var(--muted); flex: none; font-variant-numeric: tabular-nums; } }
+
+/* =====================================================================
+   13 Nov round 2 (James's phone review): nav that steps aside, sticky notes,
+   brand buttons, FAQ mystery boxes, sideways boatwork timeline, towing journey,
+   training season board + polaroids. Reveals replay each time they come back into view.
+   ===================================================================== */
+.art-page { overflow-x: clip; }   /* full-bleed timeline without sideways page scroll (clip keeps sticky working) */
+
+/* ---------- Nav: hides while reading down, back on the first scroll up ---------- */
+.art-page .nav { transition: transform var(--dur-slow) var(--ease), background var(--dur-slow), box-shadow var(--dur-slow), color var(--dur); }
+.art-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
+.art-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
+.art-page.nav-hid .toc:not(.is-open) { transform: translateY(calc(-1 * var(--nav-h))); }
+.season__stage, .trip__map { transition: transform var(--dur-slow) var(--ease); }
+.art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+@media (max-width: 900px) {
+  /* one slim bar at a time: the contents pill steps aside while a picture is pinned */
+  .art-page.pinned .toc:not(.is-open) { opacity: 0; visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .art-page .nav, .art-page .toc, .season__stage, .trip__map { transition: none; }
+}
+
+/* ---------- 21 Maker / dealer pairs, as link buttons ---------- */
+.pairs { list-style: none; padding: 0; margin: 18px 0 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.art-page .pairs li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 15px; line-height: 1.2; }
+.pairs a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); text-decoration: none; font-weight: 700;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur-fast) var(--ease); }
+.pairs a::after { content: "\2197"; font-size: .85em; opacity: .7; }
+.pairs a.mk { color: var(--heading); background: var(--bg-2); }
+.pairs a.dl { color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, transparent); }
+.pairs a:hover { border-color: var(--blue); }
+.pairs a:active { transform: scale(.97); }
+.pairs .sep { color: var(--muted); }
+.pairs .is-sponsor { grid-column: 1 / -1; border-color: color-mix(in srgb, var(--rig-7) 60%, var(--line)); background: linear-gradient(110deg, color-mix(in srgb, var(--rig-7) 12%, var(--surface)), var(--surface) 60%); }
+.pairs .spon { margin-left: auto; padding: 5px 10px; border-radius: 999px; background: var(--rig-7); color: #2a1d00; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+@media (max-width: 560px) {
+  .pairs { grid-template-columns: 1fr; }
+  .pairs .spon { margin-left: 0; order: -1; }
+}
+
+/* ---------- 20 Aside as a sticky note: slight slant, pops off the page, second half writes itself in ---------- */
+.note { position: relative; max-width: 34rem; margin: 40px auto; padding: 26px 24px 22px; border: 0;
+  background: linear-gradient(170deg, #fff6b8, #ffe57f 70%, #f9d966); color: #2b2300;
+  border-radius: 2px 2px 18px 2px / 2px 2px 30px 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 18px 28px -10px rgba(0, 0, 0, .65);
+  transform: rotate(var(--tilt, -1.6deg)); }
+.note::before { content: ""; position: absolute; top: -13px; left: 50%; width: 112px; height: 26px; margin-left: -56px; transform: rotate(-3deg);
+  background: rgba(255, 255, 255, .42); border-left: 1px dashed rgba(255, 255, 255, .5); border-right: 1px dashed rgba(255, 255, 255, .5); }
+.art-page .note p { font: 500 1.45rem/1.25 "Caveat", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive; color: #2b2300; margin: 0; }
+.art-page .note .note__label { display: inline-block; margin: 0 0 6px !important; font: 700 1.75rem/1 "Caveat", "Segoe Print", cursive !important; letter-spacing: 0; text-transform: none; color: #b23a0b !important;
+  background: linear-gradient(transparent 70%, rgba(255, 138, 61, .45) 70% 88%, transparent 88%); }
+.art-page .note a { color: #1b46b8; font-weight: 700; }
+@media (max-width: 560px) { .note { margin: 36px 6px; padding: 24px 20px 20px; } .art-page .note p { font-size: 1.35rem; } }
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .note { transition: opacity 260ms var(--ease), transform 560ms cubic-bezier(.34, 1.56, .64, 1); }
+  .js-art .note:not(.is-in) { opacity: 0; transform: translateY(24px) rotate(calc(var(--tilt, -1.6deg) * 4)) scale(.86); }
+  .js-art .note .wd.late { opacity: 0; }
+  .js-art .note.is-in .wd.late { opacity: 1; transition: opacity 140ms linear calc(380ms + var(--d) * 32ms); }
+}
+
+/* ---------- FAQ mystery boxes ---------- */
+.faq { margin: 30px 0; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--rig-7) 10%, transparent), transparent 60%), var(--bg-2); }
+.faq__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.art-page .faq__label { margin: 0; font: 700 1.6rem/1 "Caveat", "Segoe Print", cursive; color: var(--rig-7); }
+.faq__all { min-height: 44px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: none; color: var(--ink); font: 700 13px var(--font); cursor: pointer; }
+.faq__all:hover { border-color: var(--rig-7); }
+.faq__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.art-page .faq__grid > li { margin: 0; }
+.box.is-open { grid-column: 1 / -1; }
+.box__lid { width: 100%; min-height: 158px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; padding: 30px 10px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--heading); font: inherit; text-align: center; cursor: pointer;
+  transition: border-color var(--dur) var(--ease), transform var(--dur-fast) var(--ease); }
+.box__lid:hover { border-color: var(--rig-7); }
+.box__lid:active { transform: scale(.97); }
+.box__crate { position: relative; flex: none; width: 64px; height: 50px; margin-bottom: 8px; border: 2px solid #6b4220; border-radius: 4px;
+  background: linear-gradient(90deg, transparent 0 45%, #6b4220 45% 55%, transparent 55%), repeating-linear-gradient(180deg, #c48a48 0 11px, #a86f34 11px 12px); }
+.box__top { position: absolute; left: -5px; right: -5px; top: -12px; height: 12px; border: 2px solid #6b4220; border-radius: 3px; background: #d39a55; transform-origin: 10% 100%;
+  transition: transform 460ms cubic-bezier(.34, 1.56, .64, 1); }
+.box__q { position: absolute; left: 50%; top: 2px; margin-left: -10px; width: 20px; text-align: center; font: 700 2.1rem/1 "Caveat", cursive; color: var(--rig-7); opacity: 0; transform: translateY(10px) scale(.5);
+  transition: opacity 200ms var(--ease) 120ms, transform 460ms cubic-bezier(.34, 1.56, .64, 1) 120ms; }
+.box__n { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.box__tag { font-size: 14px; font-weight: 700; line-height: 1.25; }
+.box.is-open .box__top { transform: translate(-10px, -22px) rotate(-28deg); }
+.box.is-open .box__q { opacity: 1; transform: translateY(-34px) scale(1); }
+.box.is-open .box__lid { min-height: 0; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 26px 16px 12px; text-align: left; border-color: var(--rig-7); }
+.box.is-open .box__crate { margin: 0; }
+.box__a { margin-top: 8px; padding: 16px 18px; border-radius: var(--radius); background: color-mix(in srgb, var(--rig-7) 9%, var(--surface)); border-left: 4px solid var(--rig-7); }
+.art-page .box__a p { margin: 0; font-size: 16px; color: var(--ink); }
+.box__a[hidden] { display: none; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .box:not(.is-open) .box__lid:hover .box__top { transform: translateY(-4px) rotate(-4deg); } }
+@media (prefers-reduced-motion: no-preference) {
+  .box.is-open .box__a { animation: box-out 420ms cubic-bezier(.34, 1.56, .64, 1); }
+  @keyframes box-out { from { opacity: 0; transform: translateY(-12px) scale(.96); } }
+}
+@media (max-width: 700px) { .faq { padding: 14px; margin-inline: -4px; } .faq__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .box__lid { min-height: 146px; } }
+@media (prefers-reduced-motion: reduce) { .box__top, .box__q { transition: none; } }
+
+/* ---------- 01 + 16 Boatwork: sideways timeline over the blueprint ---------- */
+.hz { position: relative; margin: 26px 0 10px; }
+.hz-pin { position: relative; }
+.hz-grid { display: none; }
+.hz-boat { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.hz-boat img { display: block; width: 100%; height: auto; }
+.hz-spot { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+  border: 2px solid var(--hl); display: grid; place-items: center; box-shadow: 0 0 0 4px rgba(255, 138, 61, .25); }
+.hz-spot b { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--hl); color: #2b1200; font: 800 11px/1 var(--font); }
+.hz-cap { display: none; }
+/* the list (stacked default: no JS, reduced motion, or a screen too short) */
+.diag-list { counter-reset: part; list-style: none; padding: 0; margin: 18px 0 0; }
+.art-page .diag-list > li { counter-increment: part; position: relative; margin: 0; padding: 18px 0 18px 46px; border-bottom: 1px solid var(--line); }
+.diag-list > li:last-child { border-bottom: 0; }
+.diag-list > li::before { content: counter(part); position: absolute; left: 0; top: 20px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 14px/1 var(--font); color: #2b1200; background: var(--hl); }
+/* on: the section pins full-bleed; scrolling down slides the cards across, the boat pans to each part */
+.hz.hz-on { height: var(--hz-h, 500svh); width: 100vw; margin-left: calc(50% - 50vw); }
+.hz-on .hz-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--bg); }
+.hz-on .hz-grid { display: block; position: absolute; inset: 0 -160px 0 0; transform: translate3d(var(--gx, 0), 0, 0);
+  background-image: linear-gradient(rgba(143, 181, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 181, 255, .08) 1px, transparent 1px);
+  background-size: 34px 34px; }
+.hz-on .hz-boat { position: absolute; left: 0; top: 18px; width: var(--bw); border: 0; border-radius: 0; overflow: visible; transform: translate3d(var(--bx, 0), 0, 0); will-change: transform; }
+.hz-on .hz-boat img { border-radius: var(--radius); }
+.hz-on .hz-spot { opacity: 0; transform: scale(.4); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) cubic-bezier(.34, 1.56, .64, 1); }
+.hz-on .hz-spot.on { opacity: 1; transform: none; }
+.hz-on .hz-cap { display: flex; align-items: center; gap: 10px; position: absolute; right: var(--gutter); top: 22px; padding: 8px 12px; border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 80%, transparent); border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: var(--heading); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.hz-cap .n { margin-right: 6px; color: var(--hl); font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: .06em; }
+.hz-cap .dots { display: flex; gap: 5px; }
+.hz-cap .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); transition: background var(--dur) var(--ease); }
+.hz-cap .dots i.on { background: var(--hl); }
+.hz-on .hz-track { position: absolute; left: 0; bottom: 22px; margin: 0; display: flex; align-items: flex-end; gap: var(--gap, 16px); transform: translate3d(var(--tx, 0), 0, 0); will-change: transform; }
+.art-page .hz-on .hz-track > li { flex: none; width: var(--cw); padding: 18px 18px 16px 60px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, .7); font-size: 15px; line-height: 1.5; opacity: .5; transition: opacity var(--dur-slow) var(--ease), border-color var(--dur) var(--ease); }
+.art-page .hz-on .hz-track > li.is-on { opacity: 1; border-color: var(--hl); }
+.hz-on .hz-track > li::before { left: 16px; top: 16px; }
+/* a thin rail under the cards: the "timeline", filled as you go */
+.hz-on .hz-pin::after { content: ""; position: absolute; left: 0; right: 0; bottom: 10px; height: 2px;
+  background: linear-gradient(90deg, var(--hl) var(--rail, 0%), var(--line-strong) var(--rail, 0%)); }
+
+/* ---------- Towing: a journey down the UK, ending at Weymouth ---------- */
+.trip { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 28px; margin: 26px 0; }
+.trip__map { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; height: calc(100svh - var(--nav-h) - 32px); }
+.trip__map svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.trip .gb { fill: color-mix(in srgb, var(--blue) 9%, var(--surface)); stroke: rgba(143, 181, 255, .55); stroke-width: 1.2; stroke-linejoin: round; }
+.trip .road { fill: none; stroke: var(--line-strong); stroke-width: 2.4; stroke-dasharray: 3 5; stroke-linecap: round; stroke-linejoin: round; }
+.trip .road--done { stroke: var(--hl); stroke-width: 3; stroke-dasharray: var(--len, 1000); stroke-dashoffset: var(--off, 1000); }
+.trip .stop circle { fill: var(--bg); stroke: var(--muted); stroke-width: 2; transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease); }
+.trip .stop text { font: 700 13px var(--font); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; transition: fill var(--dur) var(--ease); }
+.trip .stop.on circle { fill: var(--hl); stroke: var(--hl); }
+.trip .stop.on text { fill: var(--heading); }
+.trip .van rect { fill: var(--heading); }
+.trip .van .van__boat { fill: var(--blue); }
+.trip .van circle { fill: var(--bg); stroke: var(--heading); stroke-width: 1.5; }
+.trip__cards { list-style: none; margin: 0; padding: 18svh 0 26svh; display: grid; gap: 42svh; }
+.art-page .trip__card { margin: 0; padding: 18px 20px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .7);
+  transition: border-color var(--dur) var(--ease); }
+.art-page .trip__card.is-on { border-color: var(--hl); }
+.art-page .trip__kick { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--hl); }
+.art-page .trip__card h3 { margin: 0 0 8px; font: 800 clamp(1.5rem, 5vw, 2rem)/1 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.trip__card h3 .arr { color: var(--hl); }
+.art-page .trip__card p:last-child { margin: 0; font-size: 16px; }
+@media (max-width: 760px) {
+  /* phones: the map is the backdrop, the cards scroll over it */
+  .trip { display: block; }
+  .trip__map { top: 0; height: 100svh; margin: 0 calc(-1 * var(--gutter)) -100svh; padding: 64px 22px 24px; }
+  .art-page.nav-hid .trip__map { transform: none; }
+  .trip__cards { position: relative; z-index: 1; padding: 52svh 0 30svh; gap: 55svh; }
+}
+
+/* ---------- Training: season board (pinned) + polaroid photos ---------- */
+.season { --c-ilca: var(--rig-4); --c-rya: var(--rig-6); --c-asc: var(--rig-7); --c-bts: var(--hl); --c-dra: #c9a7ff; margin: 18px 0; }
+.season__stage { position: sticky; top: calc(var(--nav-h) + 10px); z-index: 6; margin-bottom: 20px; }
+.season__board { padding: 12px 14px 10px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: color-mix(in srgb, var(--bg-2) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 -12px 0 var(--bg); }
+.season__months, .season__rows { list-style: none; margin: 0; padding: 0; }
+.season__months { display: grid; grid-template-columns: repeat(12, 1fr); margin-left: var(--name-w, 11rem); font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; }
+.art-page .season__months li, .art-page .season__rows li { margin: 0; }
+.season__rows li { display: grid; grid-template-columns: var(--name-w, 11rem) 1fr; align-items: center; min-height: 22px; transition: opacity var(--dur) var(--ease); }
+.season__rows li[data-row="skills"], .season__rows li[data-row="rot"], .season__rows li[data-row="nat"] { --c: var(--c-ilca); }
+.season__rows li[data-row="pa"] { --c: var(--c-asc); }
+.season__rows li[data-row="rya"], .season__rows li[data-row="bys"], .season__rows li[data-row="wns"] { --c: var(--c-rya); }
+.season__rows li[data-row="bts"] { --c: var(--c-bts); }
+.season__rows li[data-row="dra"] { --c: var(--c-dra); }
+.season__name { font-size: 12px; font-weight: 700; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+.season__name small { font-size: 10px; font-weight: 600; color: var(--muted); }
+.season__bar { position: relative; height: 10px; border-radius: 5px; background: repeating-linear-gradient(90deg, rgba(230, 237, 247, .06) 0 calc(100% / 12 - 1px), transparent calc(100% / 12 - 1px) calc(100% / 12)); }
+.season__bar::after { content: ""; position: absolute; top: 0; bottom: 0; left: calc(var(--a) / 12 * 100%); width: calc((var(--b) - var(--a)) / 12 * 100%); border-radius: 5px; background: var(--c);
+  transform-origin: left; transition: transform 500ms var(--ease), box-shadow var(--dur) var(--ease); }
+.season__rows li.vague .season__bar::after { background: repeating-linear-gradient(135deg, var(--c) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1px var(--c); }
+.season[data-on] .season__rows li { opacity: .38; }
+.season[data-on] .season__rows li.on { opacity: 1; }
+.season__rows li.on .season__name { color: var(--heading); }
+.season__rows li.on .season__bar::after { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--c); }
+.art-page .season__key { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; font-size: 11px; color: var(--muted); }
+.season__key .k { display: inline-block; width: 18px; height: 8px; border-radius: 4px; background: var(--ink-2); }
+.season__key .k--vague { margin-left: 10px; background: repeating-linear-gradient(135deg, var(--ink-2) 0 3px, transparent 3px 7px); box-shadow: inset 0 0 0 1px var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .season:not(.is-in) .season__bar::after { transform: scaleX(0); }
+}
+/* each group's paragraph wears its row colour; the one you're reading lights its edge */
+.art-page .prog { position: relative; padding-left: 16px; border-left: 3px solid var(--line); transition: border-color var(--dur-slow) var(--ease); }
+.prog[data-prog="skills"], .prog[data-prog="rot"], .prog[data-prog="nat"] { --c: var(--rig-4); }
+.prog[data-prog="pa"] { --c: var(--rig-7); }
+.prog[data-prog="rya"], .prog[data-prog="bys"], .prog[data-prog="wns"] { --c: var(--rig-6); }
+.prog[data-prog="bts"] { --c: var(--hl); }
+.prog[data-prog="dra"] { --c: #c9a7ff; }
+.art-page .prog.on { border-left-color: var(--c); }
+@media (max-width: 900px) {
+  .season__stage { top: var(--nav-h); margin-inline: calc(-1 * var(--gutter)); }
+  .season__board { border-radius: 0; border-inline: 0; padding: 8px var(--gutter) 8px; }
+  .season { --name-w: 8.2rem; }
+  .season__name small { display: none; }
+  .season__name { font-size: 11px; }
+  .season__rows li { min-height: 17px; }
+  .season__bar { height: 8px; }
+}
+/* polaroids: the training photos, pinned on at a slant (alternating), floated beside the text on wide screens */
+.ph.polaroid { display: grid; gap: 0; aspect-ratio: auto; max-width: 420px; margin: 34px auto; padding: 10px 10px 0; border: 0; border-radius: 3px; background: #f4efe4; place-items: stretch;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 18px 30px -12px rgba(0, 0, 0, .7); transform: rotate(var(--tilt, 2deg)); }
+.ph.polaroid::before { content: ""; aspect-ratio: 4 / 3; border-radius: 1px;
+  background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(143, 181, 255, .12) 14px 15px), #13284f; }
+.polaroid .ph-label { justify-content: center; max-width: none; padding: 8px 6px 12px; font: 600 1.3rem/1.1 "Caveat", "Segoe Print", cursive; color: #3a3326; text-align: center; }
+.polaroid .ph-label::before { display: none; }
+.season__text .polaroid:nth-of-type(even) { --tilt: -2.4deg; }
+@media (min-width: 1000px) {
+  .season__text .polaroid { float: right; width: 44%; margin: 8px -12px 18px 26px; }
+  .season__text .polaroid:nth-of-type(even) { float: left; margin: 8px 26px 18px -12px; }
+  .season__text::after { content: ""; display: block; clear: both; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js-art .polaroid { transition: opacity 300ms var(--ease), transform 600ms cubic-bezier(.34, 1.56, .64, 1); }
+  .js-art .polaroid:not(.is-in) { opacity: 0; transform: translateY(-20px) rotate(calc(var(--tilt, 2deg) * -3)) scale(.9); }
+}
