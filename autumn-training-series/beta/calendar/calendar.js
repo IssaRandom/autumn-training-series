@@ -53,95 +53,101 @@
   }
   function saveFilters() { store.set("types.v2", state.types); store.set("optional", state.optional); }
 
-  /* ---------- toolbar: chips (wide screens) + Filter button (all screens) ---------- */
-  const chipsEl = $("[data-type-chips]");
+  /* ---------- toolbar: Filter button carries a dot per type that is on (a mini colour key) ---------- */
   function renderChips() {
-    const n = counts(state.optional);
-    chipsEl.innerHTML = Object.entries(TYPES).map(([k, t]) =>
-      `<button type="button" class="chip t-${k}" data-type="${k}" aria-pressed="${state.types.includes(k)}">${t.label} <span class="count">${n[k] || 0}</span></button>`).join("") +
-      `<button type="button" class="chip t-optional" data-optional aria-pressed="${state.optional}">Masters &amp; women’s</button>`;
-    // the Filter button carries a dot per type that is on: a mini colour key
     $("[data-filter-dots]").innerHTML = Object.keys(TYPES).filter(k => state.types.includes(k)).map(k => `<i class="t-${k}"></i>`).join("");
     $("[data-filter-count]").textContent = `${state.types.length}/${Object.keys(TYPES).length}`;
     const off = Object.keys(TYPES).length - state.types.length;
     $("[data-filter-open]").setAttribute("aria-label", `Filter events: ${state.types.length} of ${Object.keys(TYPES).length} types shown${off ? "" : ", all on"}`);
   }
-  chipsEl.addEventListener("click", ev => {
-    const chip = ev.target.closest(".chip");
-    if (!chip) return;
-    if (chip.hasAttribute("data-optional")) state.optional = !state.optional;
-    else {
-      const k = chip.dataset.type;
-      state.types = state.types.includes(k) ? state.types.filter(t => t !== k) : state.types.concat(k);
-    }
-    saveFilters(); hintDone("filter");
-    renderChips(); render({ fx: true });
-  });
-  // double-click a chip to show only that type
-  chipsEl.addEventListener("dblclick", ev => {
-    const chip = ev.target.closest(".chip[data-type]");
-    if (!chip) return;
-    state.types = [chip.dataset.type]; saveFilters(); renderChips(); render({ fx: true });
-  });
 
   $$("[data-rig]").forEach(b => b.addEventListener("click", () => {
     if (state.rig === b.dataset.rig) return;
     state.rig = b.dataset.rig; store.set("rig", state.rig); syncPressed(); renderChips(); render({ fx: true });
+    if (fsheet.open) renderFilter();
   }));
 
-  /* ---------- Filter sheet: big tappable rows, presets, applied on close so the change animates ---------- */
-  const fsheet = $("[data-fsheet]"), fList = $("[data-f-list]"), fApply = $("[data-f-apply]");
+  /* ---------- Filter: a dropdown under the button on tablet/desktop, a bottom sheet on phones.
+     Every tap applies straight away, so the calendar changes behind it as you go. ---------- */
+  const fsheet = $("[data-fsheet]"), fList = $("[data-f-list]"), fApply = $("[data-f-apply]"), fBtn = $("[data-filter-open]");
   const PRESETS = [["recommended", "Recommended", RECOMMENDED], ["all", "Everything", Object.keys(TYPES)], ["bts", "BTS only", ["bts-camp"]]];
-  let draft = null;
+  const phone = matchMedia("(max-width: 700px)");
+  const isDrop = () => fsheet.classList.contains("is-drop");
   function renderFilter() {
-    const n = counts(draft.optional);
+    const n = counts(state.optional);
     const same = (a, b) => a.length === b.length && a.every(x => b.includes(x));
     $("[data-f-presets]").innerHTML = PRESETS.map(([id, label, types]) =>
-      `<button type="button" data-preset="${id}" aria-pressed="${same(types, draft.types)}">${label}</button>`).join("");
+      `<button type="button" data-preset="${id}" aria-pressed="${same(types, state.types)}">${label}</button>`).join("");
     fList.innerHTML = Object.entries(TYPES).map(([k, t]) => `
       <label class="frow t-${k}${n[k] ? "" : " is-empty"}">
-        <input type="checkbox" data-ftype="${k}"${draft.types.includes(k) ? " checked" : ""}>
+        <input type="checkbox" data-ftype="${k}"${state.types.includes(k) ? " checked" : ""}>
         <span class="frow-sw" aria-hidden="true"></span>
         <span class="frow-t"><b>${t.label}</b><small>${n[k] ? DESC[k] : `None for ILCA ${state.rig}`}</small></span>
         <span class="frow-n">${n[k] || 0}</span>
         <span class="switch" aria-hidden="true"></span>
       </label>`).join("") + `
       <label class="frow t-optional frow-opt">
-        <input type="checkbox" data-fopt${draft.optional ? " checked" : ""}>
+        <input type="checkbox" data-fopt${state.optional ? " checked" : ""}>
         <span class="frow-sw" aria-hidden="true"></span>
         <span class="frow-t"><b>Masters &amp; women’s</b><small>Adds these to the types above. Respect your elders.</small></span>
         <span class="frow-n"></span>
         <span class="switch" aria-hidden="true"></span>
       </label>`;
-    const total = visibleWith(draft.types, draft.optional).length;
-    fApply.textContent = total ? `Show ${total} event${total === 1 ? "" : "s"}` : "Show nothing (bold choice)";
+    const total = visible().length;
+    fApply.textContent = total ? `Done · ${total} event${total === 1 ? "" : "s"}` : "Done · nothing showing (bold choice)";
+  }
+  function applyFilter() { saveFilters(); hintDone("filter"); renderChips(); render({ fx: true }); renderFilter(); }
+  // the dropdown hangs from the button, kept inside the window
+  function placeDrop() {
+    const r = fBtn.getBoundingClientRect(), w = fsheet.offsetWidth;
+    const left = Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12));
+    fsheet.style.top = `${r.bottom + 8}px`;
+    fsheet.style.left = `${left}px`;
+    fsheet.style.setProperty("--fo", `${Math.min(w - 20, Math.max(20, r.left + r.width / 2 - left))}px`);
   }
   function openFilter() {
-    draft = { types: state.types.slice(), optional: state.optional };
     renderFilter(); hintDone("filter");
-    fsheet.showModal();
+    clearTimeout(closing); fsheet.classList.remove("is-closing", "is-settled");
+    setTimeout(() => fsheet.classList.add("is-settled"), 450);
+    if (fsheet.open) fsheet.close();
+    if (phone.matches) { fsheet.classList.remove("is-drop"); fsheet.showModal(); }
+    else { fsheet.classList.add("is-drop"); fsheet.show(); placeDrop(); }
+    fBtn.setAttribute("aria-expanded", "true");
   }
-  $("[data-filter-open]").addEventListener("click", openFilter);
+  let closing = 0;
+  function closeFilter(refocus) {
+    if (!fsheet.open || fsheet.classList.contains("is-closing")) return;
+    const done = () => { fsheet.classList.remove("is-closing"); fsheet.close(); };
+    if (isDrop() && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      fsheet.classList.add("is-closing"); closing = setTimeout(done, 170);
+    } else done();
+    fBtn.setAttribute("aria-expanded", "false");
+    if (refocus) fBtn.focus({ preventScroll: true });
+  }
+  fBtn.addEventListener("click", () => (fsheet.open && !fsheet.classList.contains("is-closing") ? closeFilter() : openFilter()));
   fsheet.addEventListener("change", ev => {
     const t = ev.target;
-    if (t.matches("[data-ftype]")) draft.types = t.checked ? draft.types.concat(t.dataset.ftype) : draft.types.filter(x => x !== t.dataset.ftype);
-    if (t.matches("[data-fopt]")) draft.optional = t.checked;
-    renderFilter();
+    if (t.matches("[data-ftype]")) state.types = t.checked ? state.types.concat(t.dataset.ftype) : state.types.filter(x => x !== t.dataset.ftype);
+    else if (t.matches("[data-fopt]")) state.optional = t.checked;
+    else return;
+    applyFilter();
     const again = $(`[data-ftype="${t.dataset.ftype}"]`, fsheet) || $("[data-fopt]", fsheet);
     if (again) again.focus({ preventScroll: true });
   });
   fsheet.addEventListener("click", ev => {
-    if (ev.target === fsheet || ev.target.closest("[data-fsheet-close], [data-f-apply]")) { fsheet.close(); return; }
+    if (ev.target === fsheet && !isDrop()) { closeFilter(); return; } // tap on the backdrop
+    if (ev.target.closest("[data-fsheet-close], [data-f-apply]")) { closeFilter(true); return; }
     const p = ev.target.closest("[data-preset]");
-    if (p) { draft.types = PRESETS.find(x => x[0] === p.dataset.preset)[2].slice(); renderFilter(); }
+    if (p) { state.types = PRESETS.find(x => x[0] === p.dataset.preset)[2].slice(); applyFilter(); }
   });
-  fsheet.addEventListener("close", () => {
-    if (!draft) return;
-    const changed = draft.optional !== state.optional || draft.types.length !== state.types.length || draft.types.some(t => !state.types.includes(t));
-    state.types = draft.types; state.optional = draft.optional; draft = null;
-    if (changed) { saveFilters(); renderChips(); render({ fx: true }); }
+  fsheet.addEventListener("close", () => fBtn.setAttribute("aria-expanded", "false"));
+  // dropdown: click anywhere else or press Escape to close; follow the button if the window changes size
+  document.addEventListener("pointerdown", ev => {
+    if (fsheet.open && isDrop() && !fsheet.contains(ev.target) && !fBtn.contains(ev.target)) closeFilter();
   });
-  swipeToClose(fsheet, () => fsheet.close());
+  document.addEventListener("keydown", ev => { if (ev.key === "Escape" && fsheet.open && isDrop()) closeFilter(true); });
+  window.addEventListener("resize", () => { if (fsheet.open && isDrop()) { if (phone.matches) closeFilter(); else placeDrop(); } });
+  swipeToClose(fsheet, () => closeFilter());
   $$("[data-view]").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
   function syncPressed() {
     $$("[data-rig]").forEach(b => b.setAttribute("aria-pressed", b.dataset.rig === String(state.rig)));
@@ -373,14 +379,14 @@
     Object.assign(fxLayer.style, { left: `${vb.left}px`, top: `${vb.top}px`, width: `${vb.right - vb.left}px`, height: `${vb.bottom - vb.top}px` });
     return fxLayer;
   }
-  /* POLISH-AUDIT #47 (v4, James 12 Nov): swash washes DOWN from the top like a wave running up a beach, pauses,
-     then drains back UP, thinning and stretching seawards (drawn by ../swash.js). Everything that moves floats:
-     - added bars ride in on the foam from the top, get carried a little PAST their slot, bob there while the
-       water is in, then the backwash drags them back and sets them down as the front uncovers their slot
-     - removed bars are lifted onto the wave as it reaches them, carried down bobbing, then sucked back out
-       to sea off the top of the view
-     - bars that were already there don't move at all.  ~2.8 s in all (slowed ~20%, 12 Nov). */
-  const SWASH = 960, HOLD = 320, BACK = 1560, TOTAL = SWASH + HOLD + BACK;
+  /* POLISH-AUDIT #47 (v5, James 13 Nov): the up-and-back wash looked lovely but made the site feel slow, so the
+     wave now SWEEPS in from the side in one pass and fades as it leaves (drawn by ../swash.js), alternating sides
+     each time: first change from the left, next from the right, and so on.
+     - added bars ride in on the foam from the near edge and are dropped off in their slot as the front passes it
+     - removed bars are picked up as the front reaches them and swept off the far edge, fading with the water
+     - bars that were already there don't move at all.  ~1.1 s in all. */
+  const SWEEP = 900, FADE = 420, TOTAL = SWEEP + FADE * .5;
+  let sweepDir = 1;   // 1 = from the left; flips every wash
   const clamp01 = f => Math.min(1, Math.max(0, f));
   let floatRun = null;   // the bars currently afloat; cancelled if the calendar redraws mid-wash
   function floater(src, cls, x, y, w, h) {
@@ -407,16 +413,19 @@
   }
   function play(root, before) {
     if (floatRun) floatRun.cancel();
-    const vb = viewBox(), seen = new Set(), vh = Math.max(1, vb.bottom - vb.top);
+    const vb = viewBox(), seen = new Set();
     const layer = ghostLayer(vb);
-    const sw = window.BTSswash && window.BTSswash(layer, { swash: SWASH, hold: HOLD, back: BACK });
+    const dir = sweepDir, vw = Math.max(1, vb.right - vb.left);
+    const sw = window.BTSswash && window.BTSswash(layer, { dir, sweep: SWEEP, fade: FADE });
+    if (sw) sweepDir = -sweepDir;
     const F = sw ? sw.foam : 40, rnd = (a, b) => a + Math.random() * (b - a);
     const floats = [];
     // each floater: where it sits in the foam (off), its own bob and roll, and which way it's going
+    // u = distance along the way the wave travels; ut = where the bar's near edge sits on that axis
     const afloat = (el, kind, x, top, w, h, real) => floats.push({
-      // new bars ride right on the bright lip so they read clearly; leaving bars sink deeper into the foam
-      el, kind, x, top, w, h, real, cx: x + w / 2, y: top, off: kind === "in" ? rnd(.02, .22) * F : rnd(.15, .85) * F,
-      over: Math.min(70, vh * .14) * rnd(.6, 1.1), floor: vh - h - 6 - rnd(0, .7) * F,
+      // new bars ride right on the bright lip so they read clearly; leaving bars sit a little deeper in the foam
+      el, kind, x, top, w, h, real, cy: top + h / 2, ut: dir > 0 ? x : vw - x - w,
+      off: kind === "in" ? rnd(.02, .22) * F : rnd(.1, .5) * F,
       // wide things (phone list rows) roll and grow less, or their ends swing a long way
       wide: Math.min(1, 140 / Math.max(1, w)),
       ph: rnd(0, 6.3), ph2: rnd(0, 6.3), bw: rnd(.0045, .0075), rw: rnd(.003, .005), tilt: rnd(3, 6) * (Math.random() < .5 ? -1 : 1)
@@ -490,28 +499,28 @@
         floatRun = null;
       };
       const tick = () => {
-        const t = sw.time(), back = t > SWASH + HOLD;
-        if (t >= TOTAL + 80) return finish();
+        const t = sw.time();
+        if (t >= TOTAL + 40) return finish();
+        const gone = clamp01((t - sw.fadeAt) / FADE);   // the water fading out as it leaves
         for (const f of floats) {
           if (f.landed) continue;
-          const ride = sw.front(f.cx, t) - f.off - f.h / 2;   // sitting in the foam just behind the front
-          let y, lift;
+          const ride = sw.front(f.cy, t) - f.off - f.w;   // bar's near edge, sitting in the foam just behind the front
+          let u, lift;
           if (f.kind === "in") {
-            // carried down past its slot, then dragged back and set down when the front uncovers it
-            y = back ? Math.max(f.top, Math.min(f.top + f.over, ride)) : Math.min(ride, f.top + f.over);
-            if (back && ride <= f.top) { land(f); continue; }
-            lift = back ? clamp01((y - f.top) / 18) : 1;
+            // carried in from the edge and dropped off in its slot as the front passes it
+            if (ride >= f.ut) { land(f); continue; }
+            u = ride;
+            lift = clamp01((f.ut - u) / 24);
           } else {
-            // picked up as the front reaches it, carried down, then sucked back out over the top
-            y = Math.min(back ? ride : Math.max(f.top, ride), Math.max(f.top, f.floor));
-            lift = back ? 1 : clamp01((y - f.top) / 14);
+            // left where it is until the foam catches it, then swept on and off the far edge
+            u = Math.max(f.ut, ride);
+            lift = clamp01((u - f.ut) / 14);
+            f.el.style.opacity = (1 - gone).toFixed(2);
           }
           const bob = Math.sin(t * f.bw + f.ph) * 3 * lift;
-          const sway = Math.sin(t * f.rw * .8 + f.ph2) * 6 * lift;
-          const rot = (Math.sin(t * f.rw + f.ph2) * f.tilt + (f.kind === "out" ? (back ? -2 : 2) : 0)) * lift * f.wide;
+          const rot = (Math.sin(t * f.rw + f.ph2) * f.tilt + dir * 2) * lift * f.wide;
           const sc = f.kind === "in" ? 1 + .07 * lift * f.wide : 1;   // a touch bigger while afloat, easing back to size as it lands
-          f.el.style.transform = `translate(${sway.toFixed(1)}px, ${(y - f.top + bob).toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-          if (f.kind === "out") f.el.style.opacity = y + f.h < 0 ? 0 : 1;
+          f.el.style.transform = `translate(${(dir * (u - f.ut)).toFixed(1)}px, ${bob.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
         }
         raf = requestAnimationFrame(tick);
       };
@@ -657,7 +666,7 @@
   $("[data-tour-skip]").addEventListener("click", endTour);
   tourEl.addEventListener("keydown", ev => { if (ev.key === "Escape") endTour(); });
   window.addEventListener("resize", () => { if (touring) placeTour(); });
-  $("[data-tour-replay]").addEventListener("click", () => { draft = null; fsheet.close(); setTimeout(startTour, 250); });
+  $("[data-tour-replay]").addEventListener("click", () => { closeFilter(); setTimeout(startTour, 250); });
 
   /* ============================================================
      TOOLTIP (pointer devices) + DETAIL SHEET

@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="../beta.css?v=20261112wv2">
   <link rel="stylesheet" href="../fx.css?v=20261112wv2">
   <link rel="stylesheet" href="../booking/booking.css?v=20261112wv2">
-  <link rel="stylesheet" href="calendar.css?v=20261112fl">
+  <link rel="stylesheet" href="calendar.css?v=20261113dd">
 </head>
 <body class="cal-page theme-dark">
   <header class="nav is-solid" data-nav>
@@ -57,22 +57,20 @@
           <button type="button" data-rig="6" aria-pressed="false" aria-label="ILCA 6">6</button>
           <button type="button" data-rig="7" aria-pressed="false" aria-label="ILCA 7">7</button>
         </div>
-        <button type="button" class="tb-filter" data-filter-open aria-haspopup="dialog">
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12M4.5 8h7M7 13h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="tb-filter-txt">Filter</span>
-          <span class="tb-dots" data-filter-dots aria-hidden="true"></span>
-          <span class="tb-count" data-filter-count aria-hidden="true"></span>
-        </button>
-      </div>
-
-      <div class="tb-row tb-filters">
-        <div class="chips" role="group" aria-label="Event types (also the colour key)" data-type-chips><span class="skel skel-pill" style="--w:118px" aria-hidden="true"></span><span class="skel skel-pill" style="--w:104px;--i:1" aria-hidden="true"></span><span class="skel skel-pill" style="--w:126px;--i:2" aria-hidden="true"></span><span class="skel skel-pill" style="--w:96px;--i:3" aria-hidden="true"></span><span class="skel skel-pill" style="--w:110px;--i:4" aria-hidden="true"></span></div>
+        <!-- zoom: inline on desktop, a floating pill over the year plan on tablet and phone -->
         <div class="zoom" data-zoom-ui hidden>
           <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
           <input type="range" min="0" max="100" value="0" aria-label="Zoom" data-zoom-range>
           <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
           <button type="button" class="tb-btn tb-sm" data-zoom="fit">Fit</button>
         </div>
+        <button type="button" class="tb-filter" data-filter-open aria-haspopup="dialog" aria-expanded="false">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12M4.5 8h7M7 13h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="tb-filter-txt">Filter</span>
+          <span class="tb-dots" data-filter-dots aria-hidden="true"></span>
+          <span class="tb-count" data-filter-count aria-hidden="true"></span>
+          <svg class="tb-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>
 
       <nav class="month-jump" aria-label="Jump to month" data-month-jump hidden></nav>
@@ -147,7 +145,7 @@
     </div>
     <div class="f-presets" role="group" aria-label="Quick choices" data-f-presets></div>
     <div class="f-list" data-f-list></div>
-    <button type="button" class="btn btn-accent f-apply" data-f-apply>Show events</button>
+    <button type="button" class="btn btn-accent f-apply" data-f-apply>Done</button>
     <button type="button" class="f-tour" data-tour-replay>New here? Show me around again</button>
   </dialog>
   <p class="cal-delta" data-delta role="status" aria-live="polite"></p>
@@ -189,8 +187,8 @@
   <script src="../booking/loader.js?v=20261112wv2"></script>
   <script src="../booking/ui.js?v=20261112wv2"></script>
   <script src="cal-core.js?v=20261112wv2"></script>
-  <script src="../swash.js?v=20261112wv2"></script>
-  <script src="calendar.js?v=20261112fl"></script>
+  <script src="../swash.js?v=20261113sw"></script>
+  <script src="calendar.js?v=20261113dd"></script>
   <script src="../fx.js?v=20261112wv2" defer></script>
 </body>
 </html>

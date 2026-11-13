@@ -7,6 +7,10 @@
    - on the backwash the foam band thins, its holes open up and stretch seawards, and lace + streaks trail behind it,
      while the wet line widens into a soft dark band of just-uncovered sand
    API: BTSswash(layer, {swash, hold, back}) -> { reach(x, y, back), front(x, t), time(), foam, total, stop() } or null.
+   Side sweep (James 13 Nov, "it makes the site look slow"): BTSswash(layer, {dir: 1 | -1, sweep, fade}) runs ONE pass
+   across from the left (1) or right (-1) edge and fades out as it leaves, no hold or backwash. The wave is drawn in its
+   own "wave space" (x' along the front, y' the way it travels) and turned onto the screen with a base transform, so
+   front(x', t) takes the cross-axis position (screen y) and returns how far the front has travelled from its edge.
    front()/time() let callers float things on the water (calendar.js rides bars in and out on it).
    reach() gives the coverage fraction p (0..1) at which the front crosses (x, y) so callers can time things to it. */
 (function () {
@@ -60,10 +64,13 @@
 
   let live = null;
   window.BTSswash = function (layer, opt) {
-    const W = layer.clientWidth, H = layer.clientHeight;
-    if (!W || !H || !document.createElement("canvas").getContext) return null;
+    const SX = layer.clientWidth, SY = layer.clientHeight;
+    if (!SX || !SY || !document.createElement("canvas").getContext) return null;
     if (live) live.stop();
-    const SW = opt.swash, HO = opt.hold, BA = opt.back, TOTAL = SW + HO + BA;
+    const dir = opt.dir === 1 || opt.dir === -1 ? opt.dir : 0;
+    const W = dir ? SY : SX, H = dir ? SX : SY;   // wave space: W along the front, H the way it travels
+    const SW = dir ? opt.sweep : opt.swash, HO = dir ? 0 : opt.hold, BA = dir ? opt.fade : opt.back;
+    const TOTAL = dir ? SW + BA * .5 : SW + HO + BA;   // sideways the fade starts while the front is leaving
     const rand = rng((Math.random() * 1e9) | 0);
     const L = Math.min(60, Math.max(18, H * .08));   // how far tongues of water run ahead of the mean line
     const M = L + 14;                                 // start and finish fully off the top, end the run fully past the bottom
@@ -74,6 +81,11 @@
     const laceF = field(rand, [[3, 80, 220, 1, .0012], [4, 20, 60, .4, .003]]);
 
     function phase(t) {
+      if (dir) {
+        // one even pass, easing off a touch; foam thins and opens up as it fades
+        const u = Math.min(1, t / SW), f0 = TOTAL - BA;
+        return { p: u * (1.3 - .3 * u), b: t > f0 ? Math.min(1, (t - f0) / BA) : 0, g: Math.min(1, u * 3) };
+      }
       if (t < SW) { const u = t / SW; return { p: 1 - (1 - u) * (1 - u), b: 0, g: u }; }   // runs up fast, slows
       if (t < SW + HO) return { p: 1, b: 0, g: 1 };
       const u = Math.min(1, (t - SW - HO) / BA);
@@ -81,14 +93,18 @@
     }
     const ampOf = s => L * (s.b ? 1 - .35 * s.b : .5 + .5 * s.g);   // tongues grow on the run up, flatten on the drain
     const reach = (x, y, back) => {
-      const t = back ? SW + HO + BA * .5 : SW * .5, off = edgeF(x, t) * ampOf(phase(t));
+      const t = dir ? SW * .5 : back ? SW + HO + BA * .5 : SW * .5, off = edgeF(x, t) * ampOf(phase(t));
       return Math.min(1, Math.max(0, (y - off + M) / (H + 2 * M)));
     };
 
     const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    // wave space -> screen: (x', y') -> (y', x') from the left, (SX - y', x') from the right
+    const base = dir ? [0, dpr, dir * dpr, 0, dir < 0 ? SX * dpr : 0, 0] : [dpr, 0, 0, dpr, 0, 0];
+    // shadows ignore the transform, so point their offset the way the wave is travelling
+    const shOff = (c, v) => { c.shadowOffsetX = dir ? dir * v : 0; c.shadowOffsetY = dir ? 0 : v; };
     const cv = document.createElement("canvas"), fc = document.createElement("canvas");
     cv.className = "fx-swash";
-    cv.width = fc.width = Math.round(W * dpr); cv.height = fc.height = Math.round(H * dpr);
+    cv.width = fc.width = Math.round(SX * dpr); cv.height = fc.height = Math.round(SY * dpr);
     layer.appendChild(cv);
     const ctx = cv.getContext("2d"), fx = fc.getContext("2d");
 
@@ -122,7 +138,8 @@
 
     function frame(t) {
       const s = phase(t), A = ampOf(s), mean = -M + s.p * (H + 2 * M), b = s.b;
-      const fade = Math.max(0, Math.min(1, t / 90, (TOTAL - t) / 160));
+      const fade = dir ? Math.max(0, Math.min(1, t / 60, 1 - b * b * (3 - 2 * b)))
+        : Math.max(0, Math.min(1, t / 90, (TOTAL - t) / 160));
       const thick = F0 * (b ? 1 - .62 * b : .55 + .45 * s.g);
       const net = F0 * (.3 + 1.3 * b);
       for (let i = 0; i < n; i++) {
@@ -137,7 +154,7 @@
       water.lineTo(xs[n - 1], -60);
       water.closePath();
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.setTransform(...base);
       ctx.clearRect(0, 0, W, H);
       ctx.globalAlpha = fade;
 
@@ -145,7 +162,7 @@
       ctx.save();
       ctx.shadowColor = `rgba(0,6,18,${.55 + .15 * b})`;
       ctx.shadowBlur = (4 + 24 * b) * dpr;
-      ctx.shadowOffsetY = (2 + 9 * b) * dpr;
+      shOff(ctx, (2 + 9 * b) * dpr);
       ctx.fillStyle = "#000";
       ctx.fill(water);
       ctx.restore();
@@ -184,7 +201,7 @@
       ctx.restore();
 
       // 4. foam, drawn on its own canvas so the holes punch through foam only
-      fx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fx.setTransform(...base);
       fx.clearRect(0, 0, W, H);
       if (b > 0) {
         const on = Math.min(1, b * 2.2);
@@ -238,7 +255,7 @@
       ctx.globalAlpha = fade;
       ctx.shadowColor = "rgba(0,24,40,.32)";
       ctx.shadowBlur = 3 * dpr;
-      ctx.shadowOffsetY = 1.5 * dpr;
+      shOff(ctx, 1.5 * dpr);
       ctx.drawImage(fc, 0, 0);
       ctx.restore();
     }
@@ -264,7 +281,7 @@
     if (!opt.still) raf = requestAnimationFrame(loop);
     // front(x, t): y of the leading edge at time t; time(): ms since the wash started (0 until the first frame)
     const front = (x, t) => { const s = phase(t); return -M + s.p * (H + 2 * M) + edgeF(x, t) * ampOf(s); };
-    const api = { reach, stop, draw: frame, total: TOTAL, front, foam: F0, time: () => (t0 ? performance.now() - t0 : 0) };
+    const api = { reach, stop, draw: frame, total: TOTAL, front, foam: F0, dir, len: H, fadeAt: TOTAL - BA, time: () => (t0 ? performance.now() - t0 : 0) };
     live = api;
     return api;
   };

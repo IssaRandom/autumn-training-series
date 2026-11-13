@@ -446,3 +446,53 @@ html.cal-lock .cal-source { display: none; }
 .hint-x .ic { width: 16px; height: 16px; }
 /* Calendar type (James 12 Nov): back to the rounder Montserrat look throughout; no condensed caps in the UI */
 .cal-page h1, .cal-page h2, .cal-page h3, .cal-page h4 { font-family: var(--font); text-transform: none; letter-spacing: -.015em; line-height: 1.15; font-weight: 800; }
+
+/* ============================================================
+   13 Nov: one toolbar row on tablet + desktop (the chip row is gone,
+   Filter is the one place to pick types). Filter opens as a dropdown
+   under its button on >700px and every switch applies straight away;
+   phones keep the bottom sheet.
+   ============================================================ */
+.tb-main { flex-wrap: nowrap; }
+.zoom input { width: 96px; }
+.tb-caret { flex: none; transition: transform var(--dur) var(--ease); }
+.tb-filter[aria-expanded="true"] .tb-caret { transform: rotate(180deg); }
+.tb-filter[aria-expanded="true"] { border-color: #fff; }
+@media (max-width: 700px) { .tb-caret { display: none; } }
+/* tablet: not enough width for zoom in the row, so it floats over the year plan like on phones */
+@media (min-width: 701px) and (max-width: 1099px) {
+  .tb-main { gap: 10px; }
+  .cal-title { font-size: 19px; white-space: nowrap; }
+  .seg-rig .seg-label { display: none; }
+  .tb-dots { display: none; }
+  .zoom { position: fixed; z-index: 30; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); background: var(--surface-2); border-radius: 99px; padding: 5px; box-shadow: 0 8px 24px rgba(0, 0, 0, .5); }
+  .zoom input { display: none; }
+  .zoom .tb-icon { width: 40px; height: 40px; }
+  .zoom .tb-sm { height: 40px; }
+}
+
+.fsheet.is-drop { position: fixed; z-index: 40; inset: auto; margin: 0; width: min(400px, calc(100vw - 24px)); max-height: calc(100dvh - var(--tb-h, 140px) - 16px); overflow: auto; overscroll-behavior: contain;
+  padding: 12px 12px 10px; border-radius: 12px; border-top-width: 1px; border-color: var(--line-strong); box-shadow: 0 18px 48px rgba(0, 0, 0, .55), 0 0 0 1px rgba(143, 181, 255, .08);
+  transform-origin: var(--fo, 85%) top; animation: drop-in .26s var(--ease); }
+.fsheet.is-drop.is-closing { animation: drop-out .17s var(--ease-in) forwards; pointer-events: none; }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-10px) scaleY(.82); } }
+@keyframes drop-out { to { opacity: 0; transform: translateY(-8px) scaleY(.9); } }
+.fsheet.is-drop .sheet-grip, .fsheet.is-drop .f-apply { display: none; }
+.fsheet.is-drop .sheet-top { margin-bottom: 8px; padding-left: 4px; }
+.fsheet.is-drop h2 { font-size: 16px; }
+.fsheet.is-drop .f-presets { margin-bottom: 6px; padding-left: 4px; }
+.fsheet.is-drop .frow { min-height: 48px; padding: 7px 8px; gap: 10px; }
+.fsheet.is-drop .frow-t small { font-size: 12px; }
+.fsheet.is-drop .f-tour { margin-top: 4px; }
+/* rows settle in one after another as it drops */
+.fsheet.is-drop .frow { animation: drop-row .3s var(--ease) backwards; }
+.fsheet.is-drop .frow:nth-child(2) { animation-delay: 25ms; }
+.fsheet.is-drop .frow:nth-child(3) { animation-delay: 50ms; }
+.fsheet.is-drop .frow:nth-child(4) { animation-delay: 75ms; }
+.fsheet.is-drop .frow:nth-child(5) { animation-delay: 100ms; }
+.fsheet.is-drop .frow:nth-child(6) { animation-delay: 125ms; }
+.fsheet.is-drop .frow:nth-child(n+7) { animation-delay: 150ms; }
+@keyframes drop-row { from { opacity: 0; transform: translateY(-6px); } }
+/* the switch slides; no re-animating rows after a tap re-renders the list */
+.fsheet.is-drop.is-settled .frow { animation: none; }
+@media (prefers-reduced-motion: reduce) { .fsheet.is-drop, .fsheet.is-drop .frow { animation: none; } }
