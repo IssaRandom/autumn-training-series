@@ -174,20 +174,25 @@
 
 /* ---------- 21 Maker / dealer pairs, as link buttons ---------- */
 .pairs { list-style: none; padding: 0; margin: 18px 0 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.art-page .pairs li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 15px; line-height: 1.2; }
-.pairs a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); text-decoration: none; font-weight: 700;
+.art-page .pairs li { display: flex; align-items: center; gap: 12px; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); font-size: 15px; line-height: 1.2; }
+.pair__btns { flex: 1; min-width: 0; display: grid; gap: 8px; }
+.pairs .sep { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* maker sits over dealer: the dash stays for screen readers */
+/* logo slot: the maker's name as a wordmark until the real logos arrive */
+.pair__logo { flex: none; width: 92px; align-self: stretch; min-height: 72px; display: grid; place-items: center; padding: 8px; border-radius: var(--radius-sm);
+  background: radial-gradient(90% 90% at 70% 20%, color-mix(in srgb, var(--blue) 14%, transparent), transparent 70%), var(--bg-2); border: 1px solid var(--line);
+  font: 800 12px/1.05 var(--font-display, var(--font)); letter-spacing: .02em; text-transform: uppercase; color: var(--heading); text-align: center; }
+.pair__logo img { display: block; max-width: 100%; max-height: 56px; object-fit: contain; }
+.pairs a { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); text-decoration: none; font-weight: 700;
   transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur-fast) var(--ease); }
 .pairs a::after { content: "\2197"; font-size: .85em; opacity: .7; }
 .pairs a.mk { color: var(--heading); background: var(--bg-2); }
 .pairs a.dl { color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, transparent); }
 .pairs a:hover { border-color: var(--blue); }
 .pairs a:active { transform: scale(.97); }
-.pairs .sep { color: var(--muted); }
-.pairs .is-sponsor { grid-column: 1 / -1; border-color: color-mix(in srgb, var(--rig-7) 60%, var(--line)); background: linear-gradient(110deg, color-mix(in srgb, var(--rig-7) 12%, var(--surface)), var(--surface) 60%); }
-.pairs .spon { margin-left: auto; padding: 5px 10px; border-radius: 999px; background: var(--rig-7); color: #2a1d00; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-@media (max-width: 560px) {
+.pairs li:first-child:nth-last-child(odd) { grid-column: 1 / -1; }   /* 5 makers: the first spans the row so the grid has no hole */
+@media (max-width: 640px) {
   .pairs { grid-template-columns: 1fr; }
-  .pairs .spon { margin-left: 0; order: -1; }
+  .pair__logo { width: 84px; }
 }
 
 /* ---------- 20 Aside as a sticky note: slight slant, pops off the page, second half writes itself in ---------- */
@@ -233,14 +238,26 @@
   transition: opacity 200ms var(--ease) 120ms, transform 460ms cubic-bezier(.34, 1.56, .64, 1) 120ms; }
 .box__n { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .box__tag { font-size: 14px; font-weight: 700; line-height: 1.25; }
-.box.is-open .box__top { transform: translate(-10px, -22px) rotate(-28deg); }
-.box.is-open .box__q { opacity: 1; transform: translateY(-34px) scale(1); }
-.box.is-open .box__lid { min-height: 0; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 26px 16px 12px; text-align: left; border-color: var(--rig-7); }
-.box.is-open .box__crate { margin: 0; }
+/* open: the lid is pushed off to the right and rests tilted against the crate (it never leaves the button, so nothing above gets covered);
+   the "?" pops up out of the crate, inside the button's top padding */
+.box__top { transform-origin: 0% 100%; }
+.box.is-open .box__top { transform: translate(71px, 0) rotate(42deg); }
+.box.is-open .box__q { opacity: 1; transform: translateY(-20px) scale(1); }
+.box.is-open .box__lid { min-height: 0; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 34px 16px 14px; text-align: left; border-color: var(--rig-7); overflow: hidden; }
+.box.is-open .box__crate { margin: 0 64px 0 0; }
+.box.is-open .box__lid { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; row-gap: 2px; }
+.box.is-open .box__crate { grid-row: 1 / 3; }
+.box.is-open .box__n { align-self: end; }
+.box.is-open .box__tag { align-self: start; font-size: 16px; }
+@media (prefers-reduced-motion: no-preference) {
+  .box.is-open .box__crate { animation: box-wiggle 380ms ease-out; }
+  @keyframes box-wiggle { 0% { transform: none; } 25% { transform: rotate(-6deg) scale(1.04); } 55% { transform: rotate(5deg); } 80% { transform: rotate(-2deg); } 100% { transform: none; } }
+}
 .box__a { margin-top: 8px; padding: 16px 18px; border-radius: var(--radius); background: color-mix(in srgb, var(--rig-7) 9%, var(--surface)); border-left: 4px solid var(--rig-7); }
 .art-page .box__a p { margin: 0; font-size: 16px; color: var(--ink); }
 .box__a[hidden] { display: none; }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) { .box:not(.is-open) .box__lid:hover .box__top { transform: translateY(-4px) rotate(-4deg); } }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .box:not(.is-open) .box__lid:hover .box__top { transform: translateY(-3px) rotate(-3deg); } }
+.box:not(.is-open) .box__lid { overflow: hidden; }   /* closed tiles: the hover lift stays inside the tile too */
 @media (prefers-reduced-motion: no-preference) {
   .box.is-open .box__a { animation: box-out 420ms cubic-bezier(.34, 1.56, .64, 1); }
   @keyframes box-out { from { opacity: 0; transform: translateY(-12px) scale(.96); } }
@@ -293,18 +310,22 @@
 /* ---------- Towing: a journey down the UK, ending at Weymouth ---------- */
 .trip { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 28px; margin: 26px 0; }
 .trip__map { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; height: calc(100svh - var(--nav-h) - 32px); }
-.trip__map svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.trip .gb { fill: color-mix(in srgb, var(--blue) 9%, var(--surface)); stroke: rgba(143, 181, 255, .55); stroke-width: 1.2; stroke-linejoin: round; }
-.trip .road { fill: none; stroke: var(--line-strong); stroke-width: 2.4; stroke-dasharray: 3 5; stroke-linecap: round; stroke-linejoin: round; }
-.trip .road--done { stroke: var(--hl); stroke-width: 3; stroke-dasharray: var(--len, 1000); stroke-dashoffset: var(--off, 1000); }
-.trip .stop circle { fill: var(--bg); stroke: var(--muted); stroke-width: 2; transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease); }
-.trip .stop text { font: 700 13px var(--font); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; transition: fill var(--dur) var(--ease); }
+.trip__map svg { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius); }   /* zoomed in: clip to the box */
+.trip .gb { fill: color-mix(in srgb, var(--blue) 9%, var(--surface)); stroke: rgba(143, 181, 255, .55); stroke-width: .8; stroke-linejoin: round; }
+.trip .road { fill: none; stroke: var(--line-strong); stroke-width: 1.4; stroke-dasharray: 2 3; stroke-linecap: round; stroke-linejoin: round; }
+.trip .road--done { stroke: var(--hl); stroke-width: 1.8; stroke-dasharray: var(--len, 1000); stroke-dashoffset: var(--off, 1000); }
+.trip .stop circle { fill: var(--bg); stroke: var(--muted); stroke-width: 1.4; transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease); }
+.trip .stop text { font: 700 9px var(--font); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 2.4px; transition: fill var(--dur) var(--ease); }
 .trip .stop.on circle { fill: var(--hl); stroke: var(--hl); }
 .trip .stop.on text { fill: var(--heading); }
-.trip .van rect { fill: var(--heading); }
-.trip .van .van__boat { fill: var(--blue); }
-.trip .van circle { fill: var(--bg); stroke: var(--heading); stroke-width: 1.5; }
-.trip__cards { list-style: none; margin: 0; padding: 18svh 0 26svh; display: grid; gap: 42svh; }
+/* car with an ILCA upside down on the roof (map units; the map is zoomed in ~2x) */
+.trip .car { transform: translateY(-1px) scale(1.15); }
+.trip .car__body { fill: var(--blue); stroke: var(--bg); stroke-width: .8; }
+.trip .car__glass { fill: color-mix(in srgb, var(--bg) 70%, var(--blue)); }
+.trip .car__hull { fill: #f4efe4; stroke: var(--bg); stroke-width: .8; }
+.trip .car__rack { stroke: var(--heading); stroke-width: 1.2; }
+.trip .van circle { fill: #1b2233; stroke: var(--heading); stroke-width: 1.2; }
+.trip__cards { list-style: none; margin: 0; padding: 14svh 0 8svh; display: grid; gap: 18svh; }
 .art-page .trip__card { margin: 0; padding: 18px 20px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .7);
   transition: border-color var(--dur) var(--ease); }
 .art-page .trip__card.is-on { border-color: var(--hl); }
@@ -315,10 +336,10 @@
 @media (max-width: 760px) {
   /* phones: the map pins across the top half, the cards scroll up underneath it */
   .trip { display: block; }
-  .trip__map { top: 0; z-index: 7; height: 46svh; margin: 0 calc(-1 * var(--gutter)); padding: 12px 22px 10px;
+  .trip__map { top: 0; z-index: 7; height: 46svh; margin: 0 calc(-1 * var(--gutter)); padding: 8px 0 10px;
     background: linear-gradient(var(--bg) 85%, transparent); }
   .art-page.nav-hid .trip__map { transform: none; }
-  .trip__cards { padding: 4svh 0 22svh; gap: 34svh; }
+  .trip__cards { padding: 4svh 0 6svh; gap: 16svh; }
 }
 
 /* ---------- Training: season board (pinned) + polaroid photos ---------- */
@@ -385,3 +406,108 @@
   .js-art .polaroid { transition: opacity 300ms var(--ease), transform 600ms cubic-bezier(.34, 1.56, .64, 1); }
   .js-art .polaroid:not(.is-in) { opacity: 0; transform: translateY(-20px) rotate(calc(var(--tilt, 2deg) * -3)) scale(.9); }
 }
+
+/* =====================================================================
+   13 Nov round 3: rig walk (top of the guide) + mini season calendar (Racing)
+   ===================================================================== */
+
+/* ---------- Rig walk: a girl and a boy walk the kg scale, past the 4.7, Radial and Standard ---------- */
+.walk { display: none; margin: 26px 0 30px; --u: 1px; }
+.js-walk .walk { display: block; }
+.walk__pin { padding: 18px 0 14px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  background: linear-gradient(rgba(143, 181, 255, .05) 1px, transparent 1px) 0 0 / 100% 28px, radial-gradient(110% 80% at 50% 120%, color-mix(in srgb, var(--blue) 16%, transparent), transparent 60%), var(--bg-2); }
+.walk.walk-on { height: var(--walk-h, 340svh); }
+.walk-on .walk__pin { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; justify-content: center; border-radius: 0; border-inline: 0; }
+.walk__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 0 18px; margin-bottom: 6px; }
+.art-page .walk__kick { margin: 0; max-width: 16rem; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); line-height: 1.35; }
+.art-page .walk__kg { margin: 0; font: 800 15px/1 var(--font); color: var(--muted); white-space: nowrap; }
+.walk__kg b { font: 800 clamp(2.6rem, 9vw, 4rem)/.9 var(--font-display); color: var(--heading); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.walk__lanes { display: grid; gap: 4px; }
+.lane { position: relative; height: calc(var(--u) * 176); }
+.lane + .lane { border-top: 1px dashed var(--line); }
+.lane__name { position: absolute; left: 18px; top: 10px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.lane__track { position: absolute; left: 18px; right: 18px; bottom: 32px; height: 0; }
+.lane__track::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--line-strong); border-radius: 2px; }
+.lane .kgx { position: absolute; left: calc((var(--kg) - 40) * 2%); }
+.lane .seg { top: -2px; height: 4px; width: calc((var(--to) - var(--kg)) * 2%); background: var(--c); border-radius: 2px; opacity: .55; }
+.lane .race { top: -6px; height: 12px; width: calc((var(--to) - var(--kg)) * 2%); border-radius: 6px; background: var(--c); box-shadow: 0 0 14px color-mix(in srgb, var(--c) 60%, transparent); opacity: .35; transition: opacity var(--dur) var(--ease); }
+.lane .race.on { opacity: 1; }
+[data-rig-c="4"] { --c: var(--rig-4); } [data-rig-c="6"] { --c: var(--rig-6); } [data-rig-c="7"] { --c: var(--rig-7); }
+/* gate: the rig's sail standing at the transition weight, lit once a sailor reaches it */
+.lane .gate { bottom: 0; width: 0; }
+/* the sail stands just before its gate (mast on the gate line), so a sailor past the gate is never drawn over it */
+.gate svg { position: absolute; bottom: 2px; right: -4px; transform: scaleX(-1); height: calc(var(--u) * var(--sz)); width: auto; color: var(--c); opacity: .28; filter: grayscale(.8);
+  transform-origin: 50% 100%; transition: opacity var(--dur-slow) var(--ease), filter var(--dur-slow) var(--ease), transform 500ms cubic-bezier(.34, 1.56, .64, 1); }
+.gate.on svg { opacity: .95; filter: none; transform: scale(-1.06, 1.06); }
+.gate__lbl { position: absolute; top: 8px; right: -2px; text-align: right; white-space: nowrap; font-size: 11px; font-weight: 800; color: var(--muted); line-height: 1.1; transition: color var(--dur) var(--ease); }
+.gate__lbl small { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: .06em; }
+.gate.on .gate__lbl { color: var(--c); }
+/* the sailors */
+.who { bottom: 0; width: 0; z-index: 2; }
+.who .kid { position: absolute; bottom: -1px; left: calc(var(--u) * -21 * var(--s, 1)); height: calc(var(--u) * 86 * var(--s, 1)); width: auto; overflow: visible; }
+.who .kid .skin { fill: #f2c9a0; }
+.who .kid .hair { fill: #6b4220; }
+.who .kid .suit { stroke: #a9b8d2; }
+.who .kid .bib { fill: var(--bib); }
+.who .kid .leg, .who .kid .arm { transform-box: view-box; }
+.who .kid .leg { transform-origin: 20px 50px; }
+.who .kid .arm { transform-origin: 20px 25px; }
+.lane[data-lane="w"] .who { --bib: #ff7ac6; }
+.lane[data-lane="m"] .who { --bib: var(--hl); }
+.lane.walking .kid .leg-a { animation: stride .46s ease-in-out infinite alternate; }
+.lane.walking .kid .leg-b { animation: stride .46s ease-in-out infinite alternate-reverse; }
+.lane.walking .kid .arm-a { animation: swing .46s ease-in-out infinite alternate-reverse; }
+.lane.walking .kid .arm-b { animation: swing .46s ease-in-out infinite alternate; }
+.lane.walking .kid .body { animation: bob .23s ease-in-out infinite alternate; }
+@keyframes stride { from { transform: rotate(26deg); } to { transform: rotate(-26deg); } }
+@keyframes swing { from { transform: rotate(22deg); } to { transform: rotate(-22deg); } }
+@keyframes bob { to { transform: translateY(-1.5px); } }
+.who .kid .arm-a { transition: transform 400ms cubic-bezier(.34, 1.56, .64, 1); }
+.who.done .kid .arm-a { transform: rotate(155deg); }   /* reached their rig: a wave */
+.who .bubble { position: absolute; bottom: calc(var(--u) * 92 * var(--s, 1)); left: 0; transform: translateX(calc(var(--p, .5) * -100%)); white-space: nowrap;
+  padding: 5px 9px; border-radius: 9px; background: var(--heading); color: var(--bg); font-size: 12px; font-weight: 800; line-height: 1.15; box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .7); }
+.who .bubble small { display: block; font-size: 10px; font-weight: 700; color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.who .bubble i { font-style: normal; display: inline-block; width: 9px; height: 9px; margin-right: 5px; border-radius: 50%; background: var(--c, var(--muted)); }
+.walk__axis { display: flex; justify-content: space-between; list-style: none; margin: 2px 18px 0; padding: 0; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.art-page .walk__axis li { margin: 0; font-size: 11px; line-height: 1.2; }
+.art-page .walk__key { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 18px 0; font-size: 11px; color: var(--muted); }
+.walk__key .k { display: inline-block; width: 16px; height: 8px; border-radius: 4px; }
+.walk__key .k--gate { width: 2px; height: 12px; border-radius: 0; background: var(--ink-2); }
+.walk__key .k--race { margin-left: 10px; background: linear-gradient(90deg, var(--rig-4), var(--rig-6), var(--rig-7)); }
+@media (max-width: 900px) { .walk { margin-inline: calc(-1 * var(--gutter)); } .walk__pin { border-radius: 0; border-inline: 0; } }
+@media (max-width: 560px) {
+  .walk { --u: .95px; }
+  .walk__head { padding: 0 var(--gutter); }
+  .lane__name { left: var(--gutter); }
+  .lane__track { left: var(--gutter); right: var(--gutter); bottom: 30px; }
+  .walk__axis, .art-page .walk__key { margin-inline: var(--gutter); }
+  .gate__lbl small { display: none; }
+  .who .bubble { font-size: 11px; padding: 4px 8px; }
+}
+.walk.walk-on { --u: clamp(.72px, calc((100svh - 340px) / 370), 1.3px); }   /* pinned: lanes grow with the screen's height */
+
+/* ---------- Mini season calendar (Racing): tap, it zooms up, then the calendar opens ---------- */
+.minical { display: block; margin: 22px 0 26px; padding: 16px 16px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: inherit; text-decoration: none;
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, .8); transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.minical:hover { border-color: var(--blue); transform: translateY(-2px); }
+.minical:active { transform: scale(.985); }
+.minical__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.minical__title { font: 800 1.35rem/1 var(--font-display); text-transform: uppercase; color: var(--heading); letter-spacing: -.01em; }
+.minical__go { font-size: 13px; font-weight: 700; color: var(--blue); }
+.minical__grid { display: grid; gap: 5px; margin: 12px 0 10px; }
+.minical__grid:empty { display: none; }
+.mc-row { display: grid; grid-template-columns: 3.1rem minmax(0, 1fr); align-items: center; }
+.mc-m { font-size: 11px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.mc-strip { position: relative; height: 15px; border-radius: 4px; background: var(--bg-2); }
+.mc-bar { position: absolute; height: 5px; top: calc(2px + var(--l, 0) * 6px); left: calc(var(--d0) / 31 * 100%); width: max(4px, calc(var(--n) / 31 * 100%)); border-radius: 3px; background: var(--bar); }
+.mc-bar.t-bts-camp { box-shadow: 0 0 6px rgba(47, 109, 246, .7); }
+.mc-today { position: absolute; top: -3px; bottom: -3px; left: calc(var(--d0) / 31 * 100%); width: 2px; border-radius: 1px; background: var(--heading); box-shadow: 0 0 0 2px var(--surface); }
+.mc-row.past .mc-strip { opacity: .45; }
+.minical__key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 11px; color: var(--muted); }
+.minical__key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.minical__key .k { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--bar); }
+/* the zoom: a fixed copy grows from the card to the whole screen */
+.minical.is-zoom { position: fixed; z-index: 1000; margin: 0; transform: none; border-color: var(--blue); pointer-events: none; overflow: hidden; }
+.minical.is-zoom { display: flex; flex-direction: column; }
+.minical.is-zoom .minical__grid { flex: 1; grid-auto-rows: 1fr; }
+.minical.is-zoom .mc-strip { height: 100%; min-height: 15px; }

@@ -9,6 +9,8 @@
   addEventListener("pagereveal", e => {
     const vt = e.viewTransition;
     if (!vt) return;
+    /* a page that already did its own exit (the guide's mini calendar zooming up to fill the screen) asks to skip the wipe */
+    try { if (sessionStorage.getItem("bts-vt-skip")) { sessionStorage.removeItem("bts-vt-skip"); vt.skipTransition(); return; } } catch (_) {}
     const act = window.navigation && navigation.activation;
     if (act && act.navigationType === "reload") { vt.skipTransition(); return; }
     const root = document.documentElement;
