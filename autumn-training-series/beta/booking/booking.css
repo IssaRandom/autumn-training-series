@@ -213,7 +213,22 @@
 @keyframes bk-who-in { from { opacity: 0; transform: translateY(4px); } }
 @keyframes bk-who-unblur { from { filter: blur(6px); opacity: .3; } }
 @keyframes bk-who-wipe { from { transform: translateX(0); } to { transform: translateX(105%); } }
+/* Mystery sailor: holographic foil card for sailors who keep their name private */
+.bk-who .bk-who-mystery { background:
+    linear-gradient(125deg, rgba(255, 197, 49, .16), rgba(255, 105, 180, .12) 35%, rgba(64, 224, 208, .14) 65%, rgba(143, 181, 255, .16)),
+    var(--surface-2);
+  box-shadow: inset 0 0 0 1px rgba(255, 197, 49, .45); }
+.bk-who-mystery::before { content: ""; position: absolute; inset: -40% -60%; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .22) 48%, rgba(255, 236, 170, .3) 50%, rgba(255, 255, 255, .22) 52%, transparent 60%); animation: bk-foil 3.6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .7s + 1s); transform: translateX(-60%); }
+.bk-who-mystery b { display: flex; align-items: center; gap: 6px; color: var(--t-champ); letter-spacing: .01em; }
+.bk-myst-q { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--t-champ); color: #0a1a3a; font-size: 12px; font-weight: 800; line-height: 1; font-style: normal; animation: bk-myst-spin 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .9s); }
+.bk-myst-name { font-style: normal; font-weight: 700; color: var(--ink); display: inline-block; transition: opacity .26s, transform .26s var(--ease), filter .26s; }
+.bk-myst-name.is-out { opacity: 0; transform: translateY(-5px); filter: blur(3px); }
+@keyframes bk-foil { 0%, 55% { transform: translateX(-60%); } 100% { transform: translateX(60%); } }
+@keyframes bk-myst-spin { 0%, 80% { transform: rotateY(0); } 90%, 100% { transform: rotateY(360deg); } }
+
 @media (prefers-reduced-motion: reduce) {
+  .bk-who-mystery::before, .bk-myst-q { animation: none; }
+  .bk-who-mystery::before { display: none; }
   .bk-veil, .bk-who.is-revealing li, .bk-who.is-revealing li > *, .bk-who-empty { animation: none; }
   .bk-who.is-revealing li::after { display: none; }
 }

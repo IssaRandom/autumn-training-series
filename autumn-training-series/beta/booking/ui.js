@@ -217,6 +217,41 @@
     else failed();
   });
 
+  /* Sailors who booked but didn't tick "show my name" appear as foil "Mystery sailor" cards that tease a
+     famous name ("Could be Ben Ainslie…"), cycling through the list. Only the count reaches the page. */
+  const LEGENDS = ["Ben Ainslie", "Peter Burling", "Blair Tuke", "Tom Slingsby", "Robert Scheidt", "Giles Scott",
+    "Paul Goodison", "Hannah Mills", "Shirley Robertson", "Matt Wearn", "Marit Bouwmeester", "Anne-Marie Rindom",
+    "Russell Coutts", "Iain Percy", "Ellen MacArthur", "Pavlos Kontides", "Philipp Buhl", "Elliot Hanson",
+    "Emma Wilson", "Dylan Fletcher", "Stuart Bithell", "Saskia Clark", "Ellie Aldridge", "Sam Meech"];
+  const MYSTERY_CARDS = 3;
+  const shuffled = () => LEGENDS.map(n => [Math.random(), n]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  function mysteryHtml(hidden, start) {
+    const names = shuffled(), shown = Math.min(hidden, MYSTERY_CARDS), rest = hidden - shown;
+    let html = "";
+    for (let k = 0; k < shown; k++) html += `<li class="bk-who-mystery" style="--i:${start + k}" aria-label="Mystery sailor (name not shown)">
+      <b aria-hidden="true">Mystery sailor <i class="bk-myst-q">?</i></b>
+      <span aria-hidden="true">Could be <em class="bk-myst-name" data-k="${k}">${esc(names[k])}</em>…</span></li>`;
+    if (rest > 0) html += `<li class="bk-who-more" style="--i:${start + shown}">+ ${rest} more mystery sailor${rest > 1 ? "s" : ""}</li>`;
+    return html;
+  }
+  function rotateMystery(host) {
+    const els = [...host.querySelectorAll(".bk-myst-name")];
+    if (!els.length || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let pool = shuffled(), p = 0;
+    const next = () => { if (p >= pool.length) { pool = shuffled(); p = 0; } return pool[p++]; };
+    let turn = 0;
+    const t = setInterval(() => {
+      if (!host.isConnected || !els[0].isConnected) return clearInterval(t);
+      const el = els[turn++ % els.length];   // one card at a time so they don't all flicker together
+      el.classList.add("is-out");
+      setTimeout(() => {
+        let n = next();
+        if (els.some(e => e.textContent === n)) n = next();
+        el.textContent = n; el.classList.remove("is-out");
+      }, 260);
+    }, 1800);
+  }
+
   /* Who's going: while it loads, show sailor cards with the names hidden under moving water; once the list
      arrives, the water wipes off each card in turn to reveal the real names. */
   async function who(host, campId) {
@@ -229,8 +264,9 @@
       const hidden = r.booked - r.listed.length;
       host.innerHTML = r.booked
         ? `<ul class="bk-who is-revealing">${r.listed.map((x, i) => `<li style="--i:${i}"><b>${esc(x.name)}</b><span>${esc(x.club || "")}${x.rig ? ` · ILCA ${esc(x.rig)}` : ""}</span></li>`).join("")}
-            ${hidden > 0 ? `<li class="bk-who-more" style="--i:${r.listed.length}">+ ${hidden} more sailor${hidden > 1 ? "s" : ""}</li>` : ""}</ul>`
+            ${hidden > 0 ? mysteryHtml(hidden, r.listed.length) : ""}</ul>`
         : `<p class="bk-muted bk-who-empty">No one has booked online yet. Be the first.</p>`;
+      rotateMystery(host);
     } catch (e) {
       host.innerHTML = `<p class="bk-muted">${esc(e.message)}</p>`;
     }
