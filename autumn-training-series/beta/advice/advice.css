@@ -122,3 +122,31 @@ html { scroll-padding-top: 96px; }
 
 /* POLISH-AUDIT #1: pressed states (hover is pointer-only above) */
 .link-card:active { transform: scale(.985); transition-duration: var(--dur-fast); }
+
+/* ---- Kai copy pass (13 Nov) ---- */
+/* Public "still working on it" marker. Search the HTML for "EDIT LATER" to find each one. */
+.wip { display: inline-flex; align-items: center; gap: 7px; font-size: .78rem; font-weight: 700; letter-spacing: .02em; color: var(--warn-tx); background: var(--warn-bg); border: 1px dashed currentColor; border-radius: 3px; padding: 2px 9px; white-space: nowrap; }
+.wip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: wip-pulse 1.8s var(--ease) infinite; }
+@keyframes wip-pulse { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .wip::before { animation: none; } }
+.g-steps { padding-left: 22px; }
+.g-steps li { margin: 12px 0; }
+.g-signoff { margin-top: 24px; font-style: italic; }
+.g-signoff b { font-style: normal; font-family: var(--font-display); text-transform: uppercase; font-size: 1.4rem; }
+
+/* Advice directory + under-construction pages */
+.g-hero-short { padding-bottom: clamp(36px, 5vw, 56px); }
+.hub-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.hub-jump a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid var(--line-strong, var(--line)); border-radius: var(--radius-sm); color: var(--heading); text-decoration: none; font-weight: 700; font-size: .85rem; transition: background var(--dur) var(--ease), border-color var(--dur); }
+.hub-jump a:hover { background: var(--surface-2); border-color: var(--blue-300); }
+.tag-soon { background: var(--warn-bg); color: var(--warn-tx); }
+.card-soon h3 { color: var(--ink-2); }
+.card-soon .arrow { color: var(--muted); }
+.az-list { columns: 3 240px; column-gap: 32px; list-style: none; margin: 0; padding: 0; }
+.az-list li { break-inside: avoid; padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.az-list a { color: var(--heading); text-decoration: none; font-weight: 600; min-height: 24px; }
+.az-list a:hover { color: var(--blue-300); }
+.wip-panel { max-width: 680px; margin: 0 auto; text-align: center; padding: clamp(28px, 5vw, 48px); border: 1px dashed var(--warn-tx); border-radius: var(--radius); background: var(--surface); }
+.wip-panel .h2 { margin: 18px 0 12px; }
+.wip-panel p { color: var(--ink-2); margin: 0 auto 24px; max-width: 46ch; }
+.wip-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }

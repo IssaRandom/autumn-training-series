@@ -22,7 +22,12 @@
     weymouth: (window.BTS_VENUES || []).find(v => v.id === "weymouth")?.match || /WPNSA|Weymouth|Portland/i,
     poole: /Poole|Parkstone/i,
     hayling: /Hayling/i,
-    rutland: /Rutland/i
+    rutland: /Rutland/i,
+    grafham: /Grafham/i,
+    pwllheli: /Pwllheli/i,
+    warsash: /Warsash|Stokes Bay/i,
+    vilamoura: /Vilamoura/i,
+    largs: /Largs/i
   };
   const events = (window.BTS_EVENTS || []).filter(e => !e.optional && !e.placeholder && e.type !== "deadline" && C.parse(e.end) >= C.today && e.venue && !/\//.test(e.venue));
   const days = e => Math.round((C.parse(e.start) - C.today) / 864e5);

@@ -18,10 +18,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../beta.css?v=20261112wv2">
-  <link rel="stylesheet" href="../fx.css?v=20261112wv2">
-  <link rel="stylesheet" href="../advice/advice.css?v=20261112wv2">
-  <link rel="stylesheet" href="hub.css?v=20261112wv2">
+  <link rel="stylesheet" href="../beta.css?v=20261113kc">
+  <link rel="stylesheet" href="../fx.css?v=20261113kc">
+  <link rel="stylesheet" href="../advice/advice.css?v=20261113kc">
+  <link rel="stylesheet" href="hub.css?v=20261113kc">
 </head>
 <body class="hub-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -31,7 +31,7 @@
       <a class="logo" href="../">Beyond the <b>Shift</b></a>
       <nav aria-label="Main">
         <ul class="nav-links" id="nav-links">
-          <li><a href="../#advice">Advice</a></li>
+          <li><a href="../advice/">Advice</a></li>
           <li><a href="../calendar/">Calendar</a></li>
           <li><a href="./" aria-current="page">Venues</a></li>
           <li><a href="../#about">About</a></li>
@@ -113,19 +113,35 @@
           </div>
           <a class="link-more arrow" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Ask on WhatsApp</a>
         </div>
-        <!-- [PLACEHOLDER] picsum images + one-liners -->
+        <!-- Venue list: Kai's Website tab (Category 3). Largs had a "?" in the doc. [PLACEHOLDER] picsum images -->
         <div class="cards soon-grid">
-          <div class="card soon reveal" data-venue="poole">
-            <div class="card-img"><img src="https://picsum.photos/seed/poole/800/500" alt="" loading="lazy"></div>
-            <div class="card-body"><span class="tag">Next up</span><h3>Poole Harbour</h3><p>Shallows, channels and the harbour sea breeze.</p><p class="soon-next" data-next-event hidden></p></div>
-          </div>
           <div class="card soon reveal" data-venue="hayling">
             <div class="card-img"><img src="https://picsum.photos/seed/hayling/800/500" alt="" loading="lazy"></div>
-            <div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island</h3><p>Bar, tide gates and the Solent approach.</p><p class="soon-next" data-next-event hidden></p></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island (HISC)</h3><p>Bar, tide gates and the Solent approach.</p><p class="soon-next" data-next-event hidden></p></div>
+          </div>
+          <div class="card soon reveal" data-venue="grafham">
+            <div class="card-img"><img src="https://picsum.photos/seed/grafham/800/500" alt="" loading="lazy"></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Grafham Water</h3><p>Cambridgeshire, inland.</p><p class="soon-next" data-next-event hidden></p></div>
           </div>
           <div class="card soon reveal" data-venue="rutland">
             <div class="card-img"><img src="https://picsum.photos/seed/rutland/800/500" alt="" loading="lazy"></div>
             <div class="card-body"><span class="tag">Coming soon</span><h3>Rutland Water</h3><p>Inland shifts and pressure lines for the Inlands.</p><p class="soon-next" data-next-event hidden></p></div>
+          </div>
+          <div class="card soon reveal" data-venue="pwllheli">
+            <div class="card-img"><img src="https://picsum.photos/seed/pwllheli/800/500" alt="" loading="lazy"></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Pwllheli</h3><p>North Wales, Cardigan Bay.</p><p class="soon-next" data-next-event hidden></p></div>
+          </div>
+          <div class="card soon reveal" data-venue="warsash">
+            <div class="card-img"><img src="https://picsum.photos/seed/warsash/800/500" alt="" loading="lazy"></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Warsash / Stokes Bay</h3><p>The Solent.</p><p class="soon-next" data-next-event hidden></p></div>
+          </div>
+          <div class="card soon reveal" data-venue="vilamoura">
+            <div class="card-img"><img src="https://picsum.photos/seed/vilamoura/800/500" alt="" loading="lazy"></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Vilamoura</h3><p>The Algarve, Portugal.</p><p class="soon-next" data-next-event hidden></p></div>
+          </div>
+          <div class="card soon reveal" data-venue="largs">
+            <div class="card-img"><img src="https://picsum.photos/seed/largs/800/500" alt="" loading="lazy"></div>
+            <div class="card-body"><span class="tag">Coming soon</span><h3>Largs</h3><p>The Firth of Clyde, Scotland.</p><p class="soon-next" data-next-event hidden></p></div>
           </div>
         </div>
       </div>
@@ -174,7 +190,7 @@
           <p class="lede">We run camps at WPNSA and Poole through the winter: small groups, video every day and a written summary after every camp.</p>
         </div>
         <div class="cta-actions reveal">
-          <a class="btn btn-accent arrow" href="/" data-splash>See camps &amp; book</a>
+          <a class="btn btn-accent arrow" href="../account/#bookings" data-splash>See camps &amp; book</a>
           <a class="btn btn-ghost" href="../calendar/">Season calendar</a>
         </div>
       </div>
@@ -194,9 +210,9 @@
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../data/events.js?v=20261112wv2"></script>
-  <script src="../calendar/cal-core.js?v=20261112wv2"></script>
-  <script src="hub.js?v=20261112wv2"></script>
-  <script src="../fx.js?v=20261112wv2" defer></script>
+  <script src="../data/events.js?v=20261113kc"></script>
+  <script src="../calendar/cal-core.js?v=20261113kc"></script>
+  <script src="hub.js?v=20261113kc"></script>
+  <script src="../fx.js?v=20261113kc" defer></script>
 </body>
 </html>
