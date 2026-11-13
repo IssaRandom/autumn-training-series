@@ -506,8 +506,3 @@
 .minical__key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 11px; color: var(--muted); }
 .minical__key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .minical__key .k { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--bar); }
-/* the zoom: a fixed copy grows from the card to the whole screen */
-.minical.is-zoom { position: fixed; z-index: 1000; margin: 0; transform: none; border-color: var(--blue); pointer-events: none; overflow: hidden; }
-.minical.is-zoom { display: flex; flex-direction: column; }
-.minical.is-zoom .minical__grid { flex: 1; grid-auto-rows: 1fr; }
-.minical.is-zoom .mc-strip { height: 100%; min-height: 15px; }

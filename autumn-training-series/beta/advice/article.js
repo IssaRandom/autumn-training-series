@@ -329,27 +329,6 @@
       miniGrid.append(row);
     }
   }
-  if (mini) {
-    mini.addEventListener("click", e => {
-      if (reduce || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !mini.animate) return;
-      e.preventDefault();
-      const r = mini.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
-      const z = mini.cloneNode(true);
-      z.classList.add("is-zoom");
-      z.removeAttribute("data-minical");
-      z.setAttribute("aria-hidden", "true");
-      z.style.cssText = `top:${r.top}px;left:${r.left}px;width:${r.width}px;height:${r.height}px`;
-      body.append(z);
-      mini.style.visibility = "hidden";
-      const go = () => { try { sessionStorage.setItem("bts-vt-skip", "1"); } catch (_) {} location.href = mini.href; };
-      z.animate([
-        { top: r.top + "px", left: r.left + "px", width: r.width + "px", height: r.height + "px", borderRadius: "12px", padding: "16px" },
-        { top: "0px", left: "0px", width: vw + "px", height: vh + "px", borderRadius: "0px", padding: "28px" }
-      ], { duration: 560, easing: "cubic-bezier(.7, 0, .2, 1)", fill: "forwards" }).finished.then(go, go);
-      addEventListener("pageshow", ev => { if (ev.persisted) { z.remove(); mini.style.visibility = ""; } }, { once: true });
-    });
-  }
-
   /* ---------- Phone pill count ---------- */
   const pill = document.querySelector("[data-toc-toggle]");
   const links = [...document.querySelectorAll("[data-toc-list] a")];
