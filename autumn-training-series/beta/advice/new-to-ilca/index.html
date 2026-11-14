@@ -17,12 +17,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../beta.css?v=20261113d">
-  <link rel="stylesheet" href="../../fx.css?v=20261113d">
-  <script src="../../vt.js?v=20261113d"></script>
-  <link rel="stylesheet" href="../../advice/advice.css?v=20261113d">
+  <link rel="stylesheet" href="../../beta.css?v=20261113e">
+  <link rel="stylesheet" href="../../fx.css?v=20261113e">
+  <script src="../../vt.js?v=20261113e"></script>
+  <link rel="stylesheet" href="../../advice/advice.css?v=20261113e">
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap" rel="stylesheet"><!-- handwriting for the sticky notes only -->
-  <link rel="stylesheet" href="../article.css?v=20261113d">
+  <link rel="stylesheet" href="../article.css?v=20261113e">
 </head>
 <body class="guide-page art-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -79,56 +79,59 @@
         <section class="g-sec" id="which-rig">
           <div class="band"><h2><strong>Which Rig Do I Choose?</strong></h2></div>
           <p>As you may imagine, there is no “one size fits all” answer to this question. Which rig you choose and how you choose to approach your ILCA journey can vary massively from person to person. Here I will attempt to provide a bit of guidance as to what may influence your decision.</p>
-          <!-- Rig walk (ours, James 13 Nov): a girl and a boy walk along a kg scale as you scroll, growing as they go, past the 4.7, Radial and Standard rigs.
-               Gates = Kai's transition weights, bands = Kai's optimal race weights (both from the tables below; the sailors' path and words here are ours).
-               The girl stops in the ILCA 6; the boy walks on into the ILCA 7. Decorative: the facts are in Kai's tables. Without JS / reduced motion: final picture, no pin. -->
-          <div class="walk" data-walk aria-hidden="true">
-            <div class="walk__pin">
-              <div class="walk__head">
-                <p class="walk__kick">Which rig fits? Keep scrolling and watch them grow</p>
-                <p class="walk__kg"><b data-walk-kg>70</b> kg</p>
-              </div>
-              <div class="walk__lanes">
-                <div class="lane" data-lane="w" data-stop="70" data-gates="46:4,58:6" data-race="4:58-64,6:65-70">
-                  <span class="lane__name">Girls</span>
+          <!-- Rig walk (ours, James 13 Nov round 4): a compact panel pins under the nav while Kai's text and both weight tables scroll beneath it.
+               Picture: James's rig diagram (ILCA 4 / 6 / 7). A girl and a boy walk one line past the rigs, growing as you read; each shows their own weight.
+               The girl stops in the ILCA 6 (Radial), the boy walks on into the ILCA 7. Gates = Kai's transition weights, glow = Kai's optimal race weights
+               (both from the tables below). Table rows and the paragraph being read light up. Decorative (aria-hidden): the facts are in Kai's tables.
+               Without JS / reduced motion: no panel / a static final picture. -->
+          <div class="rigwalk" data-walk>
+            <div class="rigwalk__stage" aria-hidden="true">
+              <div class="rw">
+                <div class="rw__head">
+                  <p class="rw__kick">Which rig fits?</p>
+                  <p class="rw__chip" data-chip="w"><i></i><span>Girl</span> <b data-kg>40</b>&nbsp;kg <em data-rig>Growing</em></p>
+                  <p class="rw__chip" data-chip="m"><i></i><span>Boy</span> <b data-kg>42</b>&nbsp;kg <em data-rig>Growing</em></p>
                 </div>
-                <div class="lane" data-lane="m" data-stop="84" data-gates="50:4,64:6,79:7" data-race="4:64-67,6:72-75,7:79-84">
-                  <span class="lane__name">Boys</span>
+                <div class="rw__scene">
+                  <img src="ilca-rigs.webp" width="1200" height="657" alt="" decoding="async">
+                  <span class="rw__boat" data-boat="4" style="--a:4;--b:34"></span>
+                  <span class="rw__boat" data-boat="6" style="--a:34;--b:66"></span>
+                  <span class="rw__boat" data-boat="7" style="--a:66;--b:99"></span>
                 </div>
               </div>
-              <ol class="walk__axis"><li>40</li><li>50</li><li>60</li><li>70</li><li>80</li><li>90 kg</li></ol>
-              <p class="walk__key"><span class="k k--gate"></span>Transition weight <span class="k k--race"></span>Optimal race weight</p>
             </div>
-          </div>
+            <div class="rigwalk__text">
           <p>Height, weight, age, and sex are the primary drivers of which boat class you select. Ultimately, ILCA 4 has the smallest sail size and so sailors of this class are typically the shortest and lightest of the three. A rough estimate of the optimal race-weights at the youth level for each class is as follows:</p>
-          <div class="chart" style="--min:40;--max:90">
+          <div class="chart" data-chart="race" style="--min:40;--max:90">
             <table role="table">
               <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Class</th><th scope="col" role="columnheader">Optimal youth race weight</th></tr></thead>
               <tbody role="rowgroup">
-                <tr role="row" data-rig="4" style="--lo:64;--hi:67"><td role="cell">ILCA 4 M</td><td role="cell">64-67kg</td></tr>
-                <tr role="row" data-rig="4" style="--lo:58;--hi:64"><td role="cell">ILCA 4 W</td><td role="cell">58-64kg</td></tr>
-                <tr role="row" data-rig="6" style="--lo:72;--hi:75"><td role="cell">ILCA 6 M</td><td role="cell">72-75kg</td></tr>
-                <tr role="row" data-rig="6" style="--lo:65;--hi:70"><td role="cell">ILCA 6 W</td><td role="cell">65-70kg</td></tr>
-                <tr role="row" data-rig="7" style="--lo:79;--hi:84"><td role="cell">ILCA 7 U19</td><td role="cell">79-84kg</td></tr>
+                <tr role="row" data-who="m" data-rig="4" style="--lo:64;--hi:67"><td role="cell">ILCA 4 M</td><td role="cell">64-67kg</td></tr>
+                <tr role="row" data-who="w" data-rig="4" style="--lo:58;--hi:64"><td role="cell">ILCA 4 W</td><td role="cell">58-64kg</td></tr>
+                <tr role="row" data-who="m" data-rig="6" style="--lo:72;--hi:75"><td role="cell">ILCA 6 M</td><td role="cell">72-75kg</td></tr>
+                <tr role="row" data-who="w" data-rig="6" style="--lo:65;--hi:70"><td role="cell">ILCA 6 W</td><td role="cell">65-70kg</td></tr>
+                <tr role="row" data-who="m" data-rig="7" style="--lo:79;--hi:84"><td role="cell">ILCA 7 U19</td><td role="cell">79-84kg</td></tr>
               </tbody>
             </table>
             <div class="chart-axis" aria-hidden="true"><!-- axis labels: ours --><ol><li>40</li><li>50</li><li>60</li><li>70</li><li>80</li><li>90 kg</li></ol></div>
           </div>
           <p>Weight relative to your sex is likely the primary factor determining which class suits you best. Keep in mind that the list above discusses optimal <em>race</em> weights internationally, not transition weights. Given that most sailors move into ILCAs at the end of summer in time for the Autumn National Open series, this list may give an indication of what you will want to weigh in 12-24 months time. However it does a poor job of telling you for which boat class you are best suited. The following list attempts to do just that. Keep in mind that the ranges are much greater at this stage since you are attempting to estimate what your weight will be in 12 months time, and subsequently which class you should choose now based on your race weight next year.</p>
-          <div class="chart" style="--min:40;--max:90">
+          <div class="chart" data-chart="gate" style="--min:40;--max:90">
             <table role="table">
               <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Class</th><th scope="col" role="columnheader">Transition weight</th></tr></thead>
               <tbody role="rowgroup">
-                <tr role="row" data-rig="4" class="open" style="--lo:50;--hi:90"><td role="cell">ILCA 4 M</td><td role="cell">+50kg</td></tr>
-                <tr role="row" data-rig="4" class="open" style="--lo:46;--hi:90"><td role="cell">ILCA 4 W</td><td role="cell">+46kg</td></tr>
-                <tr role="row" data-rig="6" class="open" style="--lo:64;--hi:90"><td role="cell">ILCA 6 M</td><td role="cell">+64kg</td></tr>
-                <tr role="row" data-rig="6" class="open" style="--lo:58;--hi:90"><td role="cell">ILCA 6 W</td><td role="cell">+58kg</td></tr>
+                <tr role="row" data-who="m" data-rig="4" class="open" style="--lo:50;--hi:90"><td role="cell">ILCA 4 M</td><td role="cell">+50kg</td></tr>
+                <tr role="row" data-who="w" data-rig="4" class="open" style="--lo:46;--hi:90"><td role="cell">ILCA 4 W</td><td role="cell">+46kg</td></tr>
+                <tr role="row" data-who="m" data-rig="6" class="open" style="--lo:64;--hi:90"><td role="cell">ILCA 6 M</td><td role="cell">+64kg</td></tr>
+                <tr role="row" data-who="w" data-rig="6" class="open" style="--lo:58;--hi:90"><td role="cell">ILCA 6 W</td><td role="cell">+58kg</td></tr>
               </tbody>
             </table>
             <div class="chart-axis" aria-hidden="true"><!-- axis labels: ours --><ol><li>40</li><li>50</li><li>60</li><li>70</li><li>80</li><li>90 kg</li></ol></div>
           </div>
           <p>Height generally ties closely into this estimation of transition weight vs race weight. A taller but skinnier sailor is more likely to fill out as they progress through puberty, and gain a significant amount of strength and mass over their first year. Already shorter and stockier sailors may be less likely to gain significant weight over the course of a year. A sailor’s height and family history can help inform this estimation.</p>
           <p>The final physical component for which we have yet considered is age. As it may seem obvious, the younger you are, the more likely it is you should be in an ILCA 4 vs an ILCA 6. Most boys will typically transition from a 4 to a 6 at age 15 or 16, with a couple fast growers moving early at 14. Girls on average will take a year longer to transition into the ILCA 6 (somewhere between 15 and 17). Moving into an ILCA 6 at a younger or older age is neither good nor bad, but each brings with it its own unique set of challenges and benefits. Try to disassociate the decision of which boat class to choose from those of your peers. Make the decision that is best for you and your situation, not for your friends or competitors.</p>
+            </div>
+          </div>
         </section>
 
         <section class="g-sec" id="boats">
@@ -236,18 +239,33 @@
           <p>Why? How? What? Where? When? How? A whole host of questions which you may or may not be wanting the answers to. If you have towed a trailer before or are used to transporting boats, then I would recommend skipping right past this section as you will find it incredibly dull. If you do not feel confident in either of these two things, then well done! You have found just the right place.</p>
           <p>Transporting your boat from venue to venue is an essential part of any ILCA sailing programme. Here I intend to give a short list of tips and tricks you may find useful coming into the class.</p>
           <p>There are two main ways of transporting an ILCA. The first is upside down. The second is the right way up (mast to the sky so to speak). When transporting a boat upside down, there are one or two things to consider:</p>
-          <!-- Towing as a journey down the UK: Kai's 4 upside-down tips are 4 stops, finishing at Weymouth (leads into Training). Map, route, place names and "Stop n" labels are ours (aria-hidden); the outline is a rough low-poly GB. Towing photos moved out for now: they suit a short how-to offshoot. -->
+          <!-- Towing as a journey down the UK: Kai's 4 upside-down tips are 4 stops, finishing at Weymouth (leads into Training). Map, route, place names and "Stop n" labels are ours (aria-hidden); the map picture is James's (13 Nov round 4). Towing photos moved out for now: they suit a short how-to offshoot. -->
           <div class="trip" data-trip data-beat="map">
             <div class="trip__map" aria-hidden="true">
-              <svg viewBox="0 0 320 600" focusable="false">
-                <path class="gb" d="M105.9 15.2 L117.5 17.2 L116.4 30.4 L95.0 51.5 L81.5 69.3 L73.7 93.7 L86.5 86.5 L109.4 77.9 L159.1 79.9 L167.6 92.4 L156.0 115.5 L140.8 145.2 L130.0 161.7 L136.6 172.9 L112.5 191.4 L138.9 191.4 L159.1 206.6 L181.2 257.4 L190.1 278.5 L213.0 291.1 L233.5 315.5 L241.3 351.1 L249.8 380.2 L246.3 399.3 L256.0 392.7 L287.1 394.0 L304.5 423.7 L289.0 458.0 L263.8 486.4 L290.2 496.3 L287.5 513.5 L274.7 527.3 L246.3 539.2 L231.2 533.3 L206.0 539.2 L194.0 535.9 L182.3 531.3 L159.8 541.2 L161.0 547.8 L141.6 547.8 L141.2 553.7 L122.6 539.9 L104.7 546.5 L95.4 572.9 L76.0 563.6 L34.9 590.0 L15.1 582.8 L24.1 573.5 L45.0 551.8 L60.9 520.1 L76.8 507.5 L102.0 508.2 L131.9 488.4 L113.7 491.7 L83.4 481.8 L54.3 477.2 L31.0 463.3 L55.1 448.8 L78.4 428.3 L79.5 407.9 L65.9 397.3 L52.4 402.6 L69.8 380.2 L58.2 363.0 L88.1 367.6 L120.3 363.0 L118.3 335.3 L124.1 318.8 L111.3 316.1 L95.8 290.4 L116.4 260.7 L79.5 268.6 L48.1 281.2 L42.7 264.0 L48.1 241.6 L57.0 227.0 L50.4 198.0 L11.6 237.6 L24.4 164.3 L10.5 125.4 L15.1 106.9 L36.5 66.0 L42.7 18.5 L52.4 21.8 L100.1 19.8Z"/>
-                <polyline class="road" points="47.7,205.3 71.8,200.6 100.9,237.6 123.0,264.7 131.9,339.2 124.5,376.9 89.2,389.4 65.6,396.7 100.9,415.8 130.0,408.5 162.9,423.7 212.2,412.5 187.8,471.9 166.8,516.8 142.0,549.1"/>
-                <polyline class="road road--done" points="47.7,205.3 71.8,200.6 100.9,237.6 123.0,264.7 131.9,339.2 124.5,376.9 89.2,389.4 65.6,396.7 100.9,415.8 130.0,408.5 162.9,423.7 212.2,412.5 187.8,471.9 166.8,516.8 142.0,549.1" data-trip-road/>
-                <g class="stop" data-stop="1" transform="translate(47.7 205.3)"><circle r="4.5"/><text x="8" y="3" text-anchor="start">Largs</text></g>
-<g class="stop" data-stop="2" transform="translate(65.6 396.7)"><circle r="4.5"/><text x="8" y="3" text-anchor="start">Pwllheli</text></g>
-<g class="stop" data-stop="3" transform="translate(212.2 412.5)"><circle r="4.5"/><text x="-8" y="3" text-anchor="end">Rutland</text></g>
-<g class="stop" data-stop="4" transform="translate(142.0 549.1)"><circle r="4.5"/><text x="8" y="3" text-anchor="start">Weymouth</text></g>
-                <g class="van" data-trip-van><!-- car (faces left) with an ILCA upside down on the roof --><g class="car"><path class="car__hull" d="M-13 -10.6 L11 -10.6 L11 -12.4 Q-1 -16.4 -13 -10.6Z"/><path class="car__rack" d="M-8 -10.4 V-8.6 M6 -10.4 V-8.6"/><path class="car__body" d="M-14 3 V-1 Q-14 -3.6 -10.5 -3.8 L-6.5 -8.2 Q-5.6 -9 -4 -9 H5 Q6.6 -9 7.6 -7.6 L10.4 -3.8 Q14 -3.6 14 -1 V3 Z"/><path class="car__glass" d="M-5.4 -7.6 H-0.6 V-4.2 H-8.4 Z M0.8 -7.6 H5 Q5.8 -7.6 6.4 -6.8 L8.4 -4.2 H0.8 Z"/><circle cx="-8" cy="3.4" r="2.8"/><circle cx="8" cy="3.4" r="2.8"/></g></g>
+              <svg viewBox="0 0 1478 1064" focusable="false">
+                <!-- map: James's UK route image (13 Nov round 4); the white route, dots and names are in the picture. Orange route, lit stops and car are drawn on top. -->
+                <image href="uk-route.webp" width="1478" height="1064"/>
+                <polyline class="road road--done" points="677,404 775,462 808,550 802,645 786,675 695,721 979,738 928,838 880,868 823,962" data-trip-road/>
+                <g class="stop" data-stop="1" transform="translate(677 404)"><circle r="11"/></g>
+                <g class="stop" data-stop="2" transform="translate(695 721)"><circle r="11"/></g>
+                <g class="stop" data-stop="3" transform="translate(979 738)"><circle r="11"/></g>
+                <g class="stop" data-stop="4" transform="translate(823 962)"><circle r="11"/></g>
+                <g class="van" data-trip-van><!-- car (faces left) with an ILCA upside down on the roof: James's drawing, 13 Nov -->
+                  <g class="car">
+                    <path class="car__hull" d="M-15 -10.4 Q-15.4 -10.6 -15 -10.9 L-13.2 -12.5 Q-12.1 -13.5 -10 -13.7 C-3 -14.1 7 -14.1 14.4 -13.5 L14.6 -11.9 Q14.5 -11.5 14 -11.5 L5 -11.4 Q4.7 -11.1 4.2 -11.1 L-0.3 -11 Q-0.8 -10.7 -1 -10.7 Z"/>
+                    <path class="car__rack" d="M-8 -10.6 V-8.6 M6 -11.4 V-8.6"/>
+                    <path class="car__body" d="M-14 3 V-1 Q-14 -3.6 -10.5 -3.8 L-6.5 -8.2 Q-5.6 -9 -4 -9 H5 Q6.6 -9 7.6 -7.6 L10.4 -3.8 Q14 -3.6 14 -1 V3 Z"/>
+                    <path class="car__glass" d="M-5.4 -7.6 H-0.6 V-4.2 H-8.4 Z M0.8 -7.6 H5 Q5.8 -7.6 6.4 -6.8 L8.4 -4.2 H0.8 Z"/>
+                    <circle cx="-8" cy="3.4" r="2.8"/>
+                    <circle cx="8" cy="3.4" r="2.8"/>
+                  </g>
+                </g>
+                <g class="lbl"><!-- place names redrawn over the picture's own, so the car never hides them -->
+                  <text x="699" y="403" textLength="87" lengthAdjust="spacingAndGlyphs">Largs</text>
+                  <text x="557" y="729" textLength="120" lengthAdjust="spacingAndGlyphs">Pwllheli</text>
+                  <text x="1004" y="745" textLength="118" lengthAdjust="spacingAndGlyphs">Rutland</text>
+                  <text x="846" y="979" textLength="172" lengthAdjust="spacingAndGlyphs">Weymouth</text>
+                </g>
               </svg>
             </div>
             <ol class="trip__cards">
@@ -365,9 +383,9 @@
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../../data/events.js?v=20261113d"></script>
-  <script src="../advice.js?v=20261113d"></script>
-  <script src="../article.js?v=20261113d"></script>
-  <script src="../../fx.js?v=20261113d" defer></script>
+  <script src="../../data/events.js?v=20261113e"></script>
+  <script src="../advice.js?v=20261113e"></script>
+  <script src="../article.js?v=20261113e"></script>
+  <script src="../../fx.js?v=20261113e" defer></script>
 </body>
 </html>

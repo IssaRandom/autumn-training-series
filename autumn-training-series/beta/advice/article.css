@@ -162,14 +162,14 @@
 .art-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
 .art-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
 .art-page.nav-hid .toc:not(.is-open) { transform: translateY(calc(-1 * var(--nav-h))); }
-.season__stage, .trip__map { transition: transform var(--dur-slow) var(--ease); }
-.art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+.season__stage, .trip__map, .rigwalk__stage { transition: transform var(--dur-slow) var(--ease); }
+.art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map, .art-page.nav-hid .walk-on .rigwalk__stage { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
 @media (max-width: 900px) {
   /* one slim bar at a time: the contents pill steps aside while a picture is pinned */
   .art-page.pinned .toc:not(.is-open) { opacity: 0; visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .art-page .nav, .art-page .toc, .season__stage, .trip__map { transition: none; }
+  .art-page .nav, .art-page .toc, .season__stage, .trip__map, .rigwalk__stage { transition: none; }
 }
 
 /* ---------- 21 Maker / dealer pairs, as link buttons ---------- */
@@ -310,19 +310,16 @@
 /* ---------- Towing: a journey down the UK, ending at Weymouth ---------- */
 .trip { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 28px; margin: 26px 0; }
 .trip__map { position: sticky; top: calc(var(--nav-h) + 16px); align-self: start; height: calc(100svh - var(--nav-h) - 32px); }
-.trip__map svg { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius); }   /* zoomed in: clip to the box */
-.trip .gb { fill: color-mix(in srgb, var(--blue) 9%, var(--surface)); stroke: rgba(143, 181, 255, .55); stroke-width: .8; stroke-linejoin: round; }
-.trip .road { fill: none; stroke: var(--line-strong); stroke-width: 1.4; stroke-dasharray: 2 3; stroke-linecap: round; stroke-linejoin: round; }
-.trip .road--done { stroke: var(--hl); stroke-width: 1.8; stroke-dasharray: var(--len, 1000); stroke-dashoffset: var(--off, 1000); }
-.trip .stop circle { fill: var(--bg); stroke: var(--muted); stroke-width: 1.4; transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease); }
-.trip .stop text { font: 700 9px var(--font); fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 2.4px; transition: fill var(--dur) var(--ease); }
-.trip .stop.on circle { fill: var(--hl); stroke: var(--hl); }
-.trip .stop.on text { fill: var(--heading); }
-/* car with an ILCA upside down on the roof (map units; the map is zoomed in ~2x) */
-.trip .car { transform: translateY(-1px) scale(1.15); }
+.trip__map svg { display: block; width: 100%; height: 100%; overflow: hidden; border-radius: var(--radius); background: #030f28; border: 1px solid var(--line); }   /* zoomed in: clip to the box */
+.trip .road--done { fill: none; stroke: var(--hl); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: var(--len, 4000); stroke-dashoffset: var(--off, 4000); }
+.trip .stop circle { fill: transparent; stroke: transparent; stroke-width: 4; transition: fill var(--dur) var(--ease), stroke var(--dur) var(--ease); }
+.trip .stop.on circle { fill: var(--hl); stroke: #fff; }
+/* car with an ILCA upside down on the roof (James's drawing; map units are the picture's pixels) */
+.trip .car { transform: translateY(-3px) scale(2.2); }
+.trip .lbl text { font: 700 31px var(--font); fill: #fff; paint-order: stroke; stroke: #0b1f45; stroke-width: 7px; stroke-linejoin: round; }
 .trip .car__body { fill: var(--blue); stroke: var(--bg); stroke-width: .8; }
 .trip .car__glass { fill: color-mix(in srgb, var(--bg) 70%, var(--blue)); }
-.trip .car__hull { fill: #f4efe4; stroke: var(--bg); stroke-width: .8; }
+.trip .car__hull { fill: #f4efe4; stroke: var(--bg); stroke-width: .7; stroke-linejoin: round; }
 .trip .car__rack { stroke: var(--heading); stroke-width: 1.2; }
 .trip .van circle { fill: #1b2233; stroke: var(--heading); stroke-width: 1.2; }
 .trip__cards { list-style: none; margin: 0; padding: 14svh 0 8svh; display: grid; gap: 18svh; }
@@ -336,8 +333,8 @@
 @media (max-width: 760px) {
   /* phones: the map pins across the top half, the cards scroll up underneath it */
   .trip { display: block; }
-  .trip__map { top: 0; z-index: 7; height: 46svh; margin: 0 calc(-1 * var(--gutter)); padding: 8px 0 10px;
-    background: linear-gradient(var(--bg) 85%, transparent); }
+  .trip__map { top: 0; z-index: 7; height: 44svh; margin: 0 calc(-1 * var(--gutter)); padding: 8px var(--gutter) 10px;
+    background: var(--bg); box-shadow: 0 14px 18px -6px var(--bg); }   /* solid backing: the land never sits over the cards */
   .art-page.nav-hid .trip__map { transform: none; }
   .trip__cards { padding: 4svh 0 6svh; gap: 16svh; }
 }
@@ -408,83 +405,69 @@
 }
 
 /* =====================================================================
-   13 Nov round 3: rig walk (top of the guide) + mini season calendar (Racing)
+   13 Nov round 3/4: rig walk (top of the guide) + mini season calendar (Racing)
    ===================================================================== */
 
-/* ---------- Rig walk: a girl and a boy walk the kg scale, past the 4.7, Radial and Standard ---------- */
-.walk { display: none; margin: 26px 0 30px; --u: 1px; }
-.js-walk .walk { display: block; }
-.walk__pin { padding: 18px 0 14px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
-  background: linear-gradient(rgba(143, 181, 255, .05) 1px, transparent 1px) 0 0 / 100% 28px, radial-gradient(110% 80% at 50% 120%, color-mix(in srgb, var(--blue) 16%, transparent), transparent 60%), var(--bg-2); }
-.walk.walk-on { height: var(--walk-h, 340svh); }
-.walk-on .walk__pin { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; justify-content: center; border-radius: 0; border-inline: 0; }
-.walk__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 0 18px; margin-bottom: 6px; }
-.art-page .walk__kick { margin: 0; max-width: 16rem; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); line-height: 1.35; }
-.art-page .walk__kg { margin: 0; font: 800 15px/1 var(--font); color: var(--muted); white-space: nowrap; }
-.walk__kg b { font: 800 clamp(2.6rem, 9vw, 4rem)/.9 var(--font-display); color: var(--heading); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-.walk__lanes { display: grid; gap: 4px; }
-.lane { position: relative; height: calc(var(--u) * 176); }
-.lane + .lane { border-top: 1px dashed var(--line); }
-.lane__name { position: absolute; left: 18px; top: 10px; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-.lane__track { position: absolute; left: 18px; right: 18px; bottom: 32px; height: 0; }
-.lane__track::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--line-strong); border-radius: 2px; }
-.lane .kgx { position: absolute; left: calc((var(--kg) - 40) * 2%); }
-.lane .seg { top: -2px; height: 4px; width: calc((var(--to) - var(--kg)) * 2%); background: var(--c); border-radius: 2px; opacity: .55; }
-.lane .race { top: -6px; height: 12px; width: calc((var(--to) - var(--kg)) * 2%); border-radius: 6px; background: var(--c); box-shadow: 0 0 14px color-mix(in srgb, var(--c) 60%, transparent); opacity: .35; transition: opacity var(--dur) var(--ease); }
-.lane .race.on { opacity: 1; }
+/* ---------- Rig walk (round 4): compact panel pinned under the nav, Kai's text + tables scroll beneath ----------
+   Picture = James's rig diagram; a girl and a boy walk one line past the rigs, growing; each chip shows their own weight. */
+.rigwalk { --rig-4: #ff7a29; --rig-6: #3d9bff; --rig-7: #ff4351;   /* match the diagram: ILCA 4 orange, 6 blue, 7 red */
+  --kid-w: #ff7ac6; --kid-m: #22c993; margin: 22px 0 0; }
+.rigwalk__stage { display: none; }
+.js-walk .rigwalk__stage { display: block; position: relative; z-index: 6; margin-bottom: 18px; }
+.js-walk .rigwalk.walk-on .rigwalk__stage { position: sticky; top: calc(var(--nav-h) + 10px); }
+.rw { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px 12px 8px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: color-mix(in srgb, #000b23 94%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 -24px 0 var(--bg), 0 14px 30px -18px rgba(0, 0, 0, .9); }
+.rw__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.art-page .rw__kick { margin: 0 auto 0 0; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); }
+.art-page .rw__chip { display: inline-flex; align-items: baseline; gap: 5px; margin: 0; font-size: 12px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+.rw__chip i { align-self: center; width: 9px; height: 9px; border-radius: 50%; background: var(--k); }
+.rw__chip[data-chip="w"] { --k: var(--kid-w); } .rw__chip[data-chip="m"] { --k: var(--kid-m); }
+.rw__chip span { color: var(--k); }
+.rw__chip b { font: 800 15px/1 var(--font); color: var(--heading); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+.rw__chip em { font-style: normal; padding: 2px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: 11px; transition: background var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.rw__chip em[data-rig-c] { background: color-mix(in srgb, var(--c) 24%, transparent); color: var(--heading); }
+.rw__chip.race em { box-shadow: 0 0 0 1.5px var(--c), 0 0 12px color-mix(in srgb, var(--c) 60%, transparent); }
+/* the scene: diagram + boat zones + the two sailors, all in % of the picture */
+.rw__scene { --sh: clamp(132px, 24svh, 200px); position: relative; width: min(100%, calc(var(--sh) * 1.8265)); margin-inline: auto; }
+.rw__scene img { display: block; width: 100%; height: auto; }
+.rw__boat { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); background: #000b23; opacity: .6; pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease); }
+.rw__boat.on { opacity: 0; }
+.rw__boat::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: 6%; height: 3px; border-radius: 2px; background: var(--c); opacity: 0; box-shadow: 0 0 12px var(--c); transition: opacity var(--dur) var(--ease); }
+.rw__boat.race::after { opacity: 1; }
+.rw__boat[data-boat="4"] { --c: var(--rig-4); } .rw__boat[data-boat="6"] { --c: var(--rig-6); } .rw__boat[data-boat="7"] { --c: var(--rig-7); }
 [data-rig-c="4"] { --c: var(--rig-4); } [data-rig-c="6"] { --c: var(--rig-6); } [data-rig-c="7"] { --c: var(--rig-7); }
-/* gate: the rig's sail standing at the transition weight, lit once a sailor reaches it */
-.lane .gate { bottom: 0; width: 0; }
-/* the sail stands just before its gate (mast on the gate line), so a sailor past the gate is never drawn over it */
-.gate svg { position: absolute; bottom: 2px; right: -4px; transform: scaleX(-1); height: calc(var(--u) * var(--sz)); width: auto; color: var(--c); opacity: .28; filter: grayscale(.8);
-  transform-origin: 50% 100%; transition: opacity var(--dur-slow) var(--ease), filter var(--dur-slow) var(--ease), transform 500ms cubic-bezier(.34, 1.56, .64, 1); }
-.gate.on svg { opacity: .95; filter: none; transform: scale(-1.06, 1.06); }
-.gate__lbl { position: absolute; top: 8px; right: -2px; text-align: right; white-space: nowrap; font-size: 11px; font-weight: 800; color: var(--muted); line-height: 1.1; transition: color var(--dur) var(--ease); }
-.gate__lbl small { display: block; font-size: 9.5px; font-weight: 700; letter-spacing: .06em; }
-.gate.on .gate__lbl { color: var(--c); }
-/* the sailors */
-.who { bottom: 0; width: 0; z-index: 2; }
-.who .kid { position: absolute; bottom: -1px; left: calc(var(--u) * -21 * var(--s, 1)); height: calc(var(--u) * 86 * var(--s, 1)); width: auto; overflow: visible; }
-.who .kid .skin { fill: #f2c9a0; }
-.who .kid .hair { fill: #6b4220; }
-.who .kid .suit { stroke: #a9b8d2; }
-.who .kid .bib { fill: var(--bib); }
-.who .kid .leg, .who .kid .arm { transform-box: view-box; }
-.who .kid .leg { transform-origin: 20px 50px; }
-.who .kid .arm { transform-origin: 20px 25px; }
-.lane[data-lane="w"] .who { --bib: #ff7ac6; }
-.lane[data-lane="m"] .who { --bib: var(--hl); }
-.lane.walking .kid .leg-a { animation: stride .46s ease-in-out infinite alternate; }
-.lane.walking .kid .leg-b { animation: stride .46s ease-in-out infinite alternate-reverse; }
-.lane.walking .kid .arm-a { animation: swing .46s ease-in-out infinite alternate-reverse; }
-.lane.walking .kid .arm-b { animation: swing .46s ease-in-out infinite alternate; }
-.lane.walking .kid .body { animation: bob .23s ease-in-out infinite alternate; }
+.rw__kid { position: absolute; left: calc(var(--x, 3) * 1%); bottom: 8%; width: 0; height: 35%; z-index: 2; }
+.rw__kid[data-kid="w"] { --bib: var(--kid-w); z-index: 1; bottom: 10%; }
+.rw__kid[data-kid="m"] { --bib: var(--kid-m); }
+.rw__kid .kid { position: absolute; bottom: 0; left: 0; height: calc(var(--s, .6) * 100%); width: auto; overflow: visible; transform: translateX(-50%); }
+.rw__kid .skin { fill: #f2c9a0; } .rw__kid .hair { fill: #6b4220; } .rw__kid .suit { stroke: #a9b8d2; } .rw__kid .bib { fill: var(--bib); }
+.rw__kid .leg, .rw__kid .arm { transform-box: view-box; }
+.rw__kid .leg { transform-origin: 20px 50px; }
+.rw__kid .arm { transform-origin: 20px 25px; }
+.rw__kid.walking .leg-a { animation: stride .46s ease-in-out infinite alternate; }
+.rw__kid.walking .leg-b { animation: stride .46s ease-in-out infinite alternate-reverse; }
+.rw__kid.walking .arm-a { animation: swing .46s ease-in-out infinite alternate-reverse; }
+.rw__kid.walking .arm-b { animation: swing .46s ease-in-out infinite alternate; }
+.rw__kid.walking .body { animation: bob .23s ease-in-out infinite alternate; }
 @keyframes stride { from { transform: rotate(26deg); } to { transform: rotate(-26deg); } }
 @keyframes swing { from { transform: rotate(22deg); } to { transform: rotate(-22deg); } }
 @keyframes bob { to { transform: translateY(-1.5px); } }
-.who .kid .arm-a { transition: transform 400ms cubic-bezier(.34, 1.56, .64, 1); }
-.who.done .kid .arm-a { transform: rotate(155deg); }   /* reached their rig: a wave */
-.who .bubble { position: absolute; bottom: calc(var(--u) * 92 * var(--s, 1)); left: 0; transform: translateX(calc(var(--p, .5) * -100%)); white-space: nowrap;
-  padding: 5px 9px; border-radius: 9px; background: var(--heading); color: var(--bg); font-size: 12px; font-weight: 800; line-height: 1.15; box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .7); }
-.who .bubble small { display: block; font-size: 10px; font-weight: 700; color: color-mix(in srgb, var(--bg) 70%, transparent); }
-.who .bubble i { font-style: normal; display: inline-block; width: 9px; height: 9px; margin-right: 5px; border-radius: 50%; background: var(--c, var(--muted)); }
-.walk__axis { display: flex; justify-content: space-between; list-style: none; margin: 2px 18px 0; padding: 0; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.art-page .walk__axis li { margin: 0; font-size: 11px; line-height: 1.2; }
-.art-page .walk__key { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 18px 0; font-size: 11px; color: var(--muted); }
-.walk__key .k { display: inline-block; width: 16px; height: 8px; border-radius: 4px; }
-.walk__key .k--gate { width: 2px; height: 12px; border-radius: 0; background: var(--ink-2); }
-.walk__key .k--race { margin-left: 10px; background: linear-gradient(90deg, var(--rig-4), var(--rig-6), var(--rig-7)); }
-@media (max-width: 900px) { .walk { margin-inline: calc(-1 * var(--gutter)); } .walk__pin { border-radius: 0; border-inline: 0; } }
-@media (max-width: 560px) {
-  .walk { --u: .95px; }
-  .walk__head { padding: 0 var(--gutter); }
-  .lane__name { left: var(--gutter); }
-  .lane__track { left: var(--gutter); right: var(--gutter); bottom: 30px; }
-  .walk__axis, .art-page .walk__key { margin-inline: var(--gutter); }
-  .gate__lbl small { display: none; }
-  .who .bubble { font-size: 11px; padding: 4px 8px; }
+.rw__kid .arm-a { transition: transform 400ms cubic-bezier(.34, 1.56, .64, 1); }
+.rw__kid.done .arm-a { transform: rotate(155deg); }   /* reached their rig: a wave */
+/* the text underneath: the paragraph being read lights its edge; table rows light for where the sailors are */
+.art-page .rigwalk__text > p { padding-left: 16px; border-left: 3px solid var(--line); transition: border-color var(--dur-slow) var(--ease); }
+.art-page .rigwalk__text > p.on { border-left-color: var(--blue); }
+.rigwalk .chart tbody tr { border-radius: 8px; transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.rigwalk .chart tbody tr.lit { background: color-mix(in srgb, var(--c) 15%, transparent); box-shadow: -8px 0 0 color-mix(in srgb, var(--c) 15%, transparent), 8px 0 0 color-mix(in srgb, var(--c) 15%, transparent); }
+.rigwalk .chart tbody tr.lit td:first-child::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: 7px; border-radius: 50%; vertical-align: 1px; background: var(--k); box-shadow: 0 0 8px var(--k); }
+.rigwalk .chart tbody tr[data-who="w"] { --k: var(--kid-w); } .rigwalk .chart tbody tr[data-who="m"] { --k: var(--kid-m); }
+@media (max-width: 900px) {
+  .js-walk .rigwalk.walk-on .rigwalk__stage { top: var(--nav-h); margin-inline: calc(-1 * var(--gutter)); }
+  .js-walk .rigwalk.walk-on .rw { border-radius: 0; border-inline: 0; padding: 8px var(--gutter) 6px; }
 }
-.walk.walk-on { --u: clamp(.72px, calc((100svh - 340px) / 370), 1.3px); }   /* pinned: lanes grow with the screen's height */
+@media (max-width: 420px) { .art-page .rw__kick { display: none; } .rw__head { justify-content: space-between; } }
+@media (prefers-reduced-motion: reduce) { .rw__boat, .rw__kid .arm-a { transition: none; } }
 
 /* ---------- Mini season calendar (Racing): tap, it zooms up, then the calendar opens ---------- */
 .minical { display: block; margin: 22px 0 26px; padding: 16px 16px 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: inherit; text-decoration: none;

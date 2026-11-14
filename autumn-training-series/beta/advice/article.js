@@ -7,6 +7,7 @@
    - boatwork: sideways timeline (01 + 16); vertical scroll moves the cards across, the blueprint pans
    - towing: van drives the route down the UK as each stop's card passes
    - training: season board row for the paragraph being read lights up
+   - which rig: compact pinned panel, girl + boy walk past the rigs; table rows + paragraph light up
    - phone contents pill: "n of N" count, and steps aside while something is pinned */
 (() => {
   "use strict";
@@ -183,8 +184,8 @@
     van.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) scale(${dir} 1)`);
     /* zoomed-in map that follows the car down the country (viewBox matches the box's shape, so nothing letterboxes) */
     if (tripSvg && tripSvg.clientHeight) {
-      const W = 320, H = 600, asp = tripSvg.clientWidth / tripSvg.clientHeight;
-      let vh2 = H / (phone ? 2.6 : 1.6), vw2 = vh2 * asp;
+      const W = 1478, H = 1064, asp = tripSvg.clientWidth / tripSvg.clientHeight;
+      let vh2 = H / (phone ? 1.6 : 1.15), vw2 = vh2 * asp;
       if (vw2 > W) { vw2 = W; vh2 = W / asp; }
       const cx = vw2 >= W ? W / 2 : clamp(pt.x, vw2 / 2, W - vw2 / 2);
       const cy = clamp(pt.y + vh2 * .1, vh2 / 2, H - vh2 / 2);
@@ -219,10 +220,15 @@
     return r.top < sb - 20 && r.bottom > sb + 80;
   };
 
-  /* ---------- Rig walk: girl + boy walk the kg scale as you scroll ---------- */
+  /* ---------- Rig walk (round 4): compact pinned panel; girl + boy walk one line past the rigs as you read ---------- */
   const walk = document.querySelector("[data-walk]");
-  const RIG = { 4: ["4.7", "ILCA 4", 60], 6: ["Radial", "ILCA 6", 70], 7: ["Standard", "ILCA 7", 82] };
-  const SAIL = '<svg viewBox="0 0 50 100" focusable="false"><path d="M8 4V90" stroke="currentColor" stroke-width="2.5"/><path d="M10 6Q40 38 44 86H10Z" fill="currentColor" opacity=".8"/><path d="M8 86H46" stroke="currentColor" stroke-width="2"/><path d="M2 90H48L43 97H8Z" fill="currentColor"/></svg>';
+  const RIGN = { 4: "ILCA 4", 6: "ILCA 6", 7: "ILCA 7" };
+  /* boat centres in the picture (% of its width); gates = Kai's transition weights, race = Kai's optimal race weights */
+  const BX = { 4: 17, 6: 49.6, 7: 82.5 };
+  const KIDS = {
+    w: { from: 40, to: 70, end: .82, gates: [[46, 4], [58, 6]], race: { 4: [58, 64], 6: [65, 70] }, path: [[40, 3], [46, BX[4]], [58, BX[6]], [70, BX[6] + 7]] },
+    m: { from: 42, to: 84, end: 1, gates: [[50, 4], [64, 6], [79, 7]], race: { 4: [64, 67], 6: [72, 75], 7: [79, 84] }, path: [[42, 6], [50, BX[4]], [64, BX[6]], [79, BX[7]], [84, BX[7] + 8]] }
+  };
   const FIG = girl => `<svg class="kid" viewBox="0 0 40 86" focusable="false"><g class="body">
     <g class="arm arm-b"><line class="suit" x1="20" y1="25" x2="20" y2="44" stroke-width="5" stroke-linecap="round"/></g>
     <g class="leg leg-b"><line class="suit" x1="20" y1="50" x2="20" y2="82" stroke-width="6.5" stroke-linecap="round"/></g>
@@ -233,66 +239,85 @@
     <path class="hair" d="M13 10.5Q13 3 20 3Q27 3 27 9.5Q24 6.2 20 6.6Q15.5 6.4 13 10.5Z"/>
     <g class="arm arm-a"><line class="suit" x1="20" y1="25" x2="20" y2="44" stroke-width="5" stroke-linecap="round"/></g>
   </g></svg>`;
-  let walkOn = false, walkLanes = [];
+  let walkOn = false, wStage = null, wText = null, wParas = [], wRows = [], wBoats = [], wKids = [], wEnd = null, wPara = null;
   if (walk) {
     document.documentElement.classList.add("js-walk");
-    const pairs = s => s.split(",").map(x => x.split(":"));
-    walkLanes = [...walk.querySelectorAll(".lane")].map(lane => {
-      const gates = pairs(lane.dataset.gates).map(([kg, r]) => ({ kg: +kg, r }));
-      const race = pairs(lane.dataset.race).map(([r, span]) => { const [a, b] = span.split("-").map(Number); return { r, a, b }; });
-      const track = document.createElement("div");
-      track.className = "lane__track";
-      let html = "";
-      gates.forEach((g, k) => { html += `<span class="kgx seg" data-rig-c="${g.r}" style="--kg:${g.kg};--to:${gates[k + 1] ? gates[k + 1].kg : 90}"></span>`; });
-      race.forEach(b => { html += `<span class="kgx race" data-rig-c="${b.r}" style="--kg:${b.a};--to:${b.b}"></span>`; });
-      gates.forEach(g => { const [nm, cls, sz] = RIG[g.r]; html += `<span class="kgx gate" data-rig-c="${g.r}" style="--kg:${g.kg};--sz:${sz}">${SAIL}<span class="gate__lbl">${nm}<small>${cls}</small></span></span>`; });
-      html += `<span class="kgx who">${FIG(lane.dataset.lane === "w")}<span class="bubble"></span></span>`;
-      track.innerHTML = html;   // our own static markup, no user data
-      lane.append(track);
-      return { lane, gates, race, stop: +lane.dataset.stop, who: track.querySelector(".who"), bubble: track.querySelector(".bubble"),
-        gateEls: [...track.querySelectorAll(".gate")], raceEls: [...track.querySelectorAll(".race")], kg: -1, t: 0 };
+    wStage = walk.querySelector(".rigwalk__stage");
+    wText = walk.querySelector(".rigwalk__text");
+    wParas = [...wText.children].filter(el => el.tagName === "P");
+    wEnd = wText.querySelector('[data-chart="gate"]') || wText;
+    wBoats = [...walk.querySelectorAll("[data-boat]")];
+    wRows = [...walk.querySelectorAll(".chart tbody tr[data-who]")].map(tr => ({ tr, who: tr.dataset.who, rig: +tr.dataset.rig,
+      kind: tr.closest("[data-chart]").dataset.chart, lo: parseFloat(tr.style.getPropertyValue("--lo")), hi: parseFloat(tr.style.getPropertyValue("--hi")) }));
+    const scene = walk.querySelector(".rw__scene");
+    wKids = Object.entries(KIDS).map(([id, K]) => {
+      const el = document.createElement("span");
+      el.className = "rw__kid";
+      el.dataset.kid = id;
+      el.innerHTML = FIG(id === "w");   // our own static markup, no user data
+      scene.append(el);
+      const chip = walk.querySelector(`[data-chip="${id}"]`);
+      return Object.assign({ id, el, chip, kgEl: chip.querySelector("[data-kg]"), rigEl: chip.querySelector("[data-rig]"), kg: -1, rig: 0, inRace: 0, t: 0 }, K);
     });
   }
-  const walkKg = walk && walk.querySelector("[data-walk-kg]");
-  const setLane = (L, kg) => {
-    kg = Math.min(kg, L.stop);
-    const moved = Math.abs(kg - L.kg) > .01;
-    if (!moved) return;
-    L.kg = kg;
-    L.who.style.setProperty("--kg", kg.toFixed(2));
-    L.who.style.setProperty("--s", (.62 + (kg - 42) / 42 * .46).toFixed(3));
-    L.who.style.setProperty("--p", ((kg - 40) / 50).toFixed(3));
-    const cur = L.gates.filter(g => kg >= g.kg).pop();
-    const band = L.race.find(b => kg >= b.a && kg <= b.b);
-    L.gateEls.forEach((el, k) => el.classList.toggle("on", kg >= L.gates[k].kg));
-    L.raceEls.forEach((el, k) => el.classList.toggle("on", L.race[k] === band));
-    L.bubble.dataset.rigC = cur ? cur.r : "";
-    const i = document.createElement("i");
-    const main = document.createTextNode(cur ? `${RIG[cur.r][1]} · ${RIG[cur.r][0]}` : "Still growing");
-    const small = document.createElement("small");
-    small.textContent = band ? `${RIG[band.r][1]} race weight` : `${Math.round(kg)} kg`;
-    L.bubble.replaceChildren(i, main, small);
-    L.who.classList.toggle("done", kg >= L.stop);
-    if (!reduce && walkOn) {
-      L.lane.classList.add("walking");
-      clearTimeout(L.t);
-      L.t = setTimeout(() => L.lane.classList.remove("walking"), 140);
+  const along = (path, kg) => {   /* piecewise: kg -> x% along the picture */
+    for (let k = 1; k < path.length; k++) if (kg <= path[k][0]) { const [a0, x0] = path[k - 1], [a1, x1] = path[k]; return x0 + (x1 - x0) * clamp((kg - a0) / (a1 - a0), 0, 1); }
+    return path[path.length - 1][1];
+  };
+  const setKid = (K, kg) => {
+    if (Math.abs(kg - K.kg) < .01) return;
+    K.kg = kg;
+    K.el.style.setProperty("--x", along(K.path, kg).toFixed(2));
+    K.el.style.setProperty("--s", (.62 + (kg - 40) / 44 * .38).toFixed(3));
+    const g = K.gates.filter(([w]) => kg >= w).pop();
+    K.rig = g ? g[1] : 0;
+    const band = Object.entries(K.race).find(([, [a, b2]]) => kg >= a && kg <= b2);
+    K.inRace = band ? +band[0] : 0;
+    K.kgEl.textContent = Math.round(kg);
+    K.rigEl.textContent = K.rig ? RIGN[K.rig] + (K.inRace === K.rig ? " · race weight" : "") : "Growing";
+    if (K.rig) K.rigEl.dataset.rigC = K.rig; else delete K.rigEl.dataset.rigC;
+    K.chip.classList.toggle("race", !!K.inRace);
+    K.el.classList.toggle("done", kg >= K.to);
+    if (walkOn) {
+      K.el.classList.add("walking");
+      clearTimeout(K.t);
+      K.t = setTimeout(() => K.el.classList.remove("walking"), 140);
     }
+  };
+  const paintWalk = () => {
+    wBoats.forEach(bt => {
+      const n = +bt.dataset.boat;
+      bt.classList.toggle("on", wKids.some(K => K.rig === n));
+      bt.classList.toggle("race", wKids.some(K => K.inRace === n));
+    });
+    const kid = { w: wKids.find(K => K.id === "w"), m: wKids.find(K => K.id === "m") };
+    wRows.forEach(R => {
+      const K = kid[R.who];
+      const lit = R.kind === "race" ? K.kg >= R.lo && K.kg <= R.hi : K.rig === R.rig;
+      R.tr.classList.toggle("lit", lit);
+    });
   };
   const layoutWalk = () => {
     if (!walk) return;
     walkOn = !reduce && window.innerHeight >= 520;
     walk.classList.toggle("walk-on", walkOn);
-    if (!walkOn) { walkLanes.forEach(L => setLane(L, L.stop)); if (walkKg) walkKg.textContent = "84"; }
+    if (!walkOn) { wKids.forEach(K => setKid(K, K.to)); paintWalk(); }
   };
   const updateWalk = () => {
+    if (!walk) return false;
+    const vh = window.innerHeight, sb = wStage.getBoundingClientRect().bottom, line = sb + (vh - sb) * .35;
+    if (walkOn) {
+      const top = wText.getBoundingClientRect().top, end = wEnd.getBoundingClientRect().bottom;
+      const p = clamp((line - top) / Math.max(1, end - top), 0, 1);
+      wKids.forEach(K => setKid(K, K.from + (K.to - K.from) * clamp(p / K.end, 0, 1)));
+      paintWalk();
+    }
+    let cur = null;
+    wParas.forEach(el => { const r = el.getBoundingClientRect(); if (r.top <= line && r.bottom > sb) cur = el; });
+    if (cur !== wPara) { wPara = cur; wParas.forEach(el => el.classList.toggle("on", el === cur)); }
     if (!walkOn) return false;
-    const r = walk.getBoundingClientRect(), vh = window.innerHeight;
-    const p = clamp(-r.top / Math.max(1, walk.offsetHeight - vh), 0, 1);
-    const kg = 42 + clamp((p - .04) / .84, 0, 1) * 42;
-    walkLanes.forEach(L => setLane(L, kg));
-    if (walkKg) walkKg.textContent = Math.round(kg);
-    return r.top <= 0 && r.bottom >= vh;
+    const r = walk.getBoundingClientRect();
+    return r.top < sb - 20 && r.bottom > sb + 80;
   };
 
   /* ---------- Mini season calendar (Racing) ---------- */
