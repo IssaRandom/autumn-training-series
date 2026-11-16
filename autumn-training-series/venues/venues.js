@@ -92,7 +92,7 @@
     const evts = window.BTS_EVENTS
       .filter(e => re.test(e.venue || "") && !e.optional && C.parse(e.end) >= C.today && e.type !== "deadline" && (!types || types.includes(e.type)))
       .sort((a, b) => C.parse(a.start) - C.parse(b.start))
-      .slice(0, 8);
+      .slice(0, +list.dataset.venueLimit || 8);   /* Weymouth: next 3, the mini calendar shows the rest */
     const T = window.BTS_TYPES || {};
     list.innerHTML = evts.length ? evts.map(e => {
       const shared = /\//.test(e.venue) ? " · one of several venues" : "";
@@ -324,6 +324,15 @@
       const leave = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) e.target.classList.remove("is-in"); }), { rootMargin: "40px 0px 40px 0px" });
       notesV.forEach(el => { enter.observe(el); leave.observe(el); });
     }
+  }
+
+  /* ---- Article frame (advice/article.css): photo bands and the finish line fade in, and replay, like New to ILCAs ---- */
+  const frame = $$(".band, .finish");
+  if (frame.length && "IntersectionObserver" in window && !still.matches) {
+    document.documentElement.classList.add("js-art");
+    const enter = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add("is-in"); }), { rootMargin: "0px 0px -12% 0px" });
+    const leave = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) e.target.classList.remove("is-in"); }), { rootMargin: "40px 0px 40px 0px" });
+    frame.forEach(el => { enter.observe(el); leave.observe(el); });
   }
 
   /* ---- Third-party widgets: load the script only when it gets near the screen ---- */

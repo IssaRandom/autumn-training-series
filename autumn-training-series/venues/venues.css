@@ -292,3 +292,22 @@
 /* Navigator picture is a link */
 .v-shot-link a { display: block; border-radius: var(--radius); transition: transform var(--dur) var(--ease), box-shadow var(--dur); }
 @media (hover: hover) { .v-shot-link a:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0, 0, 0, .35); } }
+
+/* =====================================================================
+   P1 frame (WEYMOUTH-DESIGN-PLAN.md, 16 Nov): photo bands + finish line + mini calendar come from advice/article.css
+   (body.art-page). Here: chapter colour (19) for the parents' half, and band spacing on the venue page.
+   ===================================================================== */
+/* 19 Chapter colour: everything for parents sits on deep teal; the tokens switch inside the part, so cards, pins and links follow */
+.part--parents {
+  --bg: #04201f; --bg-2: #062a29; --surface: #0a3333; --surface-2: #0f4140;
+  --line: rgba(111, 220, 203, .2); --line-strong: rgba(111, 220, 203, .42);
+  --blue: #7fe3d2; --blue-300: #7fe3d2; --accent: #1fb59c; --muted: #a7c7c2;
+  margin-top: clamp(48px, 7vw, 80px); padding-bottom: clamp(36px, 6vw, 64px);
+  background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax);
+}
+.part--parents > .g-sec:first-child { padding-top: clamp(28px, 5vw, 48px); }
+.part--parents .band::before { color: #7fe3d2; }
+@media (min-width: 901px) { .venue-page .toc { z-index: 3; } }   /* the teal part paints in the positioned layer: keep the contents rail above it */
+/* bands sit at the top of their section; the section's own top padding is enough */
+.venue-page .g-sec > .band:first-child { margin-top: 0; }
+.band__credit .todo { display: inline; margin: 0 0 0 4px; padding: 0 6px; font-size: 11px; color: #ffd66b; }   /* review mode only (hidden publicly by advice.css) */
