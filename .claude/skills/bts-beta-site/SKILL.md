@@ -8,6 +8,7 @@ description: Build the Beyond the Shift /beta website (animated, scroll-driven r
 Start every session by reading `STATUS.md` (repo root). Update it before ending.
 
 ## Repo facts
+- **LIVE since 16 Nov 2026:** the former /beta files now sit at the publish root (`autumn-training-series/index.html`, `beta.css`, `calendar/`, `advice/`, …). Wherever this skill says `beta/x`, read it as `x` at the root. The old live homepage is now `coaching/index.html`. New pages are indexable (no noindex). Placeholders and review markers stay hidden unless `?review=1`. Work on branches off `master`, then open a PR (Cloudflare Workers Builds deploys master).
 - Static site, no build step. Publish root = `autumn-training-series/` (inner folder). Hosted on Cloudflare (serves `/page` without `.html`); netlify.toml/_headers also present.
 - Live site files — DO NOT edit for beta work: `index.html`, `styles.css`, `script.js`, legal pages. Live camp data = `camps` array at top of `script.js` (beta may READ it for "next 3 trainings").
 - Preview: `.claude/launch.json` config `site` → :8765. If another session already holds 8765, use config `site-alt` → :8767 (the port is hard-coded in the python args, so autoPort can't move it).
