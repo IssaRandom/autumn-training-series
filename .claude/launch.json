@@ -1,0 +1,93 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8765,
+      "autoPort": false
+    },
+    {
+      "name": "site-alt",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8767,
+      "autoPort": false
+    },
+    {
+      "name": "site-3",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8769",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8769,
+      "autoPort": false
+    },
+    {
+      "name": "site-4",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8771",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8771,
+      "autoPort": false
+    },
+    {
+      "name": "site-5",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8773",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8773,
+      "autoPort": false
+    },
+    {
+      "name": "site-6",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8775",
+        "--directory",
+        "autumn-training-series"
+      ],
+      "port": 8775,
+      "autoPort": false
+    },
+    {
+      "name": "copy-editor",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "tools/copy-editor/server.py",
+        "8781"
+      ],
+      "port": 8781,
+      "autoPort": false
+    }
+  ]
+}

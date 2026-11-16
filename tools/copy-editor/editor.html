@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Wording Editor</title>
+<style>
+  :root {
+    --navy: #03132e; --navy-2: #0b2147; --ink: #14213d; --muted: #5b6b85; --line: #dfe5ee; --bg: #f5f7fb;
+    --blue: #1f6feb; --amber: #f2a900; --amber-bg: #fff7e0; --red: #c62828; --red-bg: #fdecec; --green: #1b8a4b; --green-bg: #e8f6ee;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif; color: var(--ink); background: var(--bg); }
+  header { position: sticky; top: 0; z-index: 5; background: var(--navy); color: #fff; padding: 14px 20px 12px; box-shadow: 0 2px 10px #0003; }
+  .top { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: .2px; }
+  h1 small { font-weight: 400; color: #9fb3d6; font-size: 13px; margin-left: 8px; }
+  .spacer { flex: 1; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+  input[type=search], select { font: inherit; padding: 7px 10px; border-radius: 8px; border: 1px solid #2b4370; background: var(--navy-2); color: #fff; }
+  input[type=search] { width: 260px; }
+  label.tog { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: #d6e0f2; cursor: pointer; user-select: none; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid transparent; padding: 7px 14px; }
+  .save { background: var(--amber); color: var(--navy); font-weight: 700; }
+  .save:disabled { background: #2b4370; color: #8ea3c6; cursor: default; }
+  .ghost { background: transparent; color: #d6e0f2; border-color: #2b4370; }
+  .ghost:disabled { opacity: .4; cursor: default; }
+  .progress { font-size: 13px; color: #9fb3d6; }
+  .bar { height: 4px; background: #2b4370; border-radius: 4px; width: 160px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 6px; }
+  .bar i { display: block; height: 100%; background: #3ccf7f; width: 0; transition: width .3s; }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px 20px 80px; }
+  .help { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+  .help b { color: var(--ink); }
+  .group { margin: 22px 0 8px; display: flex; align-items: baseline; gap: 10px; }
+  .group h2 { margin: 0; font-size: 16px; color: var(--navy); }
+  .group span { font-size: 13px; color: var(--muted); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  td { border-top: 1px solid var(--line); padding: 8px 10px; vertical-align: top; }
+  tr:first-child td { border-top: 0; }
+  td.where { width: 190px; font-size: 12px; color: var(--muted); }
+  td.where .kind { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: #eef2f8; color: #3c4d6b; margin-bottom: 3px; }
+  td.where code { font-size: 11px; color: #8492a8; word-break: break-all; }
+  td.text { padding: 6px 8px; }
+  textarea { width: 100%; font: inherit; color: var(--ink); border: 1px solid transparent; border-radius: 6px; padding: 6px 8px; resize: vertical; background: transparent; field-sizing: content; min-height: 34px; }
+  textarea:hover { border-color: var(--line); }
+  textarea:focus { outline: none; border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px #1f6feb22; }
+  .hint { font-size: 12px; color: var(--muted); padding: 2px 8px 0; }
+  .orig { font-size: 12px; color: var(--muted); padding: 2px 8px 0; text-decoration: line-through; }
+  td.acts { width: 210px; white-space: nowrap; text-align: right; }
+  td.acts button, td.acts a { font-size: 13px; padding: 5px 9px; border: 1px solid var(--line); background: #fff; color: var(--ink); text-decoration: none; border-radius: 7px; display: inline-block; }
+  td.acts button:hover, td.acts a:hover { border-color: #b7c3d6; }
+  tr.edited td { background: var(--amber-bg); }
+  tr.edited td:first-child { box-shadow: inset 4px 0 var(--amber); }
+  tr.deleting td { background: var(--red-bg); }
+  tr.deleting td:first-child { box-shadow: inset 4px 0 var(--red); }
+  tr.deleting textarea { text-decoration: line-through; color: var(--red); }
+  tr.kept td.text textarea { color: #4d5b72; }
+  tr.kept td:first-child { box-shadow: inset 4px 0 var(--green); }
+  button.keep.on { background: var(--green-bg); border-color: #9fd8b6; color: var(--green); }
+  button.del.on { background: var(--red); border-color: var(--red); color: #fff; }
+  .empty { text-align: center; color: var(--muted); padding: 40px; }
+  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--navy); color: #fff; padding: 12px 18px; border-radius: 10px; box-shadow: 0 6px 24px #0004; max-width: min(720px, 92vw); font-size: 14px; display: none; z-index: 9; }
+  .toast.show { display: block; }
+  .toast .bad { color: #ffb4b4; }
+  @media (max-width: 760px) {
+    header { padding: 12px; } main { padding: 12px 10px 80px; }
+    input[type=search] { width: 100%; }
+    table, tbody, tr, td { display: block; width: 100% !important; }
+    td.where { padding-bottom: 0; } td.acts { text-align: left; white-space: normal; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>Site wording <small>/beta + booking emails</small></h1>
+    <span class="progress" id="progress"></span>
+    <span class="spacer"></span>
+    <button class="ghost" id="undo" disabled title="Put the files back as they were before the last save">Undo last save</button>
+    <button class="save" id="save" disabled>Save changes</button>
+  </div>
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search the wording…" autocomplete="off">
+    <select id="page"><option value="">All pages</option></select>
+    <select id="kind"><option value="">All types</option></select>
+    <label class="tog"><input type="checkbox" id="hideShort" checked> Hide short labels (menus, names, buttons)</label>
+    <label class="tog"><input type="checkbox" id="hideKept" checked> Hide ones I've kept</label>
+  </div>
+</header>
+<main>
+  <div class="help">
+    <b>Edit</b> any line by typing in it. <b>Keep ✓</b> marks a line as fine (it disappears from the list). <b>Delete</b> removes it from the site.
+    Nothing changes on the site until you press <b>Save changes</b> (or Ctrl+S). Bits in &lt;angle brackets&gt; and <code>${…}</code> are links,
+    formatting or live values: leave those as they are and edit the words around them.
+  </div>
+  <div id="list"><div class="empty">Scanning the site for wording…</div></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const ENT = { "&amp;": "&", "&nbsp;": " ", "&rsquo;": "’", "&lsquo;": "‘", "&ldquo;": "“", "&rdquo;": "”", "&mdash;": "—", "&ndash;": "–", "&hellip;": "…", "&middot;": "·", "&pound;": "£" };
+const decode = t => t.replace(/&(amp|nbsp|rsquo|lsquo|ldquo|rdquo|mdash|ndash|hellip|middot|pound);/g, m => ENT[m]);
+let items = [], edits = new Map(), dels = new Set();
+
+async function load() {
+  const r = await fetch("/api/items");
+  const d = await r.json();
+  items = d.items.map(it => ({ ...it, shown: decode(it.q ? it.text.replace(/\\(['"`])/g, "$1") : it.text) }));
+  edits.clear(); dels.clear();
+  $("#undo").disabled = !d.undo;
+  fillSelect("#page", [...new Set(items.map(i => i.page))]);
+  fillSelect("#kind", [...new Set(items.map(i => i.kind))]);
+  render();
+}
+function fillSelect(sel, values) {
+  const el = $(sel), cur = el.value, first = el.options[0].outerHTML;
+  el.innerHTML = first + values.map(v => `<option>${esc(v)}</option>`).join("");
+  el.value = values.includes(cur) ? cur : "";
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function visible() {
+  const q = $("#q").value.trim().toLowerCase(), page = $("#page").value, kind = $("#kind").value;
+  return items.filter(it =>
+    (!page || it.page === page) && (!kind || it.kind === kind) &&
+    (!$("#hideShort").checked || !it.short || edits.has(it.id) || dels.has(it.id)) &&
+    (!$("#hideKept").checked || !it.kept || edits.has(it.id) || dels.has(it.id)) &&
+    (!q || it.shown.toLowerCase().includes(q) || it.plain.toLowerCase().includes(q)));
+}
+
+function render() {
+  const list = $("#list"), vis = visible();
+  if (!vis.length) { list.innerHTML = `<div class="empty">Nothing left to review with these filters. Nice work.</div>`; updateBar(); return; }
+  const groups = new Map();
+  vis.forEach(it => { if (!groups.has(it.page)) groups.set(it.page, []); groups.get(it.page).push(it); });
+  list.innerHTML = [...groups].map(([page, rows]) => `
+    <div class="group"><h2>${esc(page)}</h2><span>${rows.length} line${rows.length === 1 ? "" : "s"}${rows[0].url ? ` · <a href="${esc(rows[0].url)}" target="_blank" rel="noopener">open page ↗</a>` : ""}</span></div>
+    <table><tbody>${rows.map(rowHtml).join("")}</tbody></table>`).join("");
+  updateBar();
+}
+
+function rowHtml(it) {
+  const val = edits.has(it.id) ? edits.get(it.id) : it.shown;
+  const cls = [dels.has(it.id) && "deleting", edits.has(it.id) && "edited", it.kept && "kept"].filter(Boolean).join(" ");
+  const view = it.url ? `${it.url}#:~:text=${encodeURIComponent(it.plain.trim().split(/\s+/).slice(0, 6).join(" "))}` : "";
+  const jsDel = !it.file.endsWith(".html") ? "Removes the words (the spot they sat in stays)" : "Removes it from the page";
+  return `<tr data-id="${esc(it.id)}" class="${cls}">
+    <td class="where"><span class="kind">${esc(it.kind)}</span><br><code title="${esc(it.file)}">${esc(it.file.split("/").slice(-2).join("/"))}:${it.line}</code><br><code>${esc(it.where)}</code></td>
+    <td class="text"><textarea rows="1" spellcheck="true" aria-label="Wording">${esc(val)}</textarea>
+      ${edits.has(it.id) ? `<div class="orig">${esc(it.shown)}</div>` : ""}
+      ${/[<$]/.test(it.shown) && /<[a-z\/]|\$\{/i.test(it.shown) ? `<div class="hint">Keep the &lt;…&gt; / \${…} bits.</div>` : ""}</td>
+    <td class="acts">
+      <button class="keep ${it.kept ? "on" : ""}" data-act="keep" title="This line is fine as it is">${it.kept ? "Kept ✓" : "Keep ✓"}</button>
+      <button class="del ${dels.has(it.id) ? "on" : ""}" data-act="del" title="${jsDel}">${dels.has(it.id) ? "Undelete" : "Delete"}</button>
+      ${edits.has(it.id) ? `<button data-act="reset" title="Back to the original">Reset</button>` : ""}
+      ${view ? `<a href="${esc(view)}" target="_blank" rel="noopener" title="Open the page at this line (if it's on the page when it loads)">View ↗</a>` : ""}
+    </td></tr>`;
+}
+
+function updateBar() {
+  const n = edits.size + dels.size;
+  $("#save").disabled = !n;
+  $("#save").textContent = n ? `Save ${n} change${n === 1 ? "" : "s"}` : "Save changes";
+  const pool = items.filter(i => !i.short), done = pool.filter(i => i.kept).length;
+  $("#progress").innerHTML = `${done} of ${pool.length} phrases reviewed <span class="bar"><i style="width:${pool.length ? (100 * done / pool.length).toFixed(1) : 0}%"></i></span>`;
+}
+
+const byId = id => items.find(i => i.id === id);
+function refreshRow(tr) {
+  const it = byId(tr.dataset.id), ta = tr.querySelector("textarea"), focused = document.activeElement === ta;
+  const pos = focused ? ta.selectionStart : 0;
+  tr.outerHTML = rowHtml(it);
+  if (focused) { const n = $(`tr[data-id="${CSS.escape(it.id)}"] textarea`); n.focus(); n.setSelectionRange(pos, pos); }
+  updateBar();
+}
+
+$("#list").addEventListener("input", e => {
+  if (e.target.tagName !== "TEXTAREA") return;
+  const tr = e.target.closest("tr"), it = byId(tr.dataset.id), v = e.target.value;
+  const was = edits.has(it.id);
+  if (v === it.shown) edits.delete(it.id); else edits.set(it.id, v);
+  tr.classList.toggle("edited", edits.has(it.id));
+  if (was !== edits.has(it.id)) refreshRow(tr); else updateBar();
+});
+
+$("#list").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  const tr = b.closest("tr"), it = byId(tr.dataset.id);
+  if (b.dataset.act === "del") { dels.has(it.id) ? dels.delete(it.id) : dels.add(it.id); refreshRow(tr); }
+  if (b.dataset.act === "reset") { edits.delete(it.id); refreshRow(tr); }
+  if (b.dataset.act === "keep") {
+    it.kept = !it.kept;
+    await fetch("/api/keep", { method: "POST", body: JSON.stringify({ keys: [it.key], kept: it.kept }) });
+    if (it.kept && $("#hideKept").checked && !edits.has(it.id) && !dels.has(it.id)) {
+      tr.style.transition = "opacity .25s"; tr.style.opacity = "0";
+      setTimeout(render, 250);
+    } else refreshRow(tr);
+    updateBar();
+  }
+});
+
+async function save() {
+  const changes = [];
+  edits.forEach((v, id) => { if (!dels.has(id)) { const it = byId(id); changes.push({ ...it, new: v }); } });
+  dels.forEach(id => changes.push({ ...byId(id), delete: true }));
+  if (!changes.length) return;
+  if (dels.size && !confirm(`Delete ${dels.size} line${dels.size === 1 ? "" : "s"} from the site? (Undo last save can bring them back.)`)) return;
+  $("#save").disabled = true; $("#save").textContent = "Saving…";
+  const r = await fetch("/api/save", { method: "POST", body: JSON.stringify({ changes }) });
+  const d = await r.json();
+  toast(d);
+  await load();
+}
+async function undo() {
+  if (!confirm("Put the files back as they were before your last save?")) return;
+  toast(await (await fetch("/api/undo", { method: "POST", body: "{}" })).json());
+  await load();
+}
+function toast(d) {
+  const t = $("#toast");
+  const ok = d.written && d.written.length ? `Saved: ${d.written.join(", ")}.` : "";
+  t.innerHTML = [ok, d.note, ...(d.problems || []).map(p => `<span class="bad">${esc(p)}</span>`)].filter(Boolean).join("<br>") || "Done.";
+  t.classList.add("show");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("show"), (d.problems || []).length ? 12000 : 6000);
+}
+
+$("#save").addEventListener("click", save);
+$("#undo").addEventListener("click", undo);
+["#q", "#page", "#kind", "#hideShort", "#hideKept"].forEach(s => $(s).addEventListener("input", render));
+addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key === "s") { e.preventDefault(); save(); } });
+addEventListener("beforeunload", e => { if (edits.size || dels.size) { e.preventDefault(); e.returnValue = ""; } });
+load();
+</script>
+</body>
+</html>

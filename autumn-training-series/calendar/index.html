@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ILCA season calendar 2026/27 — Beyond the Shift</title>
+  <meta name="description" content="ILCA 4, 6 and 7 season planner: Beyond the Shift training, ILCA UK National Opens, championships, internationals and selection deadlines.">
+  <link rel="icon" href="../icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#03132e">
+  <meta name="application-name" content="Beyond the Shift">
+  <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
+  <meta property="og:site_name" content="Beyond the Shift">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../beta.css?v=20261116">
+  <link rel="stylesheet" href="../fx.css?v=20261116">
+  <script src="../vt.js?v=20261116"></script>
+  <link rel="stylesheet" href="../booking/booking.css?v=20261116">
+  <link rel="stylesheet" href="calendar.css?v=20261116">
+</head>
+<body class="cal-page theme-dark">
+  <header class="nav is-solid" data-nav>
+    <div class="wrap nav-inner">
+      <a class="logo" href="../">Beyond the <b>Shift</b></a>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="../advice/">Advice</a></li>
+          <li><a href="./" aria-current="page">Calendar</a></li>
+          <li><a href="../venues/">Venues</a></li>
+          <li><a href="../#about">About</a></li>
+          <li><a href="../account/">My bookings</a></li>
+          <li class="mobile-only"><a href="../">Home</a></li>
+          <li class="mobile-only"><a href="/coaching/">Coaching &amp; booking</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn-accent nav-cta" href="/coaching/">Coaching</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+    </div>
+  </header>
+
+  <main id="main" class="cal-main">
+    <div class="cal-toolbar" data-toolbar>
+      <div class="tb-row tb-main">
+        <h1 class="cal-title">Season <span>2026/27</span></h1>
+        <div class="seg seg-view" role="group" aria-label="View">
+          <button type="button" data-view="year" aria-pressed="true" aria-label="Year plan"><svg class="vw-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12M2 8h12M2 12.5h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="vw-txt">Year<span class="wide-only"> plan</span></span></button>
+          <button type="button" data-view="month" aria-pressed="false" aria-label="Months"><svg class="vw-ic" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2 6.5h12M6 6.5v7M10 6.5v7" stroke="currentColor" stroke-width="1.4"/></svg><span class="vw-txt">Months</span></button>
+        </div>
+        <div class="seg seg-rig" role="group" aria-label="Rig">
+          <span class="seg-label" aria-hidden="true">Rig</span>
+          <button type="button" data-rig="all" aria-pressed="true">All</button>
+          <button type="button" data-rig="4" aria-pressed="false" aria-label="ILCA 4">4</button>
+          <button type="button" data-rig="6" aria-pressed="false" aria-label="ILCA 6">6</button>
+          <button type="button" data-rig="7" aria-pressed="false" aria-label="ILCA 7">7</button>
+        </div>
+        <!-- zoom: inline on desktop, a floating pill over the year plan on tablet and phone -->
+        <div class="zoom" data-zoom-ui hidden>
+          <button type="button" class="tb-icon" data-zoom="out" aria-label="Zoom out"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <input type="range" min="0" max="100" value="0" aria-label="Zoom" data-zoom-range>
+          <button type="button" class="tb-icon" data-zoom="in" aria-label="Zoom in"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button type="button" class="tb-btn tb-sm" data-zoom="fit">Fit</button>
+        </div>
+        <button type="button" class="tb-filter" data-filter-open aria-haspopup="dialog" aria-expanded="false">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12M4.5 8h7M7 13h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="tb-filter-txt">Filter</span>
+          <span class="tb-dots" data-filter-dots aria-hidden="true"></span>
+          <span class="tb-count" data-filter-count aria-hidden="true"></span>
+          <svg class="tb-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <nav class="month-jump" aria-label="Jump to month" data-month-jump hidden></nav>
+    </div>
+
+    <!-- Tips: each one disappears once the viewer has done it (calendar.js hints) -->
+    <div class="cal-hint" data-hint hidden></div>
+
+    <!-- Year plan: weekday-aligned month rows (desktop default) -->
+    <!-- Both start with a skeleton (fx.css #9) that calendar.js swaps out on its first render. Until then fx.css shows
+         the year plan on desktop and the month cards on phones; setView() then hides whichever isn't in use. -->
+    <section class="yp" data-year-view aria-label="Year plan" tabindex="0">
+      <div class="skel-cal">
+        <div class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Calendar loading.</b> Plan the season, then sail it.</p></div>
+        <div aria-hidden="true">
+          <div class="skel-row"><span class="skel" style="--i:0"></span><span class="skel" style="--i:0"><i class="skel-bar" style="--l:23%;--w:14%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:1"></span><span class="skel" style="--i:1"><i class="skel-bar" style="--l:13%;--w:21%;--c:var(--t-bts)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:2"></span><span class="skel" style="--i:2"><i class="skel-bar" style="--l:50%;--w:17%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:3"></span><span class="skel" style="--i:3"><i class="skel-bar" style="--l:31%;--w:8%;--c:var(--t-train)"></i><i class="skel-bar" style="--l:59%;--w:14%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:4"></span><span class="skel" style="--i:4"><i class="skel-bar" style="--l:15%;--w:16%;--c:var(--t-intl)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:5"></span><span class="skel" style="--i:5"><i class="skel-bar" style="--l:19%;--w:11%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:6"></span><span class="skel" style="--i:6"><i class="skel-bar" style="--l:11%;--w:17%;--c:var(--t-bts)"></i><i class="skel-bar" style="--l:54%;--w:8%;--c:var(--t-no)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:7"></span><span class="skel" style="--i:7"><i class="skel-bar" style="--l:21%;--w:12%;--c:var(--t-intl)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:8"></span><span class="skel" style="--i:8"><i class="skel-bar" style="--l:19%;--w:17%;--c:var(--t-champ)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:9"></span><span class="skel" style="--i:9"><i class="skel-bar" style="--l:27%;--w:9%;--c:var(--t-bts)"></i><i class="skel-bar" style="--l:52%;--w:13%;--c:var(--t-train)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:10"></span><span class="skel" style="--i:10"><i class="skel-bar" style="--l:12%;--w:17%;--c:var(--t-train)"></i><i class="skel-bar" style="--l:36%;--w:15%;--c:var(--t-gold)"></i></span></div>
+          <div class="skel-row"><span class="skel" style="--i:11"></span><span class="skel" style="--i:11"><i class="skel-bar" style="--l:24%;--w:17%;--c:var(--t-intl)"></i><i class="skel-bar" style="--l:58%;--w:20%;--c:var(--t-champ)"></i></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Months: classic 7-column month grids + readable list (mobile default) -->
+    <section class="mv" data-month-view aria-label="Months">
+      <div class="skel-cal">
+        <div class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Calendar loading.</b> Plan the season, then sail it.</p></div>
+        <div class="mcard skel-mcard" aria-hidden="true">
+          <span class="skel skel-line" style="--w:48%;font-size:20px"></span>
+          <span class="skel skel-week" style="--i:1"></span>
+          <span class="skel skel-week" style="--i:2"><i class="skel-bar" style="--l:30%;--w:40%;--c:var(--t-train)"></i></span>
+          <span class="skel skel-week" style="--i:3"></span>
+          <span class="skel skel-week" style="--i:4"><i class="skel-bar" style="--l:58%;--w:30%;--c:var(--t-champ)"></i></span>
+          <span class="skel skel-week" style="--i:5"></span>
+          <span class="skel skel-line" style="--w:72%;--i:6;margin-top:16px"></span>
+          <span class="skel skel-line" style="--w:56%;--i:7"></span>
+        </div>
+        <div class="mcard skel-mcard" aria-hidden="true">
+          <span class="skel skel-line" style="--w:40%;font-size:20px"></span>
+          <span class="skel skel-week" style="--i:1"><i class="skel-bar" style="--l:4%;--w:26%;--c:var(--t-bts)"></i></span>
+          <span class="skel skel-week" style="--i:2"></span>
+          <span class="skel skel-week" style="--i:3"><i class="skel-bar" style="--l:44%;--w:42%;--c:var(--t-no)"></i></span>
+          <span class="skel skel-week" style="--i:4"></span>
+          <span class="skel skel-week" style="--i:5"></span>
+          <span class="skel skel-line" style="--w:64%;--i:6;margin-top:16px"></span>
+        </div>
+      </div>
+    </section>
+
+    <p class="cal-source wrap">Dates from ILCA UK, ILCA and EurILCA, checked 11 Nov 2026. Striped = provisional (posh for “probably”). Always check the Notice of Race before entering.</p>
+  </main>
+
+  <button type="button" class="to-today" data-today hidden>
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="8" r="2" fill="currentColor"/></svg>
+    Today
+  </button>
+  <div class="tip" data-tip role="tooltip" hidden></div>
+
+  <dialog class="sheet fsheet" data-fsheet aria-labelledby="fsheet-title">
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <div class="sheet-top">
+      <h2 id="fsheet-title">Show on the calendar</h2>
+      <button type="button" class="tb-icon" data-fsheet-close aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="f-presets" role="group" aria-label="Quick choices" data-f-presets></div>
+    <div class="f-list" data-f-list></div>
+    <button type="button" class="btn btn-accent f-apply" data-f-apply>Done</button>
+    <button type="button" class="f-tour" data-tour-replay>New here? Show me around again</button>
+  </dialog>
+  <p class="cal-delta" data-delta role="status" aria-live="polite"></p>
+
+  <dialog class="sheet" data-sheet aria-labelledby="sheet-title">
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <div class="sheet-top">
+      <span class="pill" data-sheet-type></span>
+      <div class="sheet-nav">
+        <button type="button" class="tb-icon" data-sheet-step="-1" aria-label="Previous event"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="tb-icon" data-sheet-step="1" aria-label="Next event"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button type="button" class="tb-icon" data-sheet-close aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+    </div>
+    <h2 id="sheet-title" data-sheet-title></h2>
+    <p class="sheet-when" data-sheet-when></p>
+    <dl class="sheet-facts" data-sheet-facts></dl>
+    <div class="sheet-actions" data-sheet-actions></div>
+    <div class="sheet-pop" data-sheet-pop hidden></div>
+    <div class="sheet-venue" data-sheet-venue></div>
+    <div class="sheet-who" data-sheet-who></div>
+  </dialog>
+
+  <!-- First-visit tour (calendar.js tour) -->
+  <div class="tour" data-tour hidden>
+    <div class="tour-spot" data-tour-spot></div>
+    <div class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tour-h" data-tour-card>
+      <p class="tour-step" data-tour-step></p>
+      <h2 id="tour-h" data-tour-h></h2>
+      <p class="tour-p" data-tour-p></p>
+      <div class="tour-btns"><button type="button" class="tour-skip" data-tour-skip>Skip</button><button type="button" class="btn btn-accent tour-next" data-tour-next>Next</button></div>
+    </div>
+  </div>
+
+  <span class="beta-flag" aria-hidden="true">Beta preview</span>
+  <script src="../data/events.js?v=20261116"></script>
+  <script src="../booking/config.js?v=20261116"></script>
+  <script src="../booking/api.js?v=20261116"></script>
+  <script src="../booking/loader.js?v=20261116"></script>
+  <script src="../booking/ui.js?v=20261116"></script>
+  <script src="cal-core.js?v=20261116"></script>
+  <script src="../swash.js?v=20261116"></script>
+  <script src="calendar.js?v=20261116"></script>
+  <script src="../fx.js?v=20261116" defer></script>
+</body>
+</html>

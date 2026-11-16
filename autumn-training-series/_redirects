@@ -1,0 +1,8 @@
+# Old /beta links (booking emails, shared links) now live at the root
+/beta /  301
+/beta/* /:splat 301
+# Old live-site pages
+/privacy.html /privacy/ 301
+/terms.html /terms/ 301
+/cancellation.html /cancellation/ 301
+/photography.html /photography/ 301
