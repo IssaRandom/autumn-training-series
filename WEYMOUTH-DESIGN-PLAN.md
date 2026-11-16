@@ -11,7 +11,8 @@ _Audit 16 Nov 2026 with the article-design skill. Page: `autumn-training-series/
 - **17 Nov (session start):** git clean apart from the untracked SEO audit folder; go-live is 3 commits ahead of origin (not pushed). No new answers from James found (photo permissions, flag credit, event-day times, hero lede are all still open), so nothing applied.
 - **P2 storyboard written (below, "P2 storyboard"), waiting for James's yes.** Map positions James must confirm are listed there.
 - **17 Nov (2nd check):** still no yes from James on P2 and no map-position answers found in the repo, so nothing built. P2 waits on his yes.
-- **P2 done (17 Nov, James: "Yes, build P2")**: 6830b35 (explorer story mode), 96abbb4 (page), 865fc97 (cache v=20261117a). Built as storyboarded; map positions unanswered, so placeholders marked (tbc) in the map labels and config comments. rhythm_check 375 OK (28.9 screens, 22 beats, longest run 1.28, first screen 472 KB). Next: James's phone review + the 6 positions.
+- **P2 REVERTED (17 Nov):** James didn't like the map additions ("not needed", "clunky"); reverted in 15a9a0e + 38f0ad6. Next: parents' guide.
+- ~~P2 done (17 Nov)~~: 6830b35 (explorer story mode), 96abbb4 (page), 865fc97 (cache v=20261117a). Built as storyboarded; map positions unanswered, so placeholders marked (tbc) in the map labels and config comments. rhythm_check 375 OK (28.9 screens, 22 beats, longest run 1.28, first screen 472 KB). Next: James's phone review + the 6 positions.
 
 ---
 
