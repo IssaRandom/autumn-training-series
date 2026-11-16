@@ -11,6 +11,9 @@
      shallow water) so they bend round Portland Bill and the walls. Config `gates` close the harbour entrances, so no
      swell gets into the harbour or leaks back out; the cells behind them are the harbour zone used for taps.
    - Notes panel shows <template data-note="area-SECTOR"> (or "area-*", then "soon").
+   - Story mode (P2, Weymouth 17 Nov): inside .vx-spine the map pins and the .vx-story chapters drive it. Each
+     [data-vx-beat] paragraph sets area + wind (from its .vx-chap), shows the marks named in data-show and can move the
+     camera (data-cam). Taps on the map scroll the story instead. Marks config: course, cams, marks (see the venue page).
    Config: window.VENUE_EXPLORER = { geo, start:{area, dir}, sectors:[{id,label,from,to,bear,name}],
            areas:{id:{x,y,span,label,layer,seed?,field:{SECTOR:{bias,gain}}}}, overview:{x,y,span}, labels:[{t,x,y,k}],
            gates:[[x0,y0,x1,y1]], waveAmp:{SECTOR:n}, waveBox:[x0,y0,x1,y1] }. Units: metres, y south. */
@@ -90,6 +93,109 @@
     };
   })();
 
+
+  /* ---------- P2 marks (story mode): pins, lanes, zones and a schematic course, shown per paragraph ----------
+     Geometry in metres. Course parts use a wind frame: u = upwind (0 = leeward gates, 1 = windward mark), a = across,
+     + to the right looking upwind; both in course lengths. So "left" and "right" are always the sailor's. */
+  let mlabels = [];
+  const markG = document.createElementNS(NS, "g");
+  markG.setAttribute("class", "vx-marks");
+  svg.append(markG);
+  svg.querySelector("defs").insertAdjacentHTML("beforeend", '<marker id="vx-ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="3.6" markerHeight="3.6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ffd66b"/></marker>');
+  const R0 = v => Math.round(v);
+  const poly = (pts, close) => "M" + pts.map(p => R0(p[0]) + " " + R0(p[1])).join("L") + (close ? "Z" : "");
+  const curve = pts => {                                   // open Catmull-Rom through the points
+    let d = `M${R0(pts[0][0])} ${R0(pts[0][1])}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[Math.max(0, i - 1)], b = pts[i], c = pts[i + 1], e = pts[Math.min(pts.length - 1, i + 2)];
+      d += `C${R0(b[0] + (c[0] - a[0]) / 6)} ${R0(b[1] + (c[1] - a[1]) / 6)} ${R0(c[0] - (e[0] - b[0]) / 6)} ${R0(c[1] - (e[1] - b[1]) / 6)} ${R0(c[0])} ${R0(c[1])}`;
+    }
+    return d;
+  };
+  const pairs = f => { const o = []; for (let i = 0; i < f.length; i += 2) o.push([f[i], f[i + 1]]); return o; };
+  const buildMarks = (area, dir) => {
+    const M = CFG.marks || {}, out = [];
+    const add = (id, body, labels = []) => out.push({ id, body, labels });
+    const b = BEAR(dir) * Math.PI / 180, U = [Math.sin(b), -Math.cos(b)], Rt = [Math.cos(b), Math.sin(b)];
+    const c = CFG.course && CFG.course[area];
+    if (c) {
+      const L = c.len, o = [c.x - U[0] * L / 2, c.y - U[1] * L / 2];
+      const P = (a, u) => [o[0] + (u * U[0] + a * Rt[0]) * L, o[1] + (u * U[1] + a * Rt[1]) * L];
+      const rect = (a0, a1, u0, u1) => poly([P(a0, u0), P(a1, u0), P(a1, u1), P(a0, u1)], true);
+      const lab = (t, a, u, k = "", tbc) => { const [x, y] = P(a, u); return { t, x, y, k, tbc }; };
+      const m1 = P(-.15, 1), m2 = P(.35, .8), g4 = [P(-.21, 0), P(-.09, 0)], g3 = [P(.29, 0), P(.41, 0)];
+      const buoy = (p, k = "") => `<circle class="vx-buoy ${k}" cx="${R0(p[0])}" cy="${R0(p[1])}" r="${R0(L * .024)}"/>`;
+      const inner = poly([P(-.15, .03), m1]), outer = poly([P(.35, .03), m2]);
+      add("course", `<path class="vx-leg" d="${inner}"/><path class="vx-leg" d="${outer}"/><path class="vx-leg vx-leg--off" d="${poly([m1, m2])}"/>` +
+        [m1, m2, ...g4, ...g3].map(p => buoy(p)).join(""), [lab("Schematic course", .1, -.2, "note")]);
+      add("inner", `<path class="vx-leg vx-leg--hi" d="${inner}" marker-end="url(#vx-ah)"/>`, [lab("Inner loop", -.42, .5)]);
+      add("outer", `<path class="vx-leg vx-leg--hi" d="${outer}" marker-end="url(#vx-ah)"/>`, [lab("Outer loop", .62, .42)]);
+      add("gate-right", `<circle class="vx-ring" cx="${R0(g3[0][0])}" cy="${R0(g3[0][1])}" r="${R0(L * .07)}"/>`, [lab("Right-turn gate", .3, -.1)]);
+      add("tint-left", `<path class="vx-tint vx-tint--good" d="${rect(-.62, .1, -.12, 1.12)}"/>`);
+      add("tint-right", `<path class="vx-tint vx-tint--flat" d="${rect(.1, .82, -.12, 1.12)}"/>`);
+      add("flat-right", `<path class="vx-tint vx-tint--flat" d="${rect(.1, .82, -.12, 1.12)}"/>`, [lab("Flatter water", .6, .2)]);
+      add("corner-bl", `<path class="vx-tint vx-tint--maybe" d="${rect(-.62, -.12, -.12, .3)}"/>`, [lab("Bottom left ?", -.37, .09, "corner")]);
+      add("corner-tr", `<path class="vx-tint vx-tint--no" d="${rect(.42, .82, .76, 1.12)}"/>`, [lab("Top right ✕", .62, .94, "corner")]);
+      add("corner-tl", `<path class="vx-tint vx-tint--good" d="${rect(-.62, -.12, .76, 1.12)}"/>`, [lab("Top left", -.37, .94, "corner")]);
+      // persistent-shift blocks: pressure patches with the breeze turned about 20° each way
+      const shift = (ctr, deg) => { const r = deg * Math.PI / 180, dx = -U[0] * Math.cos(r) + U[1] * Math.sin(r), dy = -U[1] * Math.cos(r) - U[0] * Math.sin(r);
+        return `<path class="vx-flow" d="${poly([[ctr[0] - dx * L * .1, ctr[1] - dy * L * .1], [ctr[0] + dx * L * .1, ctr[1] + dy * L * .1]])}" marker-end="url(#vx-ah)"/>`; };
+      const bl = [P(-.32, .62), P(.22, .32)];
+      add("blocks", bl.map((p, i) => `<ellipse class="vx-blob vx-blob--more" cx="${R0(p[0])}" cy="${R0(p[1])}" rx="${R0(L * .17)}" ry="${R0(L * .13)}"/>` + shift(p, i ? -20 : 20)).join(""),
+        [lab("~20°", -.32, .8), lab("~20°", .22, .5)]);
+      add("bend", `<path class="vx-flow vx-flow--dash" d="${curve([P(-.5, .02), P(-.7, .45), P(-.52, .98)])}" marker-end="url(#vx-ah)"/>`, [lab("Left-hand bend", -.78, .5, "", true)]);
+      if (M.nothe) {
+        const N = M.nothe, Cc = P(.1, .5), bn = Math.atan2(N[0] - Cc[0], -(N[1] - Cc[1])), r = L * .78;
+        const at = (t, rr = r) => [Cc[0] + rr * Math.sin(t), Cc[1] - rr * Math.cos(t)], w = 35 * Math.PI / 180;
+        const a0 = at(bn - w), a1 = at(bn + w);
+        add("nothe-line", `<path class="vx-flow vx-flow--dash" d="${poly([N, m2])}"/>`);
+        add("nothe-arc", `<path class="vx-arc vx-arc--random" d="M${R0(a0[0])} ${R0(a0[1])}A${R0(r)} ${R0(r)} 0 0 1 ${R0(at(bn)[0])} ${R0(at(bn)[1])}"/>` +
+          `<path class="vx-arc vx-arc--steady" d="M${R0(at(bn)[0])} ${R0(at(bn)[1])}A${R0(r)} ${R0(r)} 0 0 1 ${R0(a1[0])} ${R0(a1[1])}"/>` +
+          `<path class="vx-tick" d="${poly([at(bn, r * .9), at(bn, r * 1.1)])}"/>`,
+          [{ t: "Random", x: at(bn - w * .7, r * 1.16)[0], y: at(bn - w * .7, r * 1.16)[1] }, { t: "Steadier", x: at(bn + w * .7, r * 1.16)[0], y: at(bn + w * .7, r * 1.16)[1] }]);
+      }
+      add("cliff-drop", [-.4, 0, .4].map(a => `<path class="vx-flow" d="${poly([P(a, 1.42), P(a, 1.1)])}" marker-end="url(#vx-ah)"/>`).join(""), [lab("Breeze drops off the land", 0, 1.55)]);
+      add("bounce", [[-.3, .7], [.2, .45], [.45, .88], [-.08, .22], [.6, .15]].map(([a, u]) => { const p = P(a, u);
+        return `<circle class="vx-ring vx-ring--soft" cx="${R0(p[0])}" cy="${R0(p[1])}" r="${R0(L * .06)}"/>`; }).join(""), [lab("Pressure bounces down", .2, .6)]);
+      const zig = []; for (let i = 0; i <= 24; i++) { const u = -.05 + i * 1.1 / 24; zig.push(P(-.75 + .07 * Math.sin(u * Math.PI * 2.2), u)); }
+      add("osc", `<path class="vx-flow" d="${curve(zig)}" marker-end="url(#vx-ah)"/>`, [lab("Longer oscillations", -.75, 1.2)]);
+      const crest = (u, k) => { const t = 25 * Math.PI / 180, ca = Math.cos(t), sa = Math.sin(t);
+        return poly([P(.35 - .18 * ca, u - .18 * sa), P(.35 + .18 * ca, u + .18 * sa)]); };
+      add("wave-angle", `<path class="vx-leg vx-leg--hi" d="${poly([P(.35, .78), P(.35, .08)])}" marker-end="url(#vx-ah)"/>` +
+        [.2, .38, .56].map(u => `<path class="vx-crest" d="${crest(u)}"/>`).join(""), [lab("Wave angle on the run", .7, .5)]);
+    }
+    Object.entries(M.pins || {}).forEach(([id, p]) => add(id, `<circle class="vx-pin" cx="${p.x}" cy="${p.y}" r="70"/>`, [{ t: p.t, x: p.x, y: p.y, k: "pin", tbc: p.tbc }]));
+    Object.entries(M.lanes || {}).forEach(([id, l]) => { const [x0, y0, x1, y1] = l.p, [nx, ny] = l.n;
+      add(id, `<path class="vx-lane" d="${poly([[x0, y0], [x1, y1], [x1 + nx * l.w, y1 + ny * l.w], [x0 + nx * l.w, y0 + ny * l.w]], true)}"/>`,
+        [{ t: l.t, x: (x0 + x1) / 2 + nx * 420, y: (y0 + y1) / 2 + ny * 420, tbc: l.tbc }]); });
+    Object.entries(M.blobs || {}).forEach(([id, e]) => add(id, `<ellipse class="vx-blob vx-blob--${id}" cx="${e.x}" cy="${e.y}" rx="${e.rx}" ry="${e.ry}"/>`, [{ t: e.t, x: e.x, y: e.y, tbc: e.tbc }]));
+    Object.entries(M.flows || {}).forEach(([id, f]) => { const ls = f.lines.map(pairs), last = ls[0][Math.floor(ls[0].length / 2)];
+      add(id, ls.map(p => `<path class="vx-flow vx-flow--big" d="${curve(p)}" marker-end="url(#vx-ah)"/>`).join(""), [{ t: f.t, x: f.at ? f.at[0] : last[0], y: f.at ? f.at[1] : last[1] }]); });
+    if (CFG.gates) add("gates", CFG.gates.map(([a, b2, x, y]) => `<path class="vx-gate" d="${poly([[a, b2], [x, y]])}"/>`).join(""),
+      [{ t: "Harbour entrances", x: 1900, y: -700 }]);
+    return out;
+  };
+  let markKey = "";
+  const drawMarks = (area, dir) => {
+    const key = area + "-" + dir; if (key === markKey) return; markKey = key;
+    const ms = buildMarks(area, dir);
+    markG.innerHTML = ms.map(m => `<g class="vx-m" data-m="${m.id}">${m.body}</g>`).join("");
+    mlabels.forEach(l => l.el.remove());
+    mlabels = ms.flatMap(m => m.labels.map(l => {
+      const el = document.createElement("span");
+      el.className = "vx-ml" + (l.k ? " vx-ml--" + l.k : "") + (l.tbc ? " tbc" : "");
+      el.dataset.m = m.id; el.textContent = l.t; el.setAttribute("aria-hidden", "true");
+      if (l.tbc) el.title = "Position to confirm";
+      over.append(el);
+      return { x: l.x, y: l.y, el };
+    }));
+  };
+  const showMarks = set => {
+    markG.querySelectorAll(".vx-m").forEach(g => g.classList.toggle("on", set.has(g.dataset.m)));
+    mlabels.forEach(l => l.el.classList.toggle("on", set.has(l.el.dataset.m)));
+    root.classList.toggle("vx-zones-on", set.has("zones"));
+  };
+
   /* ---------- camera ---------- */
   let W = 0, H = 0;
   const cam = { x: 0, y: 0, z: .03, r: 0 };
@@ -107,6 +213,8 @@
     world.style.transform = `translate(${W / 2}px,${H / 2}px) rotate(${cam.r}deg) scale(${cam.z * S}) translate(${-(cam.x / S + OX)}px,${-(cam.y / S + OX)}px)`;
     root.style.setProperty("--vx-rot", cam.r + "deg");
     if (arrowSvg) arrowSvg.style.rotate = short(BEAR(st.dir) + cam.r) + "deg";
+    world.style.setProperty("--m", (1 / cam.z).toFixed(2));
+    mlabels.forEach(l => { const [sx, sy] = toScreen(l.x, l.y); l.el.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-50%)`; });
     labels.forEach(l => { const [sx, sy] = toScreen(l.x, l.y); l.el.style.transform = `translate(${sx}px,${sy}px) ${l.k === "spot" ? "translate(-3.5px,-50%)" : "translate(-50%,-50%)"}`; });   // spots: the dot sits on the point
   };
 
@@ -138,7 +246,8 @@
   const st = { area: CFG.start.area || "overview", dir: SEC(CFG.start.dir).id, northUp: false };
   const spot = area => area === "overview" ? CFG.overview : CFG.areas[area];
   const rotFor = () => st.northUp ? 0 : -BEAR(st.dir);
-  const shot = area => { const a = spot(area); return { x: a.x, y: a.y, z: zFor(a.span), r: rotFor() }; };
+  let camKey = "";                                         // story mode: a wider shot for some paragraphs (CFG.cams)
+  const shot = area => { const a = (camKey && CFG.cams && CFG.cams[camKey]) || spot(area); return { x: a.x, y: a.y, z: zFor(a.span), r: rotFor() }; };
   let tw = 0;
   const fly = (to, ms, dip) => {
     cancelAnimationFrame(tw);
@@ -254,6 +363,7 @@
   let pieAng = BEAR(st.dir);
 
   const renderNotes = () => {
+    if (!notes) return;
     const key = st.area + "-" + st.dir;
     const tpl = $(`template[data-note="${key}"]`) || $(`template[data-note="${st.area}-*"]`) || $('template[data-note="soon"]');
     const a = st.area === "overview" ? null : CFG.areas[st.area];
@@ -292,13 +402,16 @@
     const far = prev !== area && prev !== "overview" && area !== "overview";
     fly(shot(area), opts.instant ? 0 : far ? 1300 : 1000, far ? .6 : .25);
   };
-  const setDir = (d, opts = {}) => {
+  const setDirUI = d => {
     st.dir = SEC(d).id;
     dirBtns.forEach(b => { const on = b.dataset.dir === st.dir; b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1; });
     wedges.forEach(w => w.classList.toggle("on", w.dataset.sec === st.dir));
     pieAng += short(BEAR(st.dir) - pieAng);                // turn the dial arrow the short way, never a full spin
     pieArrow.style.transform = `rotate(${pieAng}deg)`;
     if (arrowLbl) arrowLbl.textContent = `${st.dir} · ${String(Math.round(BEAR(st.dir))).padStart(3, "0")}°`;
+  };
+  const setDir = (d, opts = {}) => {
+    setDirUI(d);
     setLayers();
     renderNotes();
     if (!opts.silent) fly({ ...cam, r: rotFor() }, 800, 0); else apply();
@@ -310,9 +423,10 @@
     fly({ ...cam, r: rotFor() }, 800, 0);
   };
 
+  let story = null;                                       // set up at the end when the page has a .vx-story
   root.addEventListener("click", e => {
-    const g = e.target.closest("[data-go]"); if (g) { go(g.dataset.go); return; }
-    const d = e.target.closest(".vx-d, .vx-wedge"); if (d) { setDir(d.dataset.dir || d.dataset.sec); return; }
+    const g = e.target.closest("[data-go]"); if (g) { story ? story.goTo(g.dataset.go, st.dir) : go(g.dataset.go); return; }
+    const d = e.target.closest(".vx-d, .vx-wedge"); if (d) { const n = d.dataset.dir || d.dataset.sec; story ? story.goTo(st.area === "overview" ? "harbour" : st.area, n) : setDir(n); return; }
     if (e.target.closest(".vx-north")) setNorth(!st.northUp);
   });
   dial.addEventListener("keydown", e => {
@@ -320,7 +434,7 @@
     if (!k) return;
     e.preventDefault();
     const n = SECS[(SECS.findIndex(s => s.id === st.dir) + k + SECS.length) % SECS.length].id;
-    setDir(n); dirBtns.find(b => b.dataset.dir === n).focus();
+    story ? story.goTo(st.area === "overview" ? "harbour" : st.area, n) : setDir(n); dirBtns.find(b => b.dataset.dir === n).focus();
   });
 
   /* ---------- drag to look round (a little), tap or pull to change area ---------- */
@@ -351,7 +465,7 @@
         const r = view.getBoundingClientRect();
         const [wx, wy] = screenVec(e.clientX - r.left - W / 2, e.clientY - r.top - H / 2);
         const to = grid.areaAt(cam.x + wx, cam.y + wy);
-        if (to && to !== st.area) go(to);
+        if (to && to !== st.area) story ? story.goTo(to, st.dir) : go(to);
         return;
       }
       const a = CFG.areas[st.area], base = spot(st.area);
@@ -359,7 +473,7 @@
       if (other) {                                        // pulled far enough towards the other area?
         const vx = other.x - base.x, vy = other.y - base.y, vl = Math.hypot(vx, vy);
         const along = ((cam.x - base.x) * vx + (cam.y - base.y) * vy) / vl;
-        if (along > base.span * PULL) { go(a.exit); return; }
+        if (along > base.span * PULL) { story ? story.goTo(a.exit, st.dir) : go(a.exit); return; }
       }
     };
     view.addEventListener("pointerup", end);
@@ -381,9 +495,10 @@
       D = Math.hypot(W, H);
       ps = Array.from({ length: Math.round(D * D / 1500) }, () => spawn({}, true));
     };
-    let t = 0;
+    let t = 0, still = 0;
     const frame = () => {
       if (!on) return;
+      if (RM && ++still > 150) return;                      // reduced motion: draw a settled frame, then stop
       t += .016;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.globalCompositeOperation = "destination-out";
@@ -414,7 +529,7 @@
     };
     return {
       resize, frame,
-      set(f, z) { field = f; zg = z || null; on = !!f; cv.classList.toggle("on", on); if (!on) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); } loop.need(); },
+      set(f, z) { field = f; zg = z || null; on = !!f; still = 0; cv.classList.toggle("on", on); if (!on) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); } loop.need(); },
       get on() { return on; }
     };
   })();
@@ -487,7 +602,7 @@
         px[k] = 150 + 105 * crest; px[k + 1] = 200 + 55 * crest; px[k + 2] = 255; px[k + 3] = al;
       }
       ctx.putImageData(img, 0, 0);
-      loop.need();
+      if (!RM) loop.need();                                  // reduced motion: one still frame
     };
     return {
       frame,
@@ -527,5 +642,68 @@
   Object.assign(cam, shot(st.area));
   setDir(st.dir, { silent: true });
   go(st.area, { instant: true });
+
+  /* ---------- story mode (P2): the map pins, the paragraphs drive it ---------- */
+  const spine = root.closest(".vx-spine"), storyEl = spine && spine.querySelector(".vx-story");
+  if (storyEl) {
+    spine.classList.add("vx-live");
+    const cap = $("figcaption");
+    if (cap) { cap.classList.add("vx-cap"); spine.append(cap); }      // attribution under the story, not inside the pin
+    if (hint) hint.hidden = true;
+    const beats = [...storyEl.querySelectorAll("[data-vx-beat]")];
+    const chaps = [...storyEl.querySelectorAll(".vx-chap")];
+    // the area heads get the course flag
+    storyEl.querySelectorAll(".area[data-flag]").forEach(el => el.insertAdjacentHTML("afterbegin", FLAGS[el.dataset.flag] || ""));
+    const side = matchMedia("(min-width: 1100px)");
+    const line = () => {                                    // the reading line: under the map on phones, mid screen beside it
+      if (side.matches) return innerHeight * .5;
+      const r = root.getBoundingClientRect();
+      return Math.max(r.bottom, 0) + (innerHeight - Math.max(r.bottom, 0)) * .3;
+    };
+    let cur = null;
+    const activate = b => {
+      if (b === cur) return; cur = b;
+      const ch = b.closest(".vx-chap"), area = ch.dataset.area, dir = SEC(ch.dataset.dir).id;
+      beats.forEach(x => x.classList.toggle("is-on", x === b));
+      chaps.forEach(c => c.classList.toggle("vx-on", c === ch));     // bias bars fill each time their chapter comes in
+      const prev = { area: st.area, dir: st.dir, cam: camKey };
+      camKey = b.dataset.cam || "";
+      st.area = area;
+      tabs.forEach(t => t.setAttribute("aria-pressed", String(t.dataset.go === area)));
+      if (dir !== prev.dir) setDirUI(dir);
+      if (area !== prev.area || dir !== prev.dir) setLayers();
+      drawMarks(area, dir);
+      showMarks(new Set((b.dataset.show || "").split(/\s+/).filter(Boolean)));
+      if (area !== prev.area || dir !== prev.dir || camKey !== prev.cam) {
+        const wide = camKey || prev.cam || area !== prev.area || dir !== prev.dir;
+        fly(shot(area), wide ? 600 : 400, area !== prev.area ? .15 : 0);   // 400 ms inside an area; 600 ms to pull out or move across
+      }
+    };
+    const pick = () => {
+      const y = line();
+      let b = beats[0];
+      for (const x of beats) { if (x.getBoundingClientRect().top <= y) b = x; else break; }
+      activate(b);
+    };
+    // stuck = the spine has scrolled past the pin line and the map hasn't reached its end: only then it slides with the nav
+    const stuck = () => {
+      const r = spine.getBoundingClientRect(), t = parseFloat(getComputedStyle(root).top) || 0;
+      root.classList.toggle("is-stuck", r.top < t && r.bottom > t + root.offsetHeight + 1);
+    };
+    let q = false;
+    const onScroll = () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; pick(); stuck(); }); };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    story = {
+      goTo(area, dir) {
+        const ch = chaps.find(c => c.dataset.area === area && (area === "overview" || c.dataset.dir === SEC(dir).id)) || chaps.find(c => c.dataset.area === area);
+        if (!ch) return;
+        const first = ch.querySelector("[data-vx-beat]");
+        const y = scrollY + first.getBoundingClientRect().top - line() + 4;
+        scrollTo({ top: y, behavior: RM ? "auto" : "smooth" });
+      }
+    };
+    pick(); stuck();
+  }
   root.classList.add("vx-ready");
 })();
