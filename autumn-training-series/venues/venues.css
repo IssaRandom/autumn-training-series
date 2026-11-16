@@ -213,11 +213,11 @@
 .pw-step.is-on { border-left-color: var(--accent); background: var(--surface-2); }
 /* on (JS): the plan pins under the nav and the steps get room to scroll past it */
 .pw-on .pw-stage { position: sticky; top: calc(var(--nav-h) + 10px); background: var(--bg); padding-top: 4px; transition: transform var(--dur-slow, .4s) var(--ease); }
-.venue-page.nav-hid .pw-on .pw-stage { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+.venue-page.nav-hid .pw-on .pw-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
 /* phones: the contents bar (53px) sits under the nav, so the plan pins below it */
 @media (max-width: 900px) {
   .pw-on .pw-stage { top: calc(var(--nav-h) + 52px); padding-top: 8px; }
-  .venue-page.nav-hid .pw-on .pw-stage { transform: translateY(calc(-1 * var(--nav-h))); }
+  .venue-page.nav-hid .pw-on .pw-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
 }
 .pw-on .pw-step { cursor: pointer; }
 .pw-on .pw-steps { gap: 12vh; padding-bottom: 10vh; }

@@ -17,12 +17,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../beta.css?v=20261116">
-  <link rel="stylesheet" href="../../fx.css?v=20261116">
-  <script src="../../vt.js?v=20261116"></script>
-  <link rel="stylesheet" href="../../advice/advice.css?v=20261116">
-  <link rel="stylesheet" href="../venues.css?v=20261116x">
-  <link rel="stylesheet" href="../explorer.css?v=20261116w">
+  <link rel="stylesheet" href="../../beta.css?v=20261116y">
+  <link rel="stylesheet" href="../../fx.css?v=20261116y">
+  <script src="../../vt.js?v=20261116y"></script>
+  <link rel="stylesheet" href="../../advice/advice.css?v=20261116y">
+  <link rel="stylesheet" href="../venues.css?v=20261116y">
+  <link rel="stylesheet" href="../explorer.css?v=20261116y">
 </head>
 <body class="guide-page venue-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -55,8 +55,9 @@
       <div class="wrap g-hero-copy">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Venue guides</a> <span aria-hidden="true">/</span> Weymouth &amp; Portland</nav>
         <h1 class="g-title" data-split>Weymouth &amp; Portland</h1>
-        <!-- [PLACEHOLDER] lede: rewrite from James/Kai voice note -->
-        <p class="g-lede draft">The venue guide we wanted when we started sailing here: what each wind direction really does in the harbour and the bay, how to set up the boat for it, and everything parents need for the weekend.</p>
+        <!-- EDIT LATER: James's own lede. Our draft (not used): "The venue guide we wanted when we started sailing here: what each wind
+             direction really does in the harbour and the bay, how to set up the boat for it, and everything parents need for the weekend." -->
+        <p class="g-lede"><span class="wip">We’re still working on this</span></p>
         <ul class="g-meta">
           <li><b>Venue</b> WPNSA, Osprey Quay</li>
           <li><b>Areas</b> Portland Harbour · Weymouth Bay</li>
@@ -88,7 +89,7 @@
           <p>WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes how you should approach the racing.</p>
           <div class="stat-grid">
             <div class="stat"><span class="stat-num">2</span><span class="stat-label">Race areas: harbour and bay</span></div>
-            <div class="stat"><span class="stat-num">SW</span><span class="stat-label">Most common breeze</span></div>
+            <div class="stat"><!-- EDIT LATER: most common breeze from the wind stats (our guess was SW) --><span class="stat-num"><span class="wip">To add</span></span><span class="stat-label">Most common breeze</span></div>
           </div>
 
           <!-- VENUE EXPLORER (James 14 Nov): tap an area to zoom in; the wind dial turns the chart so the wind always blows
@@ -131,7 +132,7 @@
                 <p><strong>Inner loop / first beat:</strong> you have no clue on duration. It could be a 30-second, 35-degree swing, or one 15-minute shift that’s the only shift on the beat. The holes are bigger and the pressure less stable, so you can really get caught. Expect one, maybe one and a half, things per beat.</p>
                 <p><strong>Outer loop / second beat:</strong> more of a coin toss. You’re almost directly downwind of the Nothe, with fairly high land on the left and well-mixed air, so it’s normal shifty, pressure-driven sailing: two, three, four things per beat. For us that’s more predictable, because it’s just random, dropping breeze.</p>
                 <p class="wind-watch"><b>Watch for</b> the breeze clocking past the Nothe. Once it’s got any east in it, it’s a bit more persistent again; left of the Nothe it’s random.</p>
-                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. See pin 3 on the map.</p>
+                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. <!-- EDIT LATER: the map pins arrive in P2; show this again then --><span class="todo">See pin 3 on the map.</span></p>
                 <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
             </template>
             <template data-note="harbour-SE">
@@ -159,6 +160,7 @@
                     </tbody>
                   </table>
                 </div>
+                <p class="todo">Where is this table from? It isn’t in the 16 Nov notes (shuffle back about 3 inches, etc.).</p>
                 <p class="wind-watch"><b>Watch for</b> the swell angle changing as you get closer to Portland.</p>
             </template>
             <template data-note="bay-N">
@@ -281,7 +283,7 @@
           <h2>Launching and ashore</h2>
           <!-- SITE PLAN WALK (James 16 Nov): WPNSA's own site plan, pinned under the nav; each step zooms the plan to its area.
                Boxes are % of the picture: --x/--y = top-left, --w/--h = size. venues.js drives it; stacked list without JS. -->
-          <div class="pw" data-plan-walk>
+          <div class="pw" data-plan-walk data-beat="map">
             <figure class="pw-stage">
               <div class="pw-frame">
                 <div class="pw-pic" data-pw-pic>
@@ -309,13 +311,16 @@
         <section class="g-sec" id="parents" data-part="Parents">
           <h2>Parents’ guide: the weekend</h2>
           <p>What an event day looks like from the shore, so you know when you’re needed, when you can grab a coffee, and roughly what the whole trip will cost (calculator further down).</p>
-          <!-- TIMELINE [PLACEHOLDER] times: check against the event NoR -->
+          <!-- TIMELINE: shape kept, James to give a typical event day (times + what happens). Only the car park line is James's (16 Nov).
+               EDIT LATER, our drafts (not used): 07:30 Arrive and park; 08:00 Registration "Usually the morning of day 1 or the evening before.";
+               09:30 Briefing "Sailors only. Prime time to sort lunch bags and find the coffee."; 10:55 First warning signal "Boats leave the
+               slipway about an hour before."; 16:00 Back ashore "Help wash down, then results go up online." -->
           <ol class="timeline">
-            <li><time>07:30</time><b>Arrive and park</b><span>The brick car park fills fast, and the gravel car park fills after that.</span></li>
-            <li><time>08:00</time><b>Registration</b><span>Usually the morning of day 1 or the evening before.</span></li>
-            <li><time>09:30</time><b>Briefing</b><span>Sailors only. Prime time to sort lunch bags and find the coffee.</span></li>
-            <li><time>10:55</time><b>First warning signal</b><span>Boats leave the slipway about an hour before.</span></li>
-            <li><time>16:00</time><b>Back ashore</b><span>Help wash down, then results go up online.</span></li>
+            <li><time aria-label="time to add">--:--</time><b>Arrive and park</b><span>The brick car park fills fast, and the gravel car park fills after that.</span></li>
+            <li><time aria-label="time to add">--:--</time><b>Registration</b><span><span class="wip">To add</span></span></li>
+            <li><time aria-label="time to add">--:--</time><b>Briefing</b><span><span class="wip">To add</span></span></li>
+            <li><time aria-label="time to add">--:--</time><b>First warning signal</b><span><span class="wip">To add</span></span></li>
+            <li><time aria-label="time to add">--:--</time><b>Back ashore</b><span><span class="wip">To add</span></span></li>
           </ol>
           <p class="verify">Times are examples. The NoR on each event in our calendar has the real ones.</p>
         </section>
@@ -325,7 +330,7 @@
           <!-- OUR PICKS MAP (James 16 Nov: "an interactive map with our recommendations"). Each card is real HTML; venues.js
                draws the coastline (geo.js) and a pin per card that has data-x/-y (metres from lon -2.44, lat 50.585, x east,
                y south; positions from OpenStreetMap). Cards without a pin show the whole map. -->
-          <div class="recs" data-recs>
+          <div class="recs" data-recs data-beat="map">
             <div class="recs-filter" role="group" aria-label="Show">
               <button type="button" class="recs-chip" data-cat="all" aria-pressed="true">All</button>
               <button type="button" class="recs-chip c-stay" data-cat="stay" aria-pressed="false">Stay</button>
@@ -370,7 +375,7 @@
           <h2>What it’ll actually cost</h2>
           <p>Knowing the real cost makes a season easier to plan (and easier to explain to whoever does the household budget). Put in your own numbers.</p>
           <!-- COST CALCULATOR: reused on every venue guide (international ones add ferry). Defaults are examples. -->
-          <form class="calc" data-calc onsubmit="return false">
+          <form class="calc" data-calc data-beat="calc" onsubmit="return false">
             <label><span>Miles each way</span><input type="number" inputmode="decimal" min="0" value="150" data-k="miles"></label>
             <label><span>Car mpg (towing)</span><input type="number" inputmode="decimal" min="1" value="30" data-k="mpg"></label>
             <label><span>Fuel £ per litre</span><input type="number" inputmode="decimal" min="0" step="0.01" value="1.45" data-k="ppl"></label>
@@ -391,7 +396,7 @@
             <a class="card" href="../../advice/new-to-ilca/"><div class="card-body"><span class="card-num">Guide 01</span><h3>New to ILCA</h3><p>Buying a boat, costs, transport and kit.</p><span class="arrow">Read guide </span></div></a>
             <a class="card" href="../#soon"><div class="card-body"><span class="card-num">Venue</span><h3>Poole Harbour</h3><p>Coming soon: shallows, channels and the sea breeze.</p><span class="arrow">All venues </span></div></a>
           </div>
-          <p class="soft-cta">We train at WPNSA through the winter. <a href="/coaching/">See our coaching</a> or <a href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q">join the WhatsApp group</a>.</p>
+          <p class="soft-cta">We train at WPNSA through the winter. <a href="../../book/">See our coaching</a> or <a href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q">join the WhatsApp group</a>.</p>
         </section>
       </article>
     </div>
@@ -410,11 +415,11 @@
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../../data/events.js?v=20261116"></script>
-  <script src="../../calendar/cal-core.js?v=20261116"></script>
-  <script src="../../advice/advice.js?v=20261116"></script>
+  <script src="../../data/events.js?v=20261116y"></script>
+  <script src="../../calendar/cal-core.js?v=20261116y"></script>
+  <script src="../../advice/advice.js?v=20261116y"></script>
   <script src="../venues.js?v=20261116y"></script>
-  <script src="geo.js?v=20261116"></script>
+  <script src="geo.js?v=20261116y"></script>
   <script>
     /* Weymouth explorer setup. Metres from lon -2.44, lat 50.585 (x east, y south). */
     window.VENUE_EXPLORER = {
@@ -456,7 +461,7 @@
       gates: [[538, -1236, 598, -1037], [1579, -92, 1834, -26], [1383, 1710, 1262, 1743], [830, 1935, 760, 1990], [-670, -1863, -740, -1900]]
     };
   </script>
-  <script src="../explorer.js?v=20261116w"></script>
-  <script src="../../fx.js?v=20261116" defer></script>
+  <script src="../explorer.js?v=20261116y"></script>
+  <script src="../../fx.js?v=20261116y" defer></script>
 </body>
 </html>

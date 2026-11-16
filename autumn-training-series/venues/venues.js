@@ -175,6 +175,15 @@
     }, { rootMargin: "-55% 0px -35% 0px" });
     steps.forEach(s => io.observe(s));
     steps.forEach(s => s.addEventListener("click", () => focus(s.dataset.focus)));
+    /* stuck = the walk has scrolled past the pin line and the plan hasn't reached its end yet; only then does it slide up with the nav */
+    const stage = $(".pw-stage", walk);
+    const stuck = () => {
+      const r = walk.getBoundingClientRect(), t = parseFloat(getComputedStyle(stage).top) || 0;
+      stage.classList.toggle("is-stuck", r.top < t && r.bottom > t + stage.offsetHeight + 1);
+    };
+    window.addEventListener("scroll", stuck, { passive: true });
+    window.addEventListener("resize", stuck);
+    stuck();
   }
 
   /* ---- Our picks map: coastline from geo.js + a pin per card; cards and pins drive each other ---- */
