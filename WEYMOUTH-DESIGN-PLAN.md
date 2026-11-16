@@ -8,7 +8,9 @@ _Audit 16 Nov 2026 with the article-design skill. Page: `autumn-training-series/
 - **P0 done**, commit fcb20b5 (timeline .wip included). Patches the other session had already handled were skipped (takeaways, at-a-glance para, tide stat, checklist, desktop step gap).
 - **P1 done**, commit dacb423: photo bands (5), teal parents' half, mini calendar + 3 events, finish-line ending to /book/. Sticky notes were already done by the other session; tide WIP strip NOT shrunk (James chose "title + big gauge" in round 2).
 - rhythm_check 375: longest run 1.28 screens, 22 beats, 1.92 MB, first screen ~560 KB (over the 500 KB guide: uncompressed CSS + Caveat font; possible fix = split the bands/finish/minical rules out of article.css).
-- **Next: P2** (explorer becomes the spine: map pinned under the nav, notes scroll beneath and drive pins/layers).
+- **17 Nov (session start):** git clean apart from the untracked SEO audit folder; go-live is 3 commits ahead of origin (not pushed). No new answers from James found (photo permissions, flag credit, event-day times, hero lede are all still open), so nothing applied.
+- **P2 storyboard written (below, "P2 storyboard"), waiting for James's yes.** Map positions James must confirm are listed there.
+- **17 Nov (2nd check):** still no yes from James on P2 and no map-position answers found in the repo, so nothing built. P2 waits on his yes.
 
 ---
 
@@ -165,3 +167,31 @@ Files in `venues/weymouth/bands/` (`NAME-375/750/<max>.webp`), made from his fiv
 
 Weight: ~50–70 KB each at 750w, lazy loaded, so ~270 KB added on a phone below the first screen.
 **Licence:** all five are other people's photos. Credit by name is our rule, but credit isn't permission: James to confirm he can use them (WPNSA/RYA/Paul Wyeth likely fine if asked; the Condé Nast one probably isn't).
+
+---
+
+## P2 storyboard (17 Nov, waiting for James's yes)
+
+```
+Type: Venue guide  Spine: 17 map that zooms + 14 text under a pinned panel (same pin style as the site-plan walk)  Pace: airy here only
+Note (James's)   Words  Para  What the map does as each paragraph reaches the reading line
+overview-*        70     1    whole chart, both hotspots pulse once
+harbour-W        192     4    bias fills 75 | zones (his sketch) | course: inner loop + left side tint | outer loop + right-turn gate lit | corners: bottom left ?, top right ✕
+harbour-N        290     7    bias fills 62 | MIDDLE WALL pin + pressure blocks ±20° | left tint, flat-water right | inner loop | outer loop + Nothe line | Nothe arc | LEFT-HAND BEND lane
+harbour-SE       123     2    bias fills 85 | WALL LANE (10 boat lengths) | pull out to the Bill: DEAD SPOT + wind wrapping both sides
+bay-W            200     4+t  bias 50 | swell bends round the Bill then the wall (pull out) + QUALIFIER AREA | port/starboard vs swell | table: no change | camera eases toward Portland
+bay-N            187     4    bias 60 | breeze dropping off the cliffs | pressure bounce marks | top-left corner tint | whole course
+bay-SE            67     3    bias 50 | swell on, longer oscillation | downwind wave angle | harbour entrances lit (springs)
+Rhythm: each paragraph = a beat; longest run ≈ 0.8 screen (70 words) ✓ ≤2   chapter is the page's one airy walk-through ✓
+Big moments: explorer = 1 in its chapter ✓   one pin style (panel under nav) ✓   repeated unit: note paragraph with lit bar
+Weight: code only, ~+10 KB JS/CSS, no images ✓   first screen unchanged
+Reduced motion: map stays pinned, camera cuts, layers appear without fades, wind lines/swell a still frame, bias bars full
+No JS: all notes rendered as plain sections (moved out of <template>), map hidden
+Flags: camera moves 400 ms (rule max) inside one area; zooming out to the Bill = 600 ms (exception) | wind lines/swell loop (James-approved, pre-P2)
+```
+
+Layout: phone = map 40svh pinned under the contents bar, area tabs + small dial inside the map; desktop = map sticky in the left 55%, notes on the right. Active paragraph = accent bar + lit surface (no dimming of the rest).
+
+**Map labels added by us** (from James's words, marked in comments): Middle wall, Inner loop, Outer loop, Right-turn gate, Left-hand bend, Wall lane, Dead spot, Qualifier area. The course glyph is schematic and turns with the wind, so left/right are always correct.
+
+**James to confirm (positions):** where the middle wall is; where the inner/outer loops are usually laid (or OK with a schematic course mid-harbour); which wall the SE lane runs along (we think the outer breakwater); where the UKLA qualifiers race in the bay; where the left-hand bend sits in a northerly; show the hidden "See pin 3 on the map" line once the bend is marked, or drop it.
