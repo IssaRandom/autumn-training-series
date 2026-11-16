@@ -101,3 +101,10 @@
   .vx-hot-ring, .vx-arrow svg { animation: none; }
   .vx-pie-arrow { transition: none; }
 }
+
+/* course flags before the area name (James 16 Nov): P = Portland Harbour, W = Weymouth Bay */
+.vx-flag { display: inline-block; width: 18px; height: 13.5px; margin-right: 7px; vertical-align: -2px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .75), 0 1px 3px rgba(0, 0, 0, .35); }
+.vx-hot-t { display: inline-flex; align-items: center; }
+.area .vx-flag { width: 16px; height: 12px; margin-right: 6px; vertical-align: -1px; }
+.vx[data-layer="waves"] .vx-wind.on { opacity: 1; }
+.vx[data-layer="waves"] .vx-waves.on { opacity: .62; }   /* bay: swell a touch softer so the wind lines read on top */

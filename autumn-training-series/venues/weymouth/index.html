@@ -16,13 +16,13 @@
   <meta property="og:site_name" content="Beyond the Shift">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../beta.css?v=20261116">
   <link rel="stylesheet" href="../../fx.css?v=20261116">
   <script src="../../vt.js?v=20261116"></script>
   <link rel="stylesheet" href="../../advice/advice.css?v=20261116">
-  <link rel="stylesheet" href="../venues.css?v=20261116">
-  <link rel="stylesheet" href="../explorer.css?v=20261116">
+  <link rel="stylesheet" href="../venues.css?v=20261116x">
+  <link rel="stylesheet" href="../explorer.css?v=20261116w">
 </head>
 <body class="guide-page venue-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -82,24 +82,12 @@
       </aside>
 
       <article class="g-body" data-guide>
-        <!-- KEY TAKEAWAYS [PLACEHOLDER] -->
-        <div class="takeaways">
-          <p class="takeaways-title">The short version</p>
-          <ul>
-            <li>Same wind direction, different answer: the harbour and the bay sail like two venues.</li>
-            <li>In a north-easterly in the bay, the top left has paid more often than not.</li>
-            <li>In a south-westerly the swell decides your technique, tack by tack.</li>
-            <li>Arrive the night before: registration and the slipway get busy early.</li>
-          </ul>
-        </div>
-
         <!-- ================= PART 1: SAILING ================= -->
         <section class="g-sec" id="glance" data-part="Sailing">
           <h2>At a glance: the harbour and the bay</h2>
-          <p class="draft"><!-- [DRAFT, ours] -->WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes almost everything.</p>
+          <p>WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes how you should approach the racing.</p>
           <div class="stat-grid">
             <div class="stat"><span class="stat-num">2</span><span class="stat-label">Race areas: harbour and bay</span></div>
-            <div class="stat"><span class="stat-num">~2 m</span><span class="stat-label">Spring tide range <span class="verify">check</span></span></div>
             <div class="stat"><span class="stat-num">SW</span><span class="stat-label">Most common breeze</span></div>
           </div>
 
@@ -131,9 +119,9 @@
 
             <template data-note="harbour-W">
               <div class="bias" style="--left:75"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left: the top right never comes in</em></div>
-              <p><span class="wip">Draft</span> The breeze comes across Chesil Beach and Portland before it reaches you, so the harbour is patchy. <strong>Pink is lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it squeezes along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
+              <p>The breeze comes across Chesil Beach and leaves a generally steady breeze. <strong>The areas shaded in pink are lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it is squeezed along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
               <p><strong>Inner loop:</strong> play the left, but don’t hammer it. The right always looks fine, fine, fine… then 200 metres on there’s an extra 10 degrees of left that just never disappears, and slightly less breeze over there too. It feels random enough that, if you didn’t know better, you’d try the right several times before giving up.</p>
-              <p><strong>Outer loop:</strong> it’s just left. Take the gate you round with a right turn (the right-hand mark as you come down the run), which sends you off to the left, pretty much every time, unless you’re building leverage on some pressure, and then you’ve got to get back to the left again.</p>
+              <p><strong>Outer loop:</strong> it’s just left. Take the right-turn gate (the right-hand mark as you come down the run), which sends you off to the left, pretty much every time, unless you’re building leverage on some pressure, and then you’ve got to get back to the left again.</p>
               <p class="wind-watch"><b>Watch for</b> the bottom left: it doesn’t always come out. But the top right never comes in.</p>
             </template>
             <template data-note="harbour-N">
@@ -202,51 +190,118 @@
                when this section gets near the screen (venues.js [data-lazy-script]). The old placeholder rose is gone (made-up numbers). -->
           <figure class="v-windy">
             <div class="v-windy-box">
-              <div data-windywidget="stats" data-thememode="white" data-responsive="true" data-horizontal="true" data-spotid="8504749" data-appid="36056eb7baf2d6b75aea77157954233e"></div>
+              <div data-windywidget="stats" data-thememode="dark" data-responsive="true" data-horizontal="true" data-spotid="8504749" data-appid="36056eb7baf2d6b75aea77157954233e"></div>
             </div>
             <span data-lazy-script="https://windy.app/widgets-code/stats/windy_stats_async.js" hidden></span>
-            <figcaption>Wind statistics from <a href="https://windy.app/" target="_blank" rel="noopener">windy.app</a> <span class="verify">check it's the right spot</span></figcaption>
+            <figcaption>Wind statistics from <a href="https://windy.app/" target="_blank" rel="noopener">windy.app</a></figcaption>
           </figure>
         </section>
 
         <section class="g-sec" id="forecast" data-part="Sailing">
           <h2>Forecast and live wind</h2>
           <!-- James 16 Nov: his words, lightly tidied. -->
-          <p><strong>For a forecast</strong> we tend to look at the <strong>ECMWF</strong> and <strong>GFS</strong> models. The Met Office’s more recent <strong>UKV</strong> model does work quite well, but we’re still experimenting with it, so bear that in mind. You’ll find these models on most platforms, such as <a href="https://www.windguru.cz/" target="_blank" rel="noopener">Windguru</a>, <a href="https://windy.app/" target="_blank" rel="noopener">windy.app</a> and <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy.com</a>.</p>
-          <div class="callout callout-tip"><p class="callout-title">The wall over-reads</p><p>The live wind readings on the wall typically over-read by about <strong>4 knots</strong>, so the conditions can look windier than they are. Knock 4 knots off before you decide on your rig or your layers.</p></div>
-          <p class="verify">Which station is “the wall” on the Navigator chart (name it so readers can find it)? Is “UKV” the right name for the Met Office model you mean (you wrote UKV2)? Is the last line of the callout (“Knock 4 knots off…”) OK? It’s mine.</p>
+          <p><strong>For a forecast</strong> we tend to look at the <strong>ECMWF</strong> and <strong>GFS</strong> models. The Met Office’s more recent <strong>UKV2</strong> (its 2&nbsp;km model) does work quite well, but we’re still experimenting with it, so bear that in mind. You’ll find these models on most platforms, such as <a href="https://www.windguru.cz/39661" target="_blank" rel="noopener">Windguru</a>, <a href="https://windy.app/forecast2/spot/8504749" target="_blank" rel="noopener">windy.app</a> and <a href="https://www.windy.com/50.572/-2.455?50.572,-2.455,13" target="_blank" rel="noopener">Windy.com</a>.</p>
+          <p class="todo">Links open on Portland: Windguru spot 39661 “Portland Harbour”, windy.app spot 8504749 (same as the wind rose), Windy.com centred on WPNSA. Check they land where you expect.</p>
+          <aside class="note" aria-label="Note"><p class="note__label">The wall over-reads</p><p>The live wind readings on the wall typically over-read by about 4 knots, so the conditions can look windier than they are.</p></aside>
           <!-- James 14 Nov: the Navigator chart goes HERE (forecast + live readings), not as the annotated map. -->
-          <figure class="v-shot">
-            <img src="navigator-live-wind.webp" width="751" height="540" alt="Beyond the Shift Navigator chart of Portland Harbour and Weymouth Bay with live wind readings: speed range in knots and direction in degrees at six stations" loading="lazy" decoding="async">
+          <figure class="v-shot v-shot-link">
+            <a href="https://navigator.beyondtheshift.co.uk/" target="_blank" rel="noopener" aria-label="Open the BTS Race Navigator"><img src="navigator-live-wind.webp" width="751" height="540" alt="Beyond the Shift Navigator chart of Portland Harbour and Weymouth Bay with live wind readings: speed range in knots and direction in degrees at six stations" loading="lazy" decoding="async"></a>
             <figcaption>Live readings round Portland in the BTS Race Navigator: wind range in knots and direction at each station.</figcaption>
           </figure>
           <a class="link-card" href="https://navigator.beyondtheshift.co.uk/" target="_blank" rel="noopener">
-            <span><span class="eyebrow">BTS Race Navigator</span><b>Live wind round Portland, plus the tidal model</b></span>
+            <span><span class="eyebrow">BTS Race Navigator</span><b>Live wind Portland</b></span>
             <span class="arrow" aria-hidden="true"></span>
           </a>
-          <p class="verify">Check the Navigator link (navigator.beyondtheshift.co.uk) and whether it should open on Portland.</p>
-          <div class="callout callout-tip"><p class="callout-title">Fog and cold northerlies</p><p>In spring (around April) and autumn (late November) you get a lot of fog rolling in, so be ready for postponements. Cold, blustery northerlies are haphazard: the shifts are all over the place.</p></div>
+          <aside class="note" aria-label="Note"><p class="note__label">Fog</p><p>In spring (around April) and autumn (late November) you get a lot of fog rolling in, so be ready for postponements.</p></aside>
         </section>
 
         <section class="g-sec" id="tide" data-part="Sailing">
           <h2>Tide and swell</h2>
-          <p><strong>Tide in the bay:</strong> on neap tides, ignore it. On spring tides, if you’re racing really close to the harbour entrances, think about it.</p>
-          <p><strong>Swell</strong> is what we really add. In an east to south it’s straightforward: a speed day, and the wave angle drives your downwind. In a south-west to west it wraps round Portland Bill and again round the harbour wall, so a west-south-westerly can give full cross swell on the qualifier course. Pick a wind on the explorer above for the detail.</p>
-          <p class="draft"><!-- [PLACEHOLDER, ours] -->Inside the harbour the tide is weak.</p>
-          <a class="link-card" href="https://navigator.beyondtheshift.co.uk/" target="_blank" rel="noopener">
-            <span><span class="eyebrow">BTS Race Navigator</span><b>Portland tidal model, hour by hour</b></span>
-            <span class="arrow" aria-hidden="true"></span>
-          </a>
-          <p class="verify">Check the tide notes.</p>
+          <p><strong>Tide in the bay:</strong> on neap tides, ignore it. On spring tides, if you’re racing really close to the harbour entrances or close to Portland Bill in the bay, then think about it.</p>
+          <p><strong>Tide in the harbour:</strong> there’s no tide in the harbour. Don’t even think about it.</p>
+          <p><strong>Swell</strong> is the most important factor in the bay in the directions where racing seems simple. Understanding the direction of the swell in relation to the direction of the wind is the most important thing. In an east to south it’s straightforward: a speed day, and the wave angle drives your downwind. In a south-west to west it wraps round Portland Bill and again round the harbour wall, so a west-south-westerly can give full cross swell on the qualifier course. Pick a wind on the explorer above for the detail.</p>
+
+          <!-- TIDAL STREAMS (James 16 Nov): the 13 hourly charts from the Weymouth Harbour Guide (his cropped PDF, pages 35–41),
+               full credit to weymouth-harbour.co.uk. Crown Copyright notice kept as printed. venues.js scrubs through them. -->
+          <h3 class="ta-title">Tidal streams, hour by hour</h3>
+          <p>The tidal stream information for the harbour comes from the <a href="https://www.weymouth-harbour.co.uk/harbourguide/" target="_blank" rel="noopener">Weymouth Harbour Guide</a>. Full credit to them.</p>
+          <p>Drag through the tide. The times are hours before and after high water Portland (one hour after high water Devonport). The numbers by the arrows are mean rates in tenths of a knot, neaps then springs: <b>07,14</b> means 0.7 knots on neaps and 1.4 knots on springs.</p>
+          <figure class="ta" data-tide-atlas>
+            <div class="ta-frame">
+              <img class="is-on" src="tide/hwm6.webp" data-hw="-6" width="1204" height="877" alt="Tidal streams round Portland, 6 hours before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwm5.webp" data-hw="-5" width="1204" height="877" alt="Tidal streams, 5 hours before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwm4.webp" data-hw="-4" width="1204" height="877" alt="Tidal streams, 4 hours before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwm3.webp" data-hw="-3" width="1204" height="877" alt="Tidal streams, 3 hours before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwm2.webp" data-hw="-2" width="1204" height="877" alt="Tidal streams, 2 hours before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwm1.webp" data-hw="-1" width="1204" height="877" alt="Tidal streams, 1 hour before high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hw0.webp" data-hw="0" width="1204" height="877" alt="Tidal streams at high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp1.webp" data-hw="1" width="1204" height="877" alt="Tidal streams, 1 hour after high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp2.webp" data-hw="2" width="1204" height="877" alt="Tidal streams, 2 hours after high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp3.webp" data-hw="3" width="1204" height="877" alt="Tidal streams, 3 hours after high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp4.webp" data-hw="4" width="1204" height="877" alt="Tidal streams, 4 hours after high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp5.webp" data-hw="5" width="1204" height="877" alt="Tidal streams, 5 hours after high water Portland" loading="lazy" decoding="async">
+              <img src="tide/hwp6.webp" data-hw="6" width="1204" height="877" alt="Tidal streams, 6 hours after high water Portland" loading="lazy" decoding="async">
+              <span class="ta-badge" data-ta-label aria-live="polite">6 hours before HW Portland</span>
+            </div>
+            <div class="ta-controls">
+              <button class="ta-play" type="button" data-ta-play aria-pressed="false"><span class="ta-play-i" aria-hidden="true"></span><span data-ta-play-t>Play the tide</span></button>
+              <div class="ta-scrub">
+                <input type="range" min="-6" max="6" step="1" value="-6" data-ta-range aria-label="Hours from high water Portland">
+                <div class="ta-ticks" aria-hidden="true"><span>−6</span><span>−3</span><span>HW</span><span>+3</span><span>+6</span></div>
+              </div>
+            </div>
+            <figcaption>Tidal stream charts from the <a href="https://www.weymouth-harbour.co.uk/harbourguide/" target="_blank" rel="noopener">Weymouth Harbour Guide</a> (weymouth-harbour.co.uk). © Crown Copyright and/or database rights. Reproduced by permission of the Controller of Her Majesty’s Stationery Office and the UK Hydrographic Office (www.ukho.gov.uk).</figcaption>
+          </figure>
+
+          <!-- TIDAL MODEL, WORK IN PROGRESS (James 16 Nov): his own Portland model isn't finished. Placeholder for viewing it
+               natively in the page; the gauge animation is CSS only and stops for reduced motion. -->
+          <div class="tide-wip">
+            <p class="eyebrow">Work in progress</p>
+            <h3>Our own Portland tidal model</h3>
+            <div class="tw-art" aria-hidden="true">
+              <svg viewBox="0 0 320 150" class="tw-svg">
+                <defs><clipPath id="tw-clip"><rect x="0" y="0" width="320" height="150" rx="10"/></clipPath>
+                  <pattern id="tw-tape" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="11" height="22" fill="#ffd66b"/><rect x="11" width="11" height="22" fill="#0b1b36"/></pattern></defs>
+                <g clip-path="url(#tw-clip)">
+                  <g class="tw-pole"><rect x="226" y="12" width="14" height="138" rx="2"/>
+                    <g class="tw-marks"><path d="M240 30h8M240 52h5M240 74h8M240 96h5M240 118h8"/><text x="252" y="34">4</text><text x="252" y="78">2</text><text x="252" y="122">0</text></g></g>
+                  <g class="tw-tide">
+                    <g class="tw-wave tw-wave-b"><path d="M-40 92 q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V200 H-40Z"/></g>
+                    <g class="tw-buoy"><path d="M78 72 l10 -22 l10 22Z"/><rect x="74" y="72" width="28" height="10" rx="4"/><circle cx="88" cy="46" r="3"/></g>
+                    <g class="tw-wave tw-wave-f"><path d="M-40 98 q20 -7 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 V200 H-40Z"/></g>
+                  </g>
+                </g>
+                <g class="tw-tape-band"><rect x="-20" y="118" width="360" height="22" fill="url(#tw-tape)" transform="rotate(-6 160 129)"/></g>
+              </svg>
+            </div>
+          </div>
         </section>
 
         <section class="g-sec" id="ashore" data-part="Sailing">
           <h2>Launching and ashore</h2>
-          <div class="cols-2">
-            <div class="mini-card draft"><h3>Slipway</h3><p><!-- [PLACEHOLDER] -->Wide slipway straight into the harbour. Busy before the first start: rig early.</p></div>
-            <div class="mini-card draft"><h3>Boat park</h3><p><!-- [PLACEHOLDER] -->Allocated by class at most events. Bring a trolley tag with your sail number.</p></div>
-            <div class="mini-card draft"><h3>Parking</h3><p><!-- [PLACEHOLDER] -->Pay car park on Osprey Quay. Trailers to the overflow area.</p></div>
-            <div class="mini-card draft"><h3>Changing</h3><p><!-- [PLACEHOLDER] -->Changing rooms and showers in the main building. Hot water runs out after racing.</p></div>
+          <!-- SITE PLAN WALK (James 16 Nov): WPNSA's own site plan, pinned under the nav; each step zooms the plan to its area.
+               Boxes are % of the picture: --x/--y = top-left, --w/--h = size. venues.js drives it; stacked list without JS. -->
+          <div class="pw" data-plan-walk>
+            <figure class="pw-stage">
+              <div class="pw-frame">
+                <div class="pw-pic" data-pw-pic>
+                  <img src="wpnsa-site-plan.webp" width="1600" height="1131" alt="WPNSA site plan: numbered boat park areas 1 to 16 along the harbour, reception, the small and main car parks, campervan area and Gates 4 and 6" loading="lazy" decoding="async">
+                  <span class="pw-hl" data-hl="reception" style="--x:48.5;--y:65;--w:9;--h:7.5"></span>
+                  <span class="pw-hl" data-hl="regatta" style="--x:41;--y:44.5;--w:17.2;--h:15.8"></span>
+                  <span class="pw-hl" data-hl="z8" style="--x:57.4;--y:47;--w:4.3;--h:10"></span>
+                  <span class="pw-hl" data-hl="slip" style="--x:39.5;--y:41;--w:13.5;--h:15"></span>
+                  <span class="pw-hl" data-hl="park" style="--x:57.2;--y:74.5;--w:10.8;--h:21"></span>
+                </div>
+              </div>
+              <figcaption>Site plan: <a href="https://www.wpnsa.org.uk/wp-content/uploads/2025/04/WPNSA-Site-Plan-with-RIB-Trailer-Parking.pdf" target="_blank" rel="noopener">WPNSA</a> (PDF).</figcaption>
+            </figure>
+            <ol class="pw-steps">
+              <li class="pw-step" data-focus="reception"><span class="pw-k">Registration</span><h3>Pick up your trolley tag</h3><p>You can collect the trolley tag at registration.</p></li>
+              <li class="pw-step" data-focus="regatta"><span class="pw-k">For the regatta</span><h3>Boat park areas 3 to 7</h3><p>They usually suggest that boats are left in areas 3–7 for the regatta.</p></li>
+              <li class="pw-step" data-focus="z8"><span class="pw-k">Between regattas</span><h3>Area 8</h3><p>Between regattas, zone 8 is sometimes made available.</p></li>
+              <li class="pw-step" data-focus="slip"><span class="pw-k">Launching</span><h3>Two slipways, side by side</h3><p>The slipways are in front of areas 3 and 4. There are 2 dinghy slipways next to each other: a super steep one on the left, and the main one next to it on the right, which is a little easier.</p></li>
+              <li class="pw-step" data-focus="park"><span class="pw-k">Parking</span><h3>Plenty of it, and free</h3><p>There’s plenty of parking, but the bulk of it is in the gravel car park across the road, which can get a bit messy (the Main Car Park on the plan). No need to pay for parking.</p></li>
+            </ol>
           </div>
         </section>
 
@@ -256,7 +311,7 @@
           <p>What an event day looks like from the shore, so you know when you’re needed, when you can grab a coffee, and roughly what the whole trip will cost (calculator further down).</p>
           <!-- TIMELINE [PLACEHOLDER] times: check against the event NoR -->
           <ol class="timeline">
-            <li><time>07:30</time><b>Arrive and park</b><span>The car park fills fast on the first morning.</span></li>
+            <li><time>07:30</time><b>Arrive and park</b><span>The brick car park fills fast, and the gravel car park fills after that.</span></li>
             <li><time>08:00</time><b>Registration</b><span>Usually the morning of day 1 or the evening before.</span></li>
             <li><time>09:30</time><b>Briefing</b><span>Sailors only. Prime time to sort lunch bags and find the coffee.</span></li>
             <li><time>10:55</time><b>First warning signal</b><span>Boats leave the slipway about an hour before.</span></li>
@@ -267,19 +322,48 @@
 
         <section class="g-sec" id="stay" data-part="Parents">
           <h2>Beds, food and the best seat in the house</h2>
-          <div class="cols-2">
-            <div class="mini-card"><h3>Stay: Portland</h3><p><a href="https://www.rya.org.uk/membership-benefits/rya-portland-house" target="_blank" rel="noopener"><strong>RYA Portland House</strong></a> is our number one if you can get it. It’s run by the RYA for RYA members, and it books up fast over weekends and big events, so get in early. In a campervan or motorhome? You can stay on site at WPNSA, with electric hook-up: book through <a href="https://www.wpnsa.org.uk/event/campervans/" target="_blank" rel="noopener">the WPNSA website</a> or reception. There are other places to stay on Portland, but we’d rather not talk about them.</p></div>
-            <div class="mini-card"><h3>Stay: Weymouth</h3><p>A lot more options on the Weymouth side: the caravan park, and independent Airbnb and Booking.com places. The nice ones are quite expensive.</p></div>
-            <div class="mini-card"><h3>Eat</h3><p>Weymouth town is the place to eat. Breakfast or lunch at <strong>Nautico Lounge</strong> (good craic). For dinner, the pub restaurants along the seafront and down by the town bridge are the good zone. For a really good Indian: <strong>Shalim’s Balti House</strong>.</p></div>
-            <div class="mini-card"><h3>Coffee</h3><p><strong>Nautico Lounge</strong> for the best coffee in Weymouth. <strong>Finca</strong> is the most London place in town. <strong>Caffeine 44</strong>, <strong>Beehive</strong> and <strong>Riptide</strong> are good too.</p></div>
-            <div class="mini-card"><h3>Watch</h3><p><strong>Billy Winters</strong> on Portland: grab a coffee and watch the racing. It’s cold in winter, so wrap up.</p></div>
-            <div class="mini-card"><h3>Work on your laptop</h3><p><strong>Weymouth Library</strong> is actually quite nice (Great George Street; 10–5 Monday to Wednesday and Friday, 10–6 Thursday, 10–4 Saturday, closed Sunday). <strong>Salt</strong> at Portland Marina is quiet and close to the club. Spinnakers is the usual option. Riptide is too small to work in and Beehive is busy: both are loud.</p></div>
+          <!-- OUR PICKS MAP (James 16 Nov: "an interactive map with our recommendations"). Each card is real HTML; venues.js
+               draws the coastline (geo.js) and a pin per card that has data-x/-y (metres from lon -2.44, lat 50.585, x east,
+               y south; positions from OpenStreetMap). Cards without a pin show the whole map. -->
+          <div class="recs" data-recs>
+            <div class="recs-filter" role="group" aria-label="Show">
+              <button type="button" class="recs-chip" data-cat="all" aria-pressed="true">All</button>
+              <button type="button" class="recs-chip c-stay" data-cat="stay" aria-pressed="false">Stay</button>
+              <button type="button" class="recs-chip c-eat" data-cat="eat" aria-pressed="false">Eat</button>
+              <button type="button" class="recs-chip c-coffee" data-cat="coffee" aria-pressed="false">Coffee</button>
+              <button type="button" class="recs-chip c-watch" data-cat="watch" aria-pressed="false">Watch</button>
+              <button type="button" class="recs-chip c-work" data-cat="work" aria-pressed="false">Work</button>
+            </div>
+            <div class="recs-body">
+              <div class="recs-map" data-recs-map></div>
+              <ul class="recs-rail" data-recs-rail>
+                <li class="rec c-stay" data-cat="stay" data-x="-550" data-y="2024"><span class="rec-k">Stay · Portland</span><h3><a href="https://www.rya.org.uk/membership-benefits/rya-portland-house" target="_blank" rel="noopener">RYA Portland House</a></h3><p>Our number one if you can get it. It’s run by the RYA for RYA members, and it books up fast over weekends and big events, so get in early. There are other places to stay on Portland, but we’d rather not talk about them.</p><p class="todo">Pin is OpenStreetMap’s “Portland House”: check it’s the RYA one.</p></li>
+                <li class="rec c-stay" data-cat="stay" data-x="-1000" data-y="1400"><span class="rec-k">Stay · on site</span><h3>Campervan at WPNSA</h3><p>In a campervan or motorhome? You can stay on site at WPNSA, with electric hook-up: book through <a href="https://www.wpnsa.org.uk/event/campervans/" target="_blank" rel="noopener">the WPNSA website</a> or reception.</p></li>
+                <li class="rec c-stay" data-cat="stay"><span class="rec-k">Stay · Weymouth</span><h3>The Weymouth side</h3><p>A lot more options: the caravan park, and independent Airbnb and Booking.com places. The nice ones are quite expensive.</p></li>
+                <li class="rec c-eat c-coffee" data-cat="eat coffee" data-x="-1063" data-y="-2683"><span class="rec-k">Eat · Coffee</span><h3>Nautico Lounge</h3><p>Good craic. The best breakfast or lunch, and the best coffee in Weymouth.</p></li>
+                <li class="rec c-eat" data-cat="eat" data-x="-1090" data-y="-2494" data-zone="1"><span class="rec-k">Eat · dinner</span><h3>Seafront and the town bridge</h3><p>For dinner, the pub restaurants along the seafront and down by the town bridge are the good zone.</p></li>
+                <li class="rec c-eat" data-cat="eat" data-x="-1124" data-y="-3177"><span class="rec-k">Eat · Indian</span><h3>Shalim’s Balti House</h3><p>Just a really good Indian.</p><p class="todo">Pin is the “Balti House” on Commercial Road in OpenStreetMap: is that Shalim’s?</p></li>
+                <li class="rec c-coffee" data-cat="coffee" data-x="-1016" data-y="-2833"><span class="rec-k">Coffee</span><h3>Finca</h3><p>The most London place in Weymouth.</p></li>
+                <li class="rec c-coffee" data-cat="coffee" data-x="-924" data-y="-2762"><span class="rec-k">Coffee</span><h3>Caffeine 44</h3><p>On the Esplanade. Good coffee.</p></li>
+                <li class="rec c-coffee" data-cat="coffee"><span class="rec-k">Coffee</span><h3>Beehive and Riptide</h3><p>Both good for coffee. Riptide is too small to work in and Beehive is busy: both are loud.</p><p class="todo">Not on OpenStreetMap: where are they? Then they get pins.</p></li>
+                <li class="rec c-watch" data-cat="watch"><span class="rec-k">Watch</span><h3>Billy Winters</h3><p>On Portland: grab a coffee and watch the racing. It’s cold in winter, so wrap up.</p><p class="todo">Not on OpenStreetMap: where is it? Then it gets a pin.</p></li>
+                <li class="rec c-work" data-cat="work" data-x="-1091" data-y="-2912"><span class="rec-k">Work</span><h3>Weymouth Library</h3><p>Actually quite nice. Great George Street; 10–5 Monday to Wednesday and Friday, 10–6 Thursday, 10–4 Saturday, closed Sunday.</p></li>
+                <li class="rec c-work" data-cat="work" data-x="-826" data-y="1614"><span class="rec-k">Work</span><h3>Salt, Portland Marina</h3><p>Quiet, and close to the club.</p></li>
+                <li class="rec c-work" data-cat="work"><span class="rec-k">Work</span><h3>Spinnakers</h3><p>The usual option.</p><p class="todo">Where is Spinnakers? Not on OpenStreetMap.</p></li>
+              </ul>
+            </div>
+            <p class="recs-credit">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>
           </div>
-          <ul class="checklist">
-            <li>Folding chair, flask and a proper coat: the quay is “bracing”.</li>
-            <li>Cash or card for the car park.</li>
-            <li>Spare kit and a towel for the drive home.</li>
-          </ul>
+        </section>
+
+        <section class="g-sec" id="events-here" data-part="Parents">
+          <h2>Events here this season</h2>
+          <p>National Opens and our own coaching here, pulled from our season calendar. Tap one to see dates, documents and add it to your calendar.</p>
+          <ul class="v-events" data-venue-events data-venue-match="WPNSA|Weymouth|Portland" data-venue-types="national-open bts-camp"><li class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Finding events here.</b> Read the water before you race it.</p></li><li class="skel" style="--i:0" aria-hidden="true"></li><li class="skel" style="--i:1" aria-hidden="true"></li><li class="skel" style="--i:2" aria-hidden="true"></li><li class="skel" style="--i:3" aria-hidden="true"></li><li class="skel" style="--i:4" aria-hidden="true"></li></ul>
+          <a class="link-card" href="../../calendar/">
+            <span><span class="eyebrow">Season calendar</span><b>Every ILCA event, colour-coded</b></span>
+            <span class="arrow" aria-hidden="true"></span>
+          </a>
         </section>
 
         <section class="g-sec" id="costs" data-part="Parents">
@@ -299,17 +383,6 @@
               <span class="calc-break" data-break></span>
             </output>
           </form>
-          <p class="verify">Default prices are examples, not quotes.</p>
-        </section>
-
-        <section class="g-sec" id="events-here" data-part="Parents">
-          <h2>Events here this season</h2>
-          <p>Pulled from our season calendar. Tap one to see dates, documents and add it to your calendar.</p>
-          <ul class="v-events" data-venue-events data-venue-match="WPNSA|Weymouth|Portland"><li class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Finding events here.</b> Read the water before you race it.</p></li><li class="skel" style="--i:0" aria-hidden="true"></li><li class="skel" style="--i:1" aria-hidden="true"></li><li class="skel" style="--i:2" aria-hidden="true"></li><li class="skel" style="--i:3" aria-hidden="true"></li><li class="skel" style="--i:4" aria-hidden="true"></li></ul>
-          <a class="link-card" href="../../calendar/">
-            <span><span class="eyebrow">Season calendar</span><b>Every ILCA event, colour-coded</b></span>
-            <span class="arrow" aria-hidden="true"></span>
-          </a>
         </section>
 
         <section class="g-end">
@@ -340,7 +413,7 @@
   <script src="../../data/events.js?v=20261116"></script>
   <script src="../../calendar/cal-core.js?v=20261116"></script>
   <script src="../../advice/advice.js?v=20261116"></script>
-  <script src="../venues.js?v=20261116"></script>
+  <script src="../venues.js?v=20261116y"></script>
   <script src="geo.js?v=20261116"></script>
   <script>
     /* Weymouth explorer setup. Metres from lon -2.44, lat 50.585 (x east, y south). */
@@ -357,7 +430,7 @@
       overviewHint: "Tap the harbour or the bay to zoom in",
       overview: { x: 1200, y: 900, span: 15500 },
       areas: {
-        harbour: { label: "Portland Harbour", tag: "area-harbour", x: 300, y: 450, span: 5000, hx: 250, hy: 350, layer: "wind",
+        harbour: { label: "Portland Harbour", flag: "P", tag: "area-harbour", x: 300, y: 450, span: 5000, hx: 250, hy: 350, layer: "wind",
                    seed: [500, 300], exit: "bay", hint: "Tap or drag past the wall for the bay",
                    field: { W: { gain: .6 }, "*": { gain: 0 } },
                    /* James's sketch, 16 Nov (drawn on the harbour view in a WSW): lighter in Portland's shadow along the
@@ -367,7 +440,7 @@
                      { k: "light", p: [-2117,-19, -2198,-318, -1818,-669, -1383,-1096, -863,-1531, -748,-1886, -707,-2209, -132,-2510, 51,-2175, -306,-1877, -549,-1618, -919,-1245, -1423,-772, -1815,-346, -1977,-104] },
                      { k: "more",  p: [-506,1430, -779,1237, -948,957, -357,737, 54,671, 477,846, 900,1020, 1460,1312, 1740,1459, 1590,1626, 1167,1767, 877,1555, 533,1190, -152,1440] }
                    ] } },
-        bay:     { label: "Weymouth Bay", tag: "area-bay", x: 2700, y: -1200, span: 9500, hx: 3300, hy: -2600, layer: "waves",
+        bay:     { label: "Weymouth Bay", flag: "W", tag: "area-bay", x: 2700, y: -1200, span: 9500, hx: 3300, hy: -2600, layer: "waves", field: { "*": { gain: 0 } },
                    exit: "harbour", hint: "Tap the harbour to go back in" }
       },
       labels: [
@@ -383,7 +456,7 @@
       gates: [[538, -1236, 598, -1037], [1579, -92, 1834, -26], [1383, 1710, 1262, 1743], [830, 1935, 760, 1990], [-670, -1863, -740, -1900]]
     };
   </script>
-  <script src="../explorer.js?v=20261116"></script>
+  <script src="../explorer.js?v=20261116w"></script>
   <script src="../../fx.js?v=20261116" defer></script>
 </body>
 </html>
