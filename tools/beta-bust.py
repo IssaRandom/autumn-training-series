@@ -7,12 +7,14 @@ External (http/https) URLs are left alone. Existing ?v= values are replaced.
 """
 import datetime, pathlib, re, sys
 
-root = pathlib.Path(__file__).resolve().parent.parent / "autumn-training-series" / "beta"
+root = pathlib.Path(__file__).resolve().parent.parent / "autumn-training-series"
 ver = sys.argv[1] if len(sys.argv) > 1 else datetime.date.today().strftime("%Y%m%d")
 pat = re.compile(r'((?:src|href)=")(?!https?:|//)([^"?#]+\.(?:js|css))(?:\?v=[^"]*)?(")')
 
 changed = 0
 for page in sorted(root.rglob("*.html")):
+    if "navigator" in page.parts:
+        continue
     text = page.read_text(encoding="utf-8")
     new = pat.sub(lambda m: f"{m[1]}{m[2]}?v={ver}{m[3]}", text)
     if new != text:

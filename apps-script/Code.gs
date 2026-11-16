@@ -666,7 +666,7 @@ function seedSettings_() {
     ['medical_q_email', 'Email address', 'Only used if the form collects email addresses'],
     ['medical_q_sailor', 'Sailors full name', 'Exact question title in the form for the sailor name'],
     ['season_start', '2026-09-01', 'Medical forms dated before this are treated as last season (needs redoing)'],
-    ['site_url', 'https://beyondtheshift.co.uk/beta/', 'Base URL of the site, ending in /'],
+    ['site_url', 'https://beyondtheshift.co.uk/', 'Base URL of the site, ending in /'],
     ['fallback_form_url', 'https://forms.gle/X7offBwNaL24wZ4t7', 'Old Google booking form, linked from the beta banner'],
   ].forEach(([k, v, n]) => { if (!have.has(k)) append_('Settings', { key: k, value: v, notes: n }); });
 }

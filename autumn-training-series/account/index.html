@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>My bookings — Beyond the Shift</title>
+  <meta name="description" content="Sign in to see your Beyond the Shift bookings, payment details and sailors.">
+  <link rel="icon" href="../icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <meta name="theme-color" content="#03132e">
+  <meta name="application-name" content="Beyond the Shift">
+  <meta name="apple-mobile-web-app-title" content="Beyond the Shift">
+  <meta property="og:site_name" content="Beyond the Shift">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../beta.css?v=20261116">
+  <link rel="stylesheet" href="../fx.css?v=20261116">
+  <script src="../vt.js?v=20261116"></script>
+  <link rel="stylesheet" href="../booking/booking.css?v=20261116">
+</head>
+<body class="bk-page">
+  <a class="sr-only" href="#main">Skip to content</a>
+  <header class="nav is-solid" data-nav>
+    <div class="wrap nav-inner">
+      <a class="logo" href="../">Beyond the <b>Shift</b></a>
+      <nav aria-label="Main">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="../advice/">Advice</a></li>
+          <li><a href="../calendar/">Calendar</a></li>
+          <li><a href="../venues/">Venues</a></li>
+          <li><a href="../#about">About</a></li>
+          <li><a href="./" aria-current="page">My bookings</a></li>
+          <li class="mobile-only"><a href="../">Home</a></li>
+          <li class="mobile-only"><a href="/coaching/">Coaching &amp; booking</a></li>
+        </ul>
+      </nav>
+      <a class="btn btn-accent nav-cta" href="../calendar/">Book a camp</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="bk-wrap" data-app>
+      <div class="bk-head">
+        <div>
+          <h1 class="bk-title">My bookings</h1>
+          <p class="bk-sub" data-who-am-i>Bookings, payment details and your sailors in one place.</p>
+        </div>
+        <button type="button" class="bk-link" data-signout hidden>Sign out</button>
+      </div>
+      <div data-banner></div>
+      <div data-view><div class="beat" role="status"><svg class="beat-course" viewBox="0 0 48 56" aria-hidden="true"><path class="beat-lay" d="M24 6 L0 34.6 M24 6 L48 34.6"/><circle class="beat-mark" cx="24" cy="6" r="2.6"/><g class="beat-boat"><path class="beat-hull" d="M0 -5.4 C2.3 -2 2.2 2.6 1.5 3.6 L-1.5 3.6 C-2.2 2.6 -2.3 -2 0 -5.4Z"/><path class="beat-sail" d="M0 -2 Q-2.4 1 -1.4 4.4"/></g></svg><p class="beat-line"><b>Opening your bookings.</b> Good prep is half the regatta.</p></div></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <span>© <span data-year>2026</span> Beyond the Shift · James Foster &amp; Kai Wolgram</span>
+      <ul>
+        <li><a href="../calendar/">Calendar</a></li>
+        <li><a href="../privacy/">Privacy</a></li>
+        <li><a href="../terms/">Terms</a></li>
+        <li><a href="../cancellation/">Cancellation</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="../booking/config.js?v=20261116"></script>
+  <script src="../booking/api.js?v=20261116"></script>
+  <script src="../booking/loader.js?v=20261116"></script>
+  <script src="../booking/ui.js?v=20261116"></script>
+  <script src="account.js?v=20261116"></script>
+  <script src="../fx.js?v=20261116" defer></script>
+</body>
+</html>
