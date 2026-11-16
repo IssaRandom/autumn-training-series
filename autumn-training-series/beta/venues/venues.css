@@ -111,3 +111,35 @@
 .wind-rose button:active, .v-pin:active { transform: scale(.94); transition-duration: var(--dur-fast); }
 /* #11: map pins look 30 px but take a 44 px tap */
 .v-pin::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; }
+
+/* ---- Writing + artwork placeholders (James 14 Nov) ----
+   .draft  = words WE drafted (not from James/Kai): shown with a yellow edge until James writes his own.
+   .todo   = an empty slot James fills in; its text says what goes there.
+   .gfx-slot = a blank space for artwork James makes in his own design tool; data-prompt holds the brief. */
+.draft { position: relative; box-shadow: inset 3px 0 0 #ffd66b; padding-left: 12px; }
+.draft::before { content: "Draft · James to rewrite"; display: block; font: 700 10px/1.4 var(--font); letter-spacing: .06em; text-transform: uppercase; color: #b98a00; }
+.mini-card.draft::before { margin-bottom: 4px; }
+.todo { border: 1px dashed #e0b23c; background: rgba(255, 214, 107, .1); border-radius: var(--radius-sm); padding: 10px 12px; margin: 0 0 10px; font-size: 14px; color: var(--ink-2); }
+.todo::before { content: "To add · James"; display: block; font: 700 10px/1.4 var(--font); letter-spacing: .06em; text-transform: uppercase; color: #b98a00; margin-bottom: 2px; }
+.todo b { color: var(--heading); }
+.gfx-slot { display: grid; place-items: center; text-align: center; gap: 8px; aspect-ratio: var(--ar, 16 / 9); border: 2px dashed #e0b23c; border-radius: var(--radius); background: rgba(255, 214, 107, .06); padding: 18px; color: var(--muted); font-size: 13px; }
+.gfx-slot::before { content: "Artwork · James"; font: 700 10px/1.4 var(--font); letter-spacing: .06em; text-transform: uppercase; color: #b98a00; }
+.v-shot { margin: 18px 0 6px; }
+.v-shot img { width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); display: block; }
+.v-shot figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* Nav hides while reading down, back on the first scroll up (venues.js) */
+.venue-page .nav { transition: transform var(--dur-slow) var(--ease), background var(--dur-slow), box-shadow var(--dur-slow), color var(--dur); }
+.venue-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
+.venue-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
+.venue-page.nav-hid .toc:not(.is-open) { transform: translateY(calc(-1 * var(--nav-h))); }
+
+/* windy.app stats widget: their own white theme, so it sits on a white card */
+.v-windy { margin: 20px 0 8px; }
+.v-windy-box { background: #fff; border-radius: var(--radius); padding: 10px; min-height: 220px; overflow: hidden; }
+.v-windy figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+/* hero photo credit (15 Nov) */
+.g-hero { position: relative; }
+.hero-credit { position: absolute; right: 8px; bottom: 8px; z-index: 3; margin: 0; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; letter-spacing: .02em; }
+.hero-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }

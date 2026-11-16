@@ -17,11 +17,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../beta.css?v=20261113e">
-  <link rel="stylesheet" href="../../fx.css?v=20261113e">
-  <script src="../../vt.js?v=20261113e"></script>
-  <link rel="stylesheet" href="../../advice/advice.css?v=20261113e">
-  <link rel="stylesheet" href="../venues.css?v=20261113e">
+  <link rel="stylesheet" href="../../beta.css?v=20261115c">
+  <link rel="stylesheet" href="../../fx.css?v=20261115c">
+  <script src="../../vt.js?v=20261115c"></script>
+  <link rel="stylesheet" href="../../advice/advice.css?v=20261115c">
+  <link rel="stylesheet" href="../venues.css?v=20261115c">
+  <link rel="stylesheet" href="../explorer.css?v=20261115c">
 </head>
 <body class="guide-page venue-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -49,13 +50,13 @@
   <main id="main">
     <!-- VENUE HERO. Template: change crumbs, h1, lede, meta, quick-jump and image per venue. -->
     <section class="g-hero">
-      <!-- [PLACEHOLDER] image: real photo of Portland Harbour from the WPNSA slipway or the Bay with a fleet -->
-      <img class="g-hero-img" src="https://picsum.photos/seed/portlandharbour/1600/900" alt="" aria-hidden="true">
+      <img class="g-hero-img" src="../photos/portland-1024.webp" width="1024" height="576" alt="" aria-hidden="true">
+      <p class="credit hero-credit">Photo: <a href="https://www.portland-port.co.uk/marine-information/port-capabilities/" target="_blank" rel="noopener">Portland Port</a></p>
       <div class="wrap g-hero-copy">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Venue guides</a> <span aria-hidden="true">/</span> Weymouth &amp; Portland</nav>
         <h1 class="g-title" data-split>Weymouth &amp; Portland</h1>
         <!-- [PLACEHOLDER] lede: rewrite from James/Kai voice note -->
-        <p class="g-lede">The venue guide we wanted when we started sailing here: what each wind direction really does in the harbour and the bay, how to set up the boat for it, and everything parents need for the weekend.</p>
+        <p class="g-lede draft">The venue guide we wanted when we started sailing here: what each wind direction really does in the harbour and the bay, how to set up the boat for it, and everything parents need for the weekend.</p>
         <ul class="g-meta">
           <li><b>Venue</b> WPNSA, Osprey Quay</li>
           <li><b>Areas</b> Portland Harbour · Weymouth Bay</li>
@@ -64,7 +65,7 @@
         </ul>
         <!-- Audience split: every venue guide has a sailing part and a parents' part -->
         <div class="v-jump">
-          <a class="v-jump-card" href="#conditions"><span class="v-jump-k">For sailors</span><b>Wind, technique &amp; tide</b><span class="arrow" aria-hidden="true"></span></a>
+          <a class="v-jump-card" href="#glance"><span class="v-jump-k">For sailors</span><b>Wind, technique &amp; tide</b><span class="arrow" aria-hidden="true"></span></a>
           <a class="v-jump-card" href="#parents"><span class="v-jump-k">For parents</span><b>The weekend, beds, food &amp; costs</b><span class="arrow" aria-hidden="true"></span></a>
         </div>
       </div>
@@ -94,59 +95,72 @@
 
         <!-- ================= PART 1: SAILING ================= -->
         <section class="g-sec" id="glance" data-part="Sailing">
-          <h2>At a glance</h2>
-          <p>WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes almost everything.</p>
+          <h2>At a glance: the harbour and the bay</h2>
+          <p class="draft"><!-- [DRAFT, ours] -->WPNSA sits on Osprey Quay inside Portland Harbour. Most ILCA events race either inside the harbour walls (flat water, bendy breeze) or out in Weymouth Bay (more swell, steadier pressure). Knowing which one you’re in changes almost everything.</p>
           <div class="stat-grid">
             <div class="stat"><span class="stat-num">2</span><span class="stat-label">Race areas: harbour and bay</span></div>
             <div class="stat"><span class="stat-num">~2 m</span><span class="stat-label">Spring tide range <span class="verify">check</span></span></div>
-            <div class="stat"><span class="stat-num">SW</span><span class="stat-label">Most common breeze <span class="verify">check</span></span></div>
+            <div class="stat"><span class="stat-num">SW</span><span class="stat-label">Most common breeze</span></div>
           </div>
 
-          <!-- MAP with numbered pins. Swap the image for an annotated chart; pins are % positions (--x, --y). -->
-          <figure class="v-map" data-map>
-            <!-- [PLACEHOLDER] map image: annotated chart of Portland Harbour + Weymouth Bay -->
-            <div class="v-map-img">
-              <img src="https://picsum.photos/seed/portlandmap/1200/800" alt="Placeholder for an annotated map of Portland Harbour and Weymouth Bay" loading="lazy">
-              <button type="button" class="v-pin" style="--x:30%;--y:62%" data-pin="1" aria-label="1: WPNSA slipway">1</button>
-              <button type="button" class="v-pin" style="--x:46%;--y:44%" data-pin="2" aria-label="2: Harbour race area">2</button>
-              <button type="button" class="v-pin" style="--x:22%;--y:30%" data-pin="3" aria-label="3: Left-hand wind bend in a northerly">3</button>
-              <button type="button" class="v-pin" style="--x:72%;--y:24%" data-pin="4" aria-label="4: Weymouth Bay race area">4</button>
-              <button type="button" class="v-pin" style="--x:62%;--y:70%" data-pin="5" aria-label="5: North Ship Channel">5</button>
+          <!-- VENUE EXPLORER (James 14 Nov): tap an area to zoom in; the wind dial turns the chart so the wind always blows
+               down the screen. Harbour = wind lines (stronger on the left in a SW), Bay = swell refraction round the Bill and the wall.
+               Engine: ../explorer.js + ../explorer.css. Coastline: geo.js (OpenStreetMap). Notes: the template data-note blocks below. -->
+          <figure class="vx" data-explorer data-area="overview">
+            <div class="vx-bar" role="group" aria-label="Area">
+              <button type="button" data-go="overview" aria-pressed="true">Overview</button>
+              <button type="button" data-go="harbour" aria-pressed="false">Harbour</button>
+              <button type="button" data-go="bay" aria-pressed="false">Bay</button>
             </div>
-            <ol class="v-legend">
-              <li data-pin="1"><b>WPNSA slipway</b> Launching, boat park and the race office.</li>
-              <li data-pin="2"><b>Harbour race area</b> Flat water, shifty and patchy off the land.</li>
-              <li data-pin="3"><b>Northerly wind bend</b> Where the breeze bends on the left and goes too high if you overstand.<!-- [PLACEHOLDER] --></li>
-              <li data-pin="4"><b>Weymouth Bay</b> Open water, swell and steadier pressure.</li>
-              <li data-pin="5"><b>North Ship Channel</b> The way out to the bay. Watch for commercial traffic.</li>
-            </ol>
-            <figcaption>Placeholder map and pin positions. James and Kai to annotate the real chart.</figcaption>
-          </figure>
-        </section>
-
-        <section class="g-sec" id="conditions" data-part="Sailing">
-          <h2>Which side pays, wind by wind</h2>
-          <p>Pick the forecast direction. Each card says where you’re likely to race, which side has paid, and what to change in the boat. These are our notes from years of training and racing here, not guarantees: think percentages, not rules.</p>
-
-          <!-- WIND PICKER. Each direction = one button + one panel (data-dir). Directions without notes show the "coming soon" panel. -->
-          <div class="wind" data-wind>
-            <div class="wind-rose" role="tablist" aria-label="Wind direction">
-              <button type="button" role="tab" data-dir="NW" style="--a:315deg">NW</button>
-              <button type="button" role="tab" data-dir="N" style="--a:0deg">N</button>
-              <button type="button" role="tab" data-dir="NE" style="--a:45deg">NE</button>
-              <button type="button" role="tab" data-dir="W" style="--a:270deg">W</button>
-              <div class="wind-core" aria-hidden="true"><span class="wind-arrow"></span><b data-wind-label>SW</b></div>
-              <button type="button" role="tab" data-dir="E" style="--a:90deg">E</button>
-              <button type="button" role="tab" data-dir="SW" style="--a:225deg">SW</button>
-              <button type="button" role="tab" data-dir="S" style="--a:180deg">S</button>
-              <button type="button" role="tab" data-dir="SE" style="--a:135deg">SE</button>
+            <div class="vx-view">
+              <div class="vx-world"><canvas class="vx-waves" aria-hidden="true"></canvas></div>
+              <canvas class="vx-wind" aria-hidden="true"></canvas>
+              <div class="vx-over"></div>
+              <div class="vx-arrow" aria-hidden="true"><span class="vx-arrow-l"><small>Wind</small><span data-vx-dir>W · 270°</span></span><svg viewBox="0 0 26 46"><path d="M13 2v34" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M3 30l10 13 10-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <button type="button" class="vx-north" aria-pressed="false" aria-label="North up"><i aria-hidden="true"></i></button>
+              <div class="vx-dial" role="radiogroup" aria-label="Wind direction (where it blows from)"></div>
+              <p class="vx-hint" hidden></p>
+              <span class="vx-busy-dot" aria-hidden="true">Drawing the swell…</span>
             </div>
+            <div class="vx-notes" aria-live="polite"></div>
+            <figcaption>The chart turns so the wind always blows down the screen; tap the compass for north up. Drag to look round. Coastline © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Wind lines and swell show the pattern, not a forecast.</figcaption>
 
-            <div class="wind-panels">
-              <!-- SW [PLACEHOLDER] technique copy drafted from James/Kai transcript, 11 Nov 2026 -->
-              <div class="wind-panel" role="tabpanel" data-panel="SW">
-                <p class="wind-head"><span class="area area-bay">Weymouth Bay</span> South-westerly · swell from the Channel</p>
-                <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>No strong side yet <span class="verify">add %</span></em></div>
+            <!-- NOTES per area + direction. All of this is James's to write: drafts from the 11 Nov James/Kai transcript stay;
+                 anything else is a yellow "To add" slot. Key = area-DIR; "area-*" = any direction in that area; "soon" = fallback. -->
+            <template data-note="overview-*"><p>Tap the harbour or the bay to zoom in, then pick a wind on the dial. We start on the south-west to north-west slice because it’s the one you’ll get most. The three slices are what the wind has blown over before it reaches you: across Chesil Beach (SW to NW), straight off the land (NW to ENE), or in off the sea and round the Bill (ENE to SW).</p></template>
+
+            <template data-note="harbour-W">
+              <div class="bias" style="--left:75"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left: the top right never comes in</em></div>
+              <p><span class="wip">Draft</span> The breeze comes across Chesil Beach and Portland before it reaches you, so the harbour is patchy. <strong>Pink is lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it squeezes along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
+              <p><strong>Inner loop:</strong> play the left, but don’t hammer it. The right always looks fine, fine, fine… then 200 metres on there’s an extra 10 degrees of left that just never disappears, and slightly less breeze over there too. It feels random enough that, if you didn’t know better, you’d try the right several times before giving up.</p>
+              <p><strong>Outer loop:</strong> it’s just left. Take the gate you round with a right turn (the right-hand mark as you come down the run), which sends you off to the left, pretty much every time, unless you’re building leverage on some pressure, and then you’ve got to get back to the left again.</p>
+              <p class="wind-watch"><b>Watch for</b> the bottom left: it doesn’t always come out. But the top right never comes in.</p>
+            </template>
+            <template data-note="harbour-N">
+              <div class="bias" style="--left:62"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>First beat: left about 60:40 to 65:35</em></div>
+                <p>A harbour-only feature. In a northerly to north-easterly, especially racing down by the middle wall, watch for <strong>persistent-shift-style blocks of pressure</strong>. Not every day, but often enough. The shifts are long, roughly 20 degrees either way, and the pressure brings the shift and it stays in.</p>
+                <p>The water’s certainly flatter on the right, so there’s a temptation to go hard right. It rarely works: the breeze drops off the land on the left, so the left is more consistent for pressure. <strong>Left is the percentage play, about 60:40, maybe 65:35</strong>, but only on the first beat.</p>
+                <p><strong>Inner loop / first beat:</strong> you have no clue on duration. It could be a 30-second, 35-degree swing, or one 15-minute shift that’s the only shift on the beat. The holes are bigger and the pressure less stable, so you can really get caught. Expect one, maybe one and a half, things per beat.</p>
+                <p><strong>Outer loop / second beat:</strong> more of a coin toss. You’re almost directly downwind of the Nothe, with fairly high land on the left and well-mixed air, so it’s normal shifty, pressure-driven sailing: two, three, four things per beat. For us that’s more predictable, because it’s just random, dropping breeze.</p>
+                <p class="wind-watch"><b>Watch for</b> the breeze clocking past the Nothe. Once it’s got any east in it, it’s a bit more persistent again; left of the Nothe it’s random.</p>
+                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. See pin 3 on the map.</p>
+                <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
+            </template>
+            <template data-note="harbour-SE">
+              <div class="bias" style="--left:85"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>South-east: left along the wall about 85:15</em></div>
+              <p><strong>South-east:</strong> left is strong. There’s always a little more wind along the wall (you notice it wing-foiling or in a WASZP when you’re struggling to get up on the foil). Hammer against the wall: inexplicably, it comes out about 85:15. It isn’t always a huge gain. You can get up to about ten boat lengths from the wall, and that’s your max gain.</p>
+              <p><strong>Southerly:</strong> occasional, and they should never race you in one in the harbour, but they do. There’s a big dead spot behind the Bill. The wind wraps round either side of it and flicks from one side to the other, so it’s never truly southerly. Pick your poison: decide which side you think will prevail, and don’t go middle.</p>
+            </template>
+            <template data-note="harbour-*">
+              <p class="todo"><b>Wind:</b> what this direction does inside the harbour walls (bends, holes, stronger lanes).</p>
+              <p class="todo"><b>Which side pays</b> and how sure we are.</p>
+              <p class="todo"><b>Technique</b> and <b>watch for</b>.</p>
+            </template>
+
+            <template data-note="bay-W">
+              <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>No strong side: the swell decides</em></div>
+              <p>This is where you get the classic offset swell. It wraps round Portland Bill itself, then round the harbour wall, so it keeps bending further and further round. Where they race the UKLA qualifiers, a <strong>west-south-westerly can give full cross swell</strong>. The further south the breeze goes in this range, the less cross swell you get. You’re typically bow-on to it on starboard.</p>
+              <p>In the classic west-south-westerly, the trap is <strong>getting too greedy on port</strong>. Read the phase of the shift to judge whether you can drop the bow, go low on port and get over some boats. Usually it’s better to save up, save up, save up, then drop the bow. It’s a high-risk move.</p>
                 <div class="table-wrap">
                   <table>
                     <thead><tr><th scope="col">Leg</th><th scope="col">What to change</th></tr></thead>
@@ -158,66 +172,81 @@
                   </table>
                 </div>
                 <p class="wind-watch"><b>Watch for</b> the swell angle changing as you get closer to Portland.</p>
-              </div>
-
-              <!-- NE / E -->
-              <div class="wind-panel" role="tabpanel" data-panel="NE" hidden>
-                <p class="wind-head"><span class="area area-bay">Weymouth Bay</span> North-easterly · offshore, puffy</p>
-                <div class="bias" style="--left:70"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Top left about 70:30 <span class="verify">source</span></em></div>
-                <p>Offshore breeze off the land: puffy, with big pressure differences across the course. The top left has come out more often than not, but it’s a percentage play, not a certainty. Keep your head out of the boat and connect the pressure.</p>
-                <p class="wind-watch"><b>Watch for</b> lanes of pressure coming off the shore.<!-- [PLACEHOLDER] --></p>
-              </div>
-              <div class="wind-panel" role="tabpanel" data-panel="E" hidden>
-                <p class="wind-head"><span class="area area-bay">Weymouth Bay</span> Easterly</p>
-                <div class="bias" style="--left:65"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left favoured <span class="verify">add %</span></em></div>
-                <p><!-- [PLACEHOLDER] -->Similar to the north-easterly: the left has tended to pay. Notes to come.</p>
-              </div>
-
-              <!-- N: harbour -->
-              <div class="wind-panel" role="tabpanel" data-panel="N" hidden>
-                <p class="wind-head"><span class="area area-harbour">Portland Harbour</span> Northerly · a touch of east</p>
-                <div class="bias" style="--left:60"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left bend <span class="verify">add %</span></em></div>
-                <p>A harbour-only feature. On some days the breeze comes in <strong>sticky blocks of pressure</strong> with almost nothing between them. When that happens, get into a block and stay in it: it won’t fill in behind you.</p>
-                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. See pin 3 on the map.</p>
-                <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
-              </div>
-
-              <!-- Coming soon (shared for any direction without notes) -->
-              <div class="wind-panel" role="tabpanel" data-panel="soon" hidden>
-                <p class="wind-head"><span class="area">Notes coming</span> <span data-soon-dir></span></p>
-                <p>We haven’t written this direction up yet. If you’ve sailed here in it, tell us what you saw.</p>
-              </div>
-            </div>
-          </div>
+            </template>
+            <template data-note="bay-N">
+              <div class="bias" style="--left:60"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Top left pays a little more</em></div>
+                <p>Anything from north-west to north-east is the same in the bay, inner loop or outer: the breeze is dropping down off the land. Compared with the harbour, the sea state changes and you don’t get the persistent blocks.</p>
+                <p>It’s hard to predict. The land is high above the cliffs and the pressure bounces down, so what you see isn’t what you get: sail to pressure you can see upwind and you’re probably doing the wrong thing. <strong>Pressure first, then attack the lift</strong>, not sailing through pressure to get to a shift. Be ready to get dunked.</p>
+                <p>An old venue guide said top left pays about 70:30 in a bay northerly. Top left does seem to pay a little more than the right; from mid-beat down we don’t think there’s anything in it either way. Courses are usually much bigger in the bay too.</p>
+                <p class="wind-watch"><b>Watch for</b> the other side. It can feel like the left is really working, then somebody comes out of the right. Sail your own beat: what’s happening to you isn’t happening everywhere on the course. Head out of the boat, look confident.</p>
+            </template>
+            <template data-note="bay-SE">
+              <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Speed day: no strong side</em></div>
+                <p>Our favourite: east through to south in the bay. It’s a speed day, and now you’ve got the swell. Expect longer-phase oscillations.</p>
+                <p><strong>Downwind speed is the number one priority.</strong> Understand the wave angle and think about how it changes your downwind decisions.</p>
+                <p class="wind-watch"><b>Watch for</b> the tide. On neaps, ignore it. On springs, if the course is set really close to the harbour entrances, think about it.</p>
+            </template>
+            <template data-note="bay-*">
+              <p class="todo"><b>Waves:</b> how the sea runs into the bay in this direction.</p>
+              <p class="todo"><b>Wind</b> and <b>which side pays</b>.</p>
+              <p class="todo"><b>Technique</b> and <b>watch for</b>.</p>
+            </template>
+            <template data-note="soon"><p class="todo">Notes for this direction.</p></template>
+          </figure>
         </section>
 
         <section class="g-sec" id="history" data-part="Sailing">
           <h2>Wind rose: what it usually does</h2>
           <p>Long-term wind statistics for the area. Use them to guess what an event in a given month is likely to bring, then check the forecast.</p>
-          <!-- WIND ROSE. Values = % of observations per direction. [PLACEHOLDER] numbers: replace with Windfinder statistics for the event month. -->
-          <figure class="rose-fig">
-            <div class="rose" data-rose="N:9,NE:11,E:8,SE:6,S:9,SW:24,W:20,NW:13" role="img" aria-label="Wind rose: placeholder values, most often south-westerly and westerly"><span class="skel" style="width:300px;max-width:100%;aspect-ratio:1;border-radius:50%" aria-hidden="true"></span></div>
-            <figcaption>Placeholder values. Source to use: <a href="https://www.windfinder.com/" target="_blank" rel="noopener">Windfinder wind statistics</a> for Portland Harbour <span class="verify">exact page</span>. We show their data, credited, not our own.</figcaption>
+          <!-- WIND HISTORY (James 15 Nov): windy.app stats widget for the Portland spot (his app id). The script loads only
+               when this section gets near the screen (venues.js [data-lazy-script]). The old placeholder rose is gone (made-up numbers). -->
+          <figure class="v-windy">
+            <div class="v-windy-box">
+              <div data-windywidget="stats" data-thememode="white" data-responsive="true" data-horizontal="true" data-spotid="8504749" data-appid="36056eb7baf2d6b75aea77157954233e"></div>
+            </div>
+            <span data-lazy-script="https://windy.app/widgets-code/stats/windy_stats_async.js" hidden></span>
+            <figcaption>Wind statistics from <a href="https://windy.app/" target="_blank" rel="noopener">windy.app</a> <span class="verify">check it's the right spot</span></figcaption>
           </figure>
+        </section>
+
+        <section class="g-sec" id="forecast" data-part="Sailing">
+          <h2>Forecast and live wind</h2>
+          <!-- James 16 Nov: his words, lightly tidied. -->
+          <p><strong>For a forecast</strong> we tend to look at the <strong>ECMWF</strong> and <strong>GFS</strong> models. The Met Office’s more recent <strong>UKV</strong> model does work quite well, but we’re still experimenting with it, so bear that in mind. You’ll find these models on most platforms, such as <a href="https://www.windguru.cz/" target="_blank" rel="noopener">Windguru</a>, <a href="https://windy.app/" target="_blank" rel="noopener">windy.app</a> and <a href="https://www.windy.com/" target="_blank" rel="noopener">Windy.com</a>.</p>
+          <div class="callout callout-tip"><p class="callout-title">The wall over-reads</p><p>The live wind readings on the wall typically over-read by about <strong>4 knots</strong>, so the conditions can look windier than they are. Knock 4 knots off before you decide on your rig or your layers.</p></div>
+          <p class="verify">Which station is “the wall” on the Navigator chart (name it so readers can find it)? Is “UKV” the right name for the Met Office model you mean (you wrote UKV2)? Is the last line of the callout (“Knock 4 knots off…”) OK? It’s mine.</p>
+          <!-- James 14 Nov: the Navigator chart goes HERE (forecast + live readings), not as the annotated map. -->
+          <figure class="v-shot">
+            <img src="navigator-live-wind.webp" width="751" height="540" alt="Beyond the Shift Navigator chart of Portland Harbour and Weymouth Bay with live wind readings: speed range in knots and direction in degrees at six stations" loading="lazy" decoding="async">
+            <figcaption>Live readings round Portland in the BTS Race Navigator: wind range in knots and direction at each station.</figcaption>
+          </figure>
+          <a class="link-card" href="https://navigator.beyondtheshift.co.uk/" target="_blank" rel="noopener">
+            <span><span class="eyebrow">BTS Race Navigator</span><b>Live wind round Portland, plus the tidal model</b></span>
+            <span class="arrow" aria-hidden="true"></span>
+          </a>
+          <p class="verify">Check the Navigator link (navigator.beyondtheshift.co.uk) and whether it should open on Portland.</p>
+          <div class="callout callout-tip"><p class="callout-title">Fog and cold northerlies</p><p>In spring (around April) and autumn (late November) you get a lot of fog rolling in, so be ready for postponements. Cold, blustery northerlies are haphazard: the shifts are all over the place.</p></div>
         </section>
 
         <section class="g-sec" id="tide" data-part="Sailing">
           <h2>Tide and swell</h2>
-          <p><!-- [PLACEHOLDER] -->Inside the harbour the tide is weak. Out in the bay it matters more on the right-hand side of the course and near the Portland end. Swell wraps round the Bill in a south-westerly and arrives at an angle to the wind.</p>
-          <a class="link-card" href="#" data-placeholder-link>
+          <p><strong>Tide in the bay:</strong> on neap tides, ignore it. On spring tides, if you’re racing really close to the harbour entrances, think about it.</p>
+          <p><strong>Swell</strong> is what we really add. In an east to south it’s straightforward: a speed day, and the wave angle drives your downwind. In a south-west to west it wraps round Portland Bill and again round the harbour wall, so a west-south-westerly can give full cross swell on the qualifier course. Pick a wind on the explorer above for the detail.</p>
+          <p class="draft"><!-- [PLACEHOLDER, ours] -->Inside the harbour the tide is weak.</p>
+          <a class="link-card" href="https://navigator.beyondtheshift.co.uk/" target="_blank" rel="noopener">
             <span><span class="eyebrow">BTS Race Navigator</span><b>Portland tidal model, hour by hour</b></span>
             <span class="arrow" aria-hidden="true"></span>
           </a>
-          <p class="verify">Add the Navigator link and check the tide notes.</p>
+          <p class="verify">Check the tide notes.</p>
         </section>
 
         <section class="g-sec" id="ashore" data-part="Sailing">
           <h2>Launching and ashore</h2>
           <div class="cols-2">
-            <div class="mini-card"><h3>Slipway</h3><p><!-- [PLACEHOLDER] -->Wide slipway straight into the harbour. Busy before the first start: rig early.</p></div>
-            <div class="mini-card"><h3>Boat park</h3><p><!-- [PLACEHOLDER] -->Allocated by class at most events. Bring a trolley tag with your sail number.</p></div>
-            <div class="mini-card"><h3>Parking</h3><p><!-- [PLACEHOLDER] -->Pay car park on Osprey Quay. Trailers to the overflow area.</p></div>
-            <div class="mini-card"><h3>Changing</h3><p><!-- [PLACEHOLDER] -->Changing rooms and showers in the main building. Hot water runs out after racing.</p></div>
+            <div class="mini-card draft"><h3>Slipway</h3><p><!-- [PLACEHOLDER] -->Wide slipway straight into the harbour. Busy before the first start: rig early.</p></div>
+            <div class="mini-card draft"><h3>Boat park</h3><p><!-- [PLACEHOLDER] -->Allocated by class at most events. Bring a trolley tag with your sail number.</p></div>
+            <div class="mini-card draft"><h3>Parking</h3><p><!-- [PLACEHOLDER] -->Pay car park on Osprey Quay. Trailers to the overflow area.</p></div>
+            <div class="mini-card draft"><h3>Changing</h3><p><!-- [PLACEHOLDER] -->Changing rooms and showers in the main building. Hot water runs out after racing.</p></div>
           </div>
         </section>
 
@@ -239,10 +268,12 @@
         <section class="g-sec" id="stay" data-part="Parents">
           <h2>Beds, food and the best seat in the house</h2>
           <div class="cols-2">
-            <div class="mini-card"><h3>Stay: Portland</h3><p><!-- [PLACEHOLDER] -->Closest to the club. Self-catering on Osprey Quay and around Castletown.</p></div>
-            <div class="mini-card"><h3>Stay: Weymouth</h3><p><!-- [PLACEHOLDER] -->More choice and restaurants, 10–15 minutes’ drive.</p></div>
-            <div class="mini-card"><h3>Eat</h3><p><!-- [PLACEHOLDER] -->Café at the club for breakfast; harbourside in Weymouth for dinner. Book on Saturday nights.</p></div>
-            <div class="mini-card"><h3>Watch</h3><p><!-- [PLACEHOLDER] -->Racing in the harbour is visible from the sea wall. For the bay, the view from the Nothe is best.</p></div>
+            <div class="mini-card"><h3>Stay: Portland</h3><p><a href="https://www.rya.org.uk/membership-benefits/rya-portland-house" target="_blank" rel="noopener"><strong>RYA Portland House</strong></a> is our number one if you can get it. It’s run by the RYA for RYA members, and it books up fast over weekends and big events, so get in early. In a campervan or motorhome? You can stay on site at WPNSA, with electric hook-up: book through <a href="https://www.wpnsa.org.uk/event/campervans/" target="_blank" rel="noopener">the WPNSA website</a> or reception. There are other places to stay on Portland, but we’d rather not talk about them.</p></div>
+            <div class="mini-card"><h3>Stay: Weymouth</h3><p>A lot more options on the Weymouth side: the caravan park, and independent Airbnb and Booking.com places. The nice ones are quite expensive.</p></div>
+            <div class="mini-card"><h3>Eat</h3><p>Weymouth town is the place to eat. Breakfast or lunch at <strong>Nautico Lounge</strong> (good craic). For dinner, the pub restaurants along the seafront and down by the town bridge are the good zone. For a really good Indian: <strong>Shalim’s Balti House</strong>.</p></div>
+            <div class="mini-card"><h3>Coffee</h3><p><strong>Nautico Lounge</strong> for the best coffee in Weymouth. <strong>Finca</strong> is the most London place in town. <strong>Caffeine 44</strong>, <strong>Beehive</strong> and <strong>Riptide</strong> are good too.</p></div>
+            <div class="mini-card"><h3>Watch</h3><p><strong>Billy Winters</strong> on Portland: grab a coffee and watch the racing. It’s cold in winter, so wrap up.</p></div>
+            <div class="mini-card"><h3>Work on your laptop</h3><p><strong>Weymouth Library</strong> is actually quite nice (Great George Street; 10–5 Monday to Wednesday and Friday, 10–6 Thursday, 10–4 Saturday, closed Sunday). <strong>Salt</strong> at Portland Marina is quiet and close to the club. Spinnakers is the usual option. Riptide is too small to work in and Beehive is busy: both are loud.</p></div>
           </div>
           <ul class="checklist">
             <li>Folding chair, flask and a proper coat: the quay is “bracing”.</li>
@@ -298,18 +329,61 @@
       <span>© <span data-year>2026</span> Beyond the Shift · James Foster &amp; Kai Wolgram</span>
       <ul>
         <li><a href="../../calendar/">Calendar</a></li>
-        <li><a href="/privacy">Privacy</a></li>
-        <li><a href="/terms">Terms</a></li>
-        <li><a href="/cancellation">Cancellation</a></li>
+        <li><a href="../../privacy/">Privacy</a></li>
+        <li><a href="../../terms/">Terms</a></li>
+        <li><a href="../../cancellation/">Cancellation</a></li>
       </ul>
     </div>
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../../data/events.js?v=20261113e"></script>
-  <script src="../../calendar/cal-core.js?v=20261113e"></script>
-  <script src="../../advice/advice.js?v=20261113e"></script>
-  <script src="../venues.js?v=20261113e"></script>
-  <script src="../../fx.js?v=20261113e" defer></script>
+  <script src="../../data/events.js?v=20261115c"></script>
+  <script src="../../calendar/cal-core.js?v=20261115c"></script>
+  <script src="../../advice/advice.js?v=20261115c"></script>
+  <script src="../venues.js?v=20261115c"></script>
+  <script src="geo.js?v=20261115c"></script>
+  <script>
+    /* Weymouth explorer setup. Metres from lon -2.44, lat 50.585 (x east, y south). */
+    window.VENUE_EXPLORER = {
+      geo: window.WEY_GEO,
+      start: { area: "overview", dir: "W" },
+      /* James 16 Nov: three slices by what the wind blows over. SW–NW comes across Chesil Beach; NW–ENE straight off
+         the land; ENE–SW in off the sea and round or over the Bill. Each snaps to one direction. */
+      sectors: [
+        { id: "N",  label: "NW–ENE", from: 315,  to: 67.5, bear: 0,   name: "Off the land (NW to ENE)" },
+        { id: "SE", label: "ENE–SW", from: 67.5, to: 225,  bear: 135, name: "Off the sea and the Bill (ENE to SW)" },
+        { id: "W",  label: "SW–NW",  from: 225,  to: 315,  bear: 270, name: "Across Chesil (SW to NW)" }
+      ],
+      overviewHint: "Tap the harbour or the bay to zoom in",
+      overview: { x: 1200, y: 900, span: 15500 },
+      areas: {
+        harbour: { label: "Portland Harbour", tag: "area-harbour", x: 300, y: 450, span: 5000, hx: 250, hy: 350, layer: "wind",
+                   seed: [500, 300], exit: "bay", hint: "Tap or drag past the wall for the bay",
+                   field: { W: { gain: .6 }, "*": { gain: 0 } },
+                   /* James's sketch, 16 Nov (drawn on the harbour view in a WSW): lighter in Portland's shadow along the
+                      south wall and out past it, and in under the north shore; more breeze off the WPNSA / Osprey side. */
+                   zones: { W: [
+                     { k: "light", p: [1633,4000, 1400,3440, 1279,2877, 964,2395, 704,2021, 246,2080, -295,2043, -560,1890, -745,1530, -581,1461, -236,1449, 527,1175, 862,1561, 1180,1692, 1300,1729, 1621,2121, 1876,2628, 2162,3210, 2327,3711] },
+                     { k: "light", p: [-2117,-19, -2198,-318, -1818,-669, -1383,-1096, -863,-1531, -748,-1886, -707,-2209, -132,-2510, 51,-2175, -306,-1877, -549,-1618, -919,-1245, -1423,-772, -1815,-346, -1977,-104] },
+                     { k: "more",  p: [-506,1430, -779,1237, -948,957, -357,737, 54,671, 477,846, 900,1020, 1460,1312, 1740,1459, 1590,1626, 1167,1767, 877,1555, 533,1190, -152,1440] }
+                   ] } },
+        bay:     { label: "Weymouth Bay", tag: "area-bay", x: 2700, y: -1200, span: 9500, hx: 3300, hy: -2600, layer: "waves",
+                   exit: "harbour", hint: "Tap the harbour to go back in" }
+      },
+      labels: [
+        { t: "Weymouth", x: -1700, y: -3600, k: "big" }, { t: "Portland", x: -500, y: 4300, k: "big" },
+        { t: "Portland Bill", x: -1200, y: 8500 }, { t: "Chesil Beach", x: -3900, y: 300 },
+        { t: "The Nothe", x: -300, y: -2550 }, { t: "WPNSA", x: -1150, y: 1250, k: "spot" },
+        { t: "North Ship Channel", x: 568, y: -1137, k: "spot" }, { t: "East Ship Channel", x: 1706, y: -59, k: "spot" }, { t: "Weymouth Bay", x: 4200, y: -3600, k: "sea", zoom: true },
+        { t: "English Channel", x: 3600, y: 6600, k: "sea" }
+      ],
+      waveBox: [-12600, -12800, 15000, 14600], waveCell: 70, waveLength: 650, waveSpeed: 7,
+      waveAmp: { W: 1, SE: .7, N: .2 },
+      /* harbour entrances, wall end to wall end (from geo.js): closed for the swell, so none gets in or leaks back out */
+      gates: [[538, -1236, 598, -1037], [1579, -92, 1834, -26], [1383, 1710, 1262, 1743], [830, 1935, 760, 1990], [-670, -1863, -740, -1900]]
+    };
+  </script>
+  <script src="../explorer.js?v=20261115c"></script>
+  <script src="../../fx.js?v=20261115c" defer></script>
 </body>
 </html>

@@ -104,4 +104,25 @@
 
   /* links still waiting for a real URL */
   $$("[data-placeholder-link]").forEach(a => a.addEventListener("click", ev => ev.preventDefault()));
+
+  /* ---- Nav: steps aside while reading down, back on the first scroll up (James 15 Nov, same as New to ILCAs) ---- */
+  const nav = $("[data-nav]"), toc = $("[data-toc]");
+  if (nav && document.body.classList.contains("venue-page")) {
+    let lastY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const y = window.scrollY, d = y - lastY;
+      if (Math.abs(d) < 4 && y > 80) return;
+      const busy = nav.classList.contains("is-open") || (toc && toc.classList.contains("is-open"));
+      document.body.classList.toggle("nav-hid", y > 80 && d > 0 && !busy);
+      lastY = y;
+    }, { passive: true });
+  }
+
+  /* ---- Third-party widgets: load the script only when it gets near the screen ---- */
+  $$("[data-lazy-script]").forEach(el => {
+    const load = () => { const sc = document.createElement("script"); sc.src = el.dataset.lazyScript; sc.async = true; sc.setAttribute("data-cfasync", "false"); document.body.append(sc); };
+    if (!("IntersectionObserver" in window)) { load(); return; }
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: "600px 0px" });
+    io.observe(el.parentElement);
+  });
 })();

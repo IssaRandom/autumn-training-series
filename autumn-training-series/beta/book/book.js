@@ -116,7 +116,7 @@
         <div data-sum></div>
         <p class="bk-error" data-error role="alert" tabindex="-1" hidden></p>
         <button class="btn btn-accent bk-submit" type="submit" data-confirm>Confirm booking</button>
-        <p class="bk-hint">By booking you agree to our <a href="/terms">terms</a> and <a href="/cancellation">cancellation policy</a>. We'll email you the payment details too.</p>
+        <p class="bk-hint">By booking you agree to our <a href="../terms/">terms</a> and <a href="../cancellation/">cancellation policy</a>. We'll email you the payment details too.</p>
       </form>
     </section>`;
 
@@ -130,8 +130,9 @@
       if (!n) { $("[data-sum]", f).innerHTML = free.length ? `<p class="bk-hint">Tick at least one sailor.</p>` : `<p class="bk-hint">All your sailors are booked on this camp. See <a href="../account/">My bookings</a>.</p>`; return; }
       const fee = camp.late_now ? camp.late_fee : 0;
       /* The server gives places in the order sailors are listed; anyone past the places left joins the waitlist. */
+      /* With the live-site rule (places_label) the count is a guide only: everyone pays unless the camp is waitlist-only. */
       const left = camp.full ? 0 : camp.places_left;
-      const paying = left === null || left === undefined ? n : Math.min(n, left);
+      const paying = camp.places_label ? (camp.full ? 0 : n) : left === null || left === undefined ? n : Math.min(n, left);
       const waiting = n - paying;
       const names = chosen().map(id => me.sailors.find(s => s.sailor_id === id)?.first_name || "");
       const waitNames = names.slice(paying).map(esc).join(" and ");

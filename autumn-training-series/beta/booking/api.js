@@ -97,7 +97,7 @@
   const dueText = s => (s && iso(parse(s)) === iso(today()) ? "today" : day(s));
   const money = n => `£${Number(n || 0).toLocaleString("en-GB", { minimumFractionDigits: Number(n) % 1 ? 2 : 0 })}`;
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const placesText = c => (c.places_left === null || c.places_left === undefined ? "" : c.full ? "Full · waitlist open" : c.places_left === 1 ? "1 place left" : `${c.places_left} places left`);
+  const placesText = c => (c.places_label ? (c.full ? "Waiting list only · join the list" : c.places_label) : c.places_left === null || c.places_left === undefined ? "" : c.full ? "Full · waitlist open" : c.places_left === 1 ? "1 place left" : `${c.places_left} places left`);
 
   window.BTSBook = {
     mode,

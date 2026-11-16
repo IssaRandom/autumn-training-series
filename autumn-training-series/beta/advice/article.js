@@ -354,6 +354,32 @@
       miniGrid.append(row);
     }
   }
+  /* ---------- Calendar ready before the tap (James 14 Nov: "almost preloaded") ----------
+     As the Racing section comes within ~2 screens, ask the browser to prerender the calendar
+     (Speculation Rules; Chrome/Edge/Android). The tap then just reveals a page that has already
+     loaded and drawn. Other browsers get a prefetch of the page and its data/scripts instead. */
+  if (mini) {
+    let warmed = false;
+    const warm = () => {
+      if (warmed) return; warmed = true;
+      const url = new URL(mini.getAttribute("href"), location.href).href;
+      if (HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
+        const s = document.createElement("script");
+        s.type = "speculationrules";
+        s.textContent = JSON.stringify({ prerender: [{ source: "list", urls: [url], eagerness: "immediate" }] });
+        document.head.append(s);
+      } else {
+        [url, new URL("../data/events.js", url).href, new URL("calendar.js", url).href, new URL("calendar.css", url).href]
+          .forEach(h => { const l = document.createElement("link"); l.rel = "prefetch"; l.href = h; document.head.append(l); });
+      }
+    };
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { warm(); io.disconnect(); } }, { rootMargin: "200% 0px" });
+      io.observe(document.getElementById("racing") || mini);
+    } else warm();
+    mini.addEventListener("pointerdown", warm, { once: true });
+    mini.addEventListener("focus", warm, { once: true });
+  }
   /* ---------- Phone pill count ---------- */
   const pill = document.querySelector("[data-toc-toggle]");
   const links = [...document.querySelectorAll("[data-toc-list] a")];

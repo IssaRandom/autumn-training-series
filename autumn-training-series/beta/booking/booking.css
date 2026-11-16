@@ -221,6 +221,9 @@
 .bk-who-mystery::before { content: ""; position: absolute; inset: -40% -60%; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .22) 48%, rgba(255, 236, 170, .3) 50%, rgba(255, 255, 255, .22) 52%, transparent 60%); animation: bk-foil 3.6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .7s + 1s); transform: translateX(-60%); }
 .bk-who-mystery b { display: flex; align-items: center; gap: 6px; color: var(--t-champ); letter-spacing: .01em; }
 .bk-myst-q { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--t-champ); color: #0a1a3a; font-size: 12px; font-weight: 800; line-height: 1; font-style: normal; animation: bk-myst-spin 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * .9s); }
+/* Fixed size: the rotating name sits in a box as wide as the longest name (12ch), so the card never grows. */
+.bk-who-mystery span { white-space: nowrap; }
+.bk-myst-name { width: 12.5ch; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; white-space: nowrap; }
 .bk-myst-name { font-style: normal; font-weight: 700; color: var(--ink); display: inline-block; transition: opacity .26s, transform .26s var(--ease), filter .26s; }
 .bk-myst-name.is-out { opacity: 0; transform: translateY(-5px); filter: blur(3px); }
 @keyframes bk-foil { 0%, 55% { transform: translateX(-60%); } 100% { transform: translateX(60%); } }

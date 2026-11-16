@@ -33,6 +33,12 @@
     optional: store.get("optional", false),
     dayW: null
   };
+  /* Links can pick the view and rig: ?view=year|month&rig=all|4|6|7 (homepage "See the season" = year plan, all rigs).
+     The choice is remembered like a normal tap, then the query is dropped from the address bar. */
+  const qs = new URLSearchParams(location.search);
+  if (/^(year|month)$/.test(qs.get("view") || "")) { state.view = qs.get("view"); store.set("view", state.view); }
+  if (/^(all|4|6|7)$/.test(qs.get("rig") || "")) { state.rig = qs.get("rig"); store.set("rig", state.rig); }
+  if (qs.has("view") || qs.has("rig")) history.replaceState(null, "", location.pathname + location.hash);
   let booted = false; // true once the first paint and scroll-to-today are done (so those don't count as "the viewer scrolled")
   const rigOk = e => state.rig === "all" || !e.rigs.length || e.rigs.includes(Number(state.rig));
 

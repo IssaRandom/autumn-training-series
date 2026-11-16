@@ -1,10 +1,10 @@
 /* DEV ONLY: a fake booking backend in localStorage, so /beta/account/ and /beta/book/ can be tried on localhost
    without the real Google Sheet. api.js loads it on localhost unless ?live=1 is in the URL.
-   Sign-in code is always 123456. Reset with: localStorage.removeItem("bts-mock-db").
+   Sign-in code is always 123456. Reset with: localStorage.removeItem("bts-mock-db-v2").
    Mirrors apps-script/Code.gs, including the payment rule (terms). */
 (function () {
   "use strict";
-  const KEY = "bts-mock-db";
+  const KEY = "bts-mock-db-v2"; // v2 (15 Nov): no test camp, live places rule, offline sign-ups
   const DAY = 864e5;
   const t0 = () => { const t = new Date(); t.setHours(0, 0, 0, 0); return t; };
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -16,11 +16,10 @@
     const soon = plus(t0(), 4);
     return {
       camps: [
-        { camp_id: "mockSoon", title: "Test camp (starts in 4 days)", start: iso(soon), end: iso(plus(soon, 1)), venue: "Poole Yacht Club", price: 180, ref_code: "TEST", late_fee: 20, capacity: 12, open: "Y" },
-        { camp_id: "winterChristmas", title: "Christmas Camp", start: "2026-12-19", end: "2026-12-23", venue: "Poole Yacht Club", price: 450, ref_code: "XMAS26", late_fee: 20, capacity: 16, open: "Y" },
-        { camp_id: "winterNY1", title: "New Year’s Camp #1", start: "2026-12-27", end: "2026-12-30", venue: "Poole Yacht Club", price: 360, ref_code: "NY1-26", late_fee: 20, capacity: 3, open: "Y" },
-        { camp_id: "winterNY2", title: "New Year’s Camp #2", start: "2026-12-31", end: "2027-01-03", venue: "Poole Yacht Club", price: 360, ref_code: "NY2-26", late_fee: 20, capacity: null, open: "Y" },
-        { camp_id: "winter9", title: "Winter Series #9", start: "2027-02-13", end: "2027-02-14", venue: "Poole Yacht Club", price: 180, ref_code: "WTS9-27", late_fee: 20, capacity: null, open: "N" },
+        { camp_id: "winterChristmas", title: "Christmas Camp", start: "2026-12-19", end: "2026-12-23", venue: "Poole Yacht Club", price: 450, ref_code: "XMAS26", late_fee: 20, signups_offline: 5, open: "Y" },
+        { camp_id: "winterNY1", title: "New Year’s Camp #1", start: "2026-12-27", end: "2026-12-30", venue: "Poole Yacht Club", price: 360, ref_code: "NY1-26", late_fee: 20, signups_offline: 1, open: "Y" },
+        { camp_id: "winterNY2", title: "New Year’s Camp #2", start: "2026-12-31", end: "2027-01-03", venue: "Poole Yacht Club", price: 360, ref_code: "NY2-26", late_fee: 20, signups_offline: 1, open: "Y" },
+        { camp_id: "winter9", title: "Winter Series #9", start: "2027-02-13", end: "2027-02-14", venue: "Poole Yacht Club", price: 180, ref_code: "WTS9-27", late_fee: 20, signups_offline: 3, open: "N" },
       ],
       parents: {},
       sailors: [
@@ -51,14 +50,19 @@
     const due = late ? today : inAWeek < weekBefore ? inAWeek : weekBefore;
     return { late, fee: late ? Number(c.late_fee || 0) : 0, due: iso(due) };
   }
+  /* Same rule as Code.gs placesLeft_ (live site): 6 down to 4 sailors, then hold at 2. waitlist = full. */
   function placesLeft(db, c) {
-    if (c.capacity === null || c.capacity === "") return null;
-    return Math.max(0, c.capacity - db.bookings.filter(b => b.camp_id === c.camp_id && active(b.status) && b.status !== "Waitlist").length);
+    if (c.waitlist === "Y") return 0;
+    const n = (c.signups_offline || 0) + db.bookings.filter(b => b.camp_id === c.camp_id && active(b.status) && b.status !== "Waitlist").length;
+    return n < 4 ? 6 - n : 2;
+  }
+  function placesLabel(c, left) {
+    return c.waitlist === "Y" ? "Waiting list only" : c.second_group === "Y" ? "Second group forming" : `${left} ${left === 1 ? "place" : "places"} left`;
   }
   function campOut(db, c) {
     const left = placesLeft(db, c), t = terms(c, new Date());
     return { camp_id: c.camp_id, title: c.title, start: c.start, end: c.end, venue: c.venue, price: c.price, late_fee: c.late_fee,
-      late_now: t.late, price_now: c.price + t.fee, payment_due_now: t.due, capacity: c.capacity, places_left: left, full: left === 0 };
+      late_now: t.late, price_now: c.price + t.fee, payment_due_now: t.due, places_left: left, places_label: placesLabel(c, left), full: left === 0 };
   }
   const BANK = { account_name: "Beyond the Shift (TEST)", sort_code: "00-00-00", account_number: "00000000" };
   const MED = "https://docs.google.com/forms/d/e/1FAIpQLScmOkxPW_HbmuHhicCGmGYDoMkjkoaw5JGdzGMCqr2qwxXnjg/viewform";
@@ -147,7 +151,7 @@
         const left = placesLeft(db, c), t = terms(c, new Date());
         const b = { booking_id: id("B"), created: iso(new Date()), parent_email: email, sailor_id: sid, sailor_name: name, camp_id: c.camp_id, camp_title: c.title,
           amount: c.price + t.fee, late_fee_applied: t.fee > 0, reference: ref(c, s),
-          payment_due: t.due, status: left === null || left > 0 ? "Awaiting payment" : "Waitlist" };
+          payment_due: t.due, status: left > 0 ? "Awaiting payment" : "Waitlist" };
         db.bookings.push(b);
         return b;
       });
@@ -159,7 +163,7 @@
       if (!c) fail("Camp not found.");
       const list = db.bookings.filter(b => b.camp_id === c.camp_id && active(b.status) && b.status !== "Waitlist");
       const sailors = Object.fromEntries(db.sailors.map(s => [s.sailor_id, s]));
-      return { camp: campOut(db, c), booked: list.length, listed: list.map(b => sailors[b.sailor_id]).filter(s => s && s.show_on_list).map(s => ({ name: `${s.first_name} ${s.surname[0]}.`, club: s.club, rig: s.rig })) };
+      return { camp: campOut(db, c), booked: list.length + (c.signups_offline || 0), listed: list.map(b => sailors[b.sailor_id]).filter(s => s && s.show_on_list).map(s => ({ name: `${s.first_name} ${s.surname[0]}.`, club: s.club, rig: s.rig })) };
     },
     signOut: (db, r) => { delete db.sessions[r.token]; return { signedOut: true }; },
   };

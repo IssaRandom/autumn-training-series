@@ -13,7 +13,7 @@
     el.innerHTML = `<span class="bk-beta">Beta</span>
       <p>Online booking is in beta. Your place is confirmed when we contact you personally after payment.
       Prefer the old way? <a href="${esc(B.cfg.fallbackForm)}" target="_blank" rel="noopener">Use the booking form</a>.</p>`;
-    if (B.mode === "mock") el.insertAdjacentHTML("beforeend", `<p class="bk-mock">Test mode: nothing is saved to the real sheet. Sign-in code is <b>123456</b>.</p>`);
+    if (B.mode === "mock") el.insertAdjacentHTML("beforeend", `<p class="bk-mock"><b>Test mode (fake data on this computer).</b> Nothing is saved to the real sheet, no emails are sent, and medical forms won't tick here. Sign-in code is <b>123456</b>. <a href="?live=1">Switch to the real system</a>.</p>`);
     return el;
   }
 
@@ -219,10 +219,9 @@
 
   /* Sailors who booked but didn't tick "show my name" appear as foil "Mystery sailor" cards that tease a
      famous name ("Could be Ben Ainslie…"), cycling through the list. Only the count reaches the page. */
-  const LEGENDS = ["Ben Ainslie", "Peter Burling", "Blair Tuke", "Tom Slingsby", "Robert Scheidt", "Giles Scott",
-    "Paul Goodison", "Hannah Mills", "Shirley Robertson", "Matt Wearn", "Marit Bouwmeester", "Anne-Marie Rindom",
-    "Russell Coutts", "Iain Percy", "Ellen MacArthur", "Pavlos Kontides", "Philipp Buhl", "Elliot Hanson",
-    "Emma Wilson", "Dylan Fletcher", "Stuart Bithell", "Saskia Clark", "Ellie Aldridge", "Sam Meech"];
+  /* Short names only (12 characters max) so a card never changes size as the names rotate (James, 15 Nov). */
+  const LEGENDS = ["Ben Ainslie", "Blair Tuke", "Tom Slingsby", "Giles Scott", "Hannah Mills", "Matt Wearn",
+    "Iain Percy", "Philipp Buhl", "Emma Wilson", "Saskia Clark", "Sam Meech"].filter(n => n.length <= 12);
   const MYSTERY_CARDS = 3;
   const shuffled = () => LEGENDS.map(n => [Math.random(), n]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   function mysteryHtml(hidden, start) {

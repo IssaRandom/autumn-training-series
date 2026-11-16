@@ -64,3 +64,12 @@
 @media (prefers-reduced-motion: reduce) {
   .js .hub-hero .g-hero-img, .js .hub-in, .js .hub-hero .title-line > span, .js .hub-hero .g-title::after { animation: none !important; }
 }
+
+/* venue photo credits (15 Nov): source sites, no photographer listed */
+.card-img { position: relative; }
+.credit { margin: 0; font-size: .62rem; letter-spacing: .02em; line-height: 1.4; }
+.card-img .credit, .feature-credit, .hero-credit { position: absolute; right: 8px; bottom: 8px; z-index: 2; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; }
+.credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+.feature-img { grid-area: 1 / 1; }
+.feature-credit { position: relative; grid-area: 1 / 1; align-self: end; justify-self: end; right: auto; bottom: auto; margin: 8px; }
