@@ -216,8 +216,6 @@
       g.setAttribute("aria-label", $("h3", c).textContent);
       g.innerHTML = (c.dataset.zone ? `<circle class="rm-area" r="170"/>` : "") + `<circle class="rm-ring" r="1"/><circle class="rm-dot" r="1"/><text class="rm-name"></text>`;
       g.querySelector(".rm-name").textContent = $("h3", c).textContent;
-      g.addEventListener("click", () => pick(i, true));
-      g.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(i, true); } });
       pinsG.append(g);
       return g;
     });
@@ -241,55 +239,63 @@
       };
       anim = requestAnimationFrame(step);
     };
-    const aspect = () => HOME[2] / HOME[3];
-    let cur = -1;
-    const pick = (i, fromPin) => {
-      if (i === cur) return;
-      cur = i;
+    /* James 17 Nov: the chips + map pin under the contents bar; scroll through Stay, Eat, Coffee, Watch and Work and
+       the map shows that group's pins, framed to fit them. The card being read lights its pin. */
+    recs.classList.add("recs-on");
+    const stage = $(".recs-stage", recs), heads = $$(".recs-gh", rail);
+    const inGroup = (c, g) => c.dataset.cat.split(" ").includes(g);
+    const frameFor = g => {                                   /* viewBox round this group's pins, shaped like the map box */
+      const pts = cards.filter(c => inGroup(c, g) && c.dataset.x).map(c => [+c.dataset.x, +c.dataset.y]);
+      if (!pts.length) return HOME;
+      const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+      const pad = 700, cx = (Math.min(...xs) + Math.max(...xs)) / 2 + 700, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+      const r = mapEl.clientWidth / Math.max(1, mapEl.clientHeight);
+      let w = Math.max(...xs) - Math.min(...xs) + pad * 2 + 1400, h = Math.max(...ys) - Math.min(...ys) + pad * 2;   /* +1400: room for the name to the right */
+      if (w / h > r) h = w / r; else w = h * r;
+      return [cx - w / 2, cy - h / 2, w, h];
+    };
+    let group = "", cur = -1;
+    const setGroup = g => {
+      if (g === group) return; group = g;
+      chips.forEach(ch => ch.setAttribute("aria-pressed", String(ch.dataset.cat === g)));
+      const on = chips.find(ch => ch.dataset.cat === g), row = on && on.parentElement;
+      if (on && row.scrollWidth > row.clientWidth) row.scrollTo({ left: on.offsetLeft - (row.clientWidth - on.offsetWidth) / 2, behavior: still.matches ? "auto" : "smooth" });
+      cards.forEach((c, i) => { if (pins[i]) pins[i].classList.toggle("is-off", !inGroup(c, g)); });
+      fly(frameFor(g));
+    };
+    const pick = i => {
+      if (i === cur) return; cur = i;
       cards.forEach((c, j) => c.classList.toggle("is-on", j === i));
       pins.forEach((p, j) => p && p.classList.toggle("is-on", j === i));
-      const c = cards[i];
-      if (c && c.dataset.x) {
-        const span = c.dataset.zone ? 1600 : 1300, w = span, h = span / aspect();
-        fly([+c.dataset.x - w / 2, +c.dataset.y - h / 2, w, h]);
-        pinsG.append(pins[i]);   /* active pin on top */
-      } else fly(HOME);
-      if (fromPin && c) {
-        const horiz = getComputedStyle(rail).overflowX === "auto";
-        if (horiz) rail.scrollTo({ left: c.offsetLeft - (rail.clientWidth - c.offsetWidth) / 2, behavior: still.matches ? "auto" : "smooth" });
-        else rail.scrollTo({ top: c.offsetTop - rail.offsetTop - 8, behavior: still.matches ? "auto" : "smooth" });
-      }
+      if (pins[i]) pinsG.append(pins[i]);                     /* active pin on top */
+      sizePins();
     };
-    cards.forEach((c, i) => {
-      c.addEventListener("click", ev => { if (!ev.target.closest("a")) pick(i); });
-      c.addEventListener("pointerenter", ev => { if (ev.pointerType === "mouse") pick(i); });
-    });
-    /* phone rail: the card nearest the middle is the one on the map */
-    let tick = 0;
-    rail.addEventListener("scroll", () => {
-      if (getComputedStyle(rail).overflowX !== "auto") return;
-      clearTimeout(tick);
-      tick = setTimeout(() => {
-        const mid = rail.scrollLeft + rail.clientWidth / 2;
-        let best = -1, bd = 1e9;
-        cards.forEach((c, i) => { if (c.hidden) return; const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = i; } });
-        if (best > -1) pick(best);
-      }, 90);
-    }, { passive: true });
-    chips.forEach(ch => ch.addEventListener("click", () => {
-      const cat = ch.dataset.cat;
-      chips.forEach(o => o.setAttribute("aria-pressed", String(o === ch)));
-      cards.forEach((c, i) => {
-        const show = cat === "all" || c.dataset.cat.split(" ").includes(cat);
-        c.hidden = !show;
-        if (pins[i]) pins[i].classList.toggle("is-off", !show);
-      });
-      cur = -1;
-      const first = cards.findIndex(c => !c.hidden);
-      rail.scrollTo({ left: 0, top: 0 });
-      if (cat === "all") { cards.forEach(c => c.classList.remove("is-on")); pins.forEach(p => p && p.classList.remove("is-on")); fly(HOME); }
-      else pick(first);
-    }));
+    const items = [...rail.children];
+    const line = () => {
+      if (getComputedStyle(stage).position !== "sticky") return innerHeight * .5;
+      const r = stage.getBoundingClientRect();
+      return matchMedia("(min-width: 761px)").matches ? innerHeight * .5 : r.bottom + (innerHeight - r.bottom) * .3;
+    };
+    const update = () => {
+      const y = line();
+      let it = items[0];
+      for (const x of items) { if (x.getBoundingClientRect().top <= y) it = x; else break; }
+      setGroup(it.dataset.group);
+      const ci = cards.indexOf(it);
+      pick(ci > -1 ? ci : cards.findIndex(c => c.dataset.group === it.dataset.group));
+      const rr = recs.getBoundingClientRect(), t = parseFloat(getComputedStyle(stage).top) || 0;
+      stage.classList.toggle("is-stuck", rr.top < t && rr.bottom > t + stage.offsetHeight + 1);
+    };
+    let q = false;
+    const onScroll = () => { if (q) return; q = true; requestAnimationFrame(() => { q = false; update(); }); };
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    const goTo = el => scrollTo({ top: scrollY + el.getBoundingClientRect().top - line() + 6, behavior: still.matches ? "auto" : "smooth" });
+    chips.forEach(ch => ch.addEventListener("click", () => { const h = heads.find(x => x.dataset.group === ch.dataset.cat); if (h) goTo(h); }));
+    pins.forEach((p, i) => { if (!p) return;
+      p.addEventListener("click", () => goTo(cards[i]));
+      p.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); goTo(cards[i]); } }); });
+    update();
     new ResizeObserver(sizePins).observe(mapEl);
     sizePins();
   }

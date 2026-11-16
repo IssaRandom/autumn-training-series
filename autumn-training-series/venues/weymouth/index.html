@@ -336,31 +336,39 @@
           <!-- OUR PICKS MAP (James 16 Nov: "an interactive map with our recommendations"). Each card is real HTML; venues.js
                draws the coastline (geo.js) and a pin per card that has data-x/-y (metres from lon -2.44, lat 50.585, x east,
                y south; positions from OpenStreetMap). Cards without a pin show the whole map. -->
+          <!-- 17 Nov (James): keep the map; scroll through Stay, Eat, Coffee, Watch, Work and the map shows that group.
+               The chips + map pin under the contents bar; group labels are the chip names. -->
           <div class="recs" data-recs data-beat="map">
-            <div class="recs-filter" role="group" aria-label="Show">
-              <button type="button" class="recs-chip" data-cat="all" aria-pressed="true">All</button>
+            <div class="recs-stage">
+            <div class="recs-filter" role="group" aria-label="Jump to">
               <button type="button" class="recs-chip c-stay" data-cat="stay" aria-pressed="false">Stay</button>
               <button type="button" class="recs-chip c-eat" data-cat="eat" aria-pressed="false">Eat</button>
               <button type="button" class="recs-chip c-coffee" data-cat="coffee" aria-pressed="false">Coffee</button>
               <button type="button" class="recs-chip c-watch" data-cat="watch" aria-pressed="false">Watch</button>
               <button type="button" class="recs-chip c-work" data-cat="work" aria-pressed="false">Work</button>
             </div>
-            <div class="recs-body">
               <div class="recs-map" data-recs-map></div>
+            </div>
+            <div class="recs-body">
               <ul class="recs-rail" data-recs-rail>
-                <li class="rec c-stay" data-cat="stay" data-x="-550" data-y="2024"><span class="rec-k">Stay · Portland</span><h3><a href="https://www.rya.org.uk/membership-benefits/rya-portland-house" target="_blank" rel="noopener">RYA Portland House</a></h3><p>Our number one if you can get it. It’s run by the RYA for RYA members, and it books up fast over weekends and big events, so get in early. There are other places to stay on Portland, but we’d rather not talk about them.</p><p class="todo">Pin is OpenStreetMap’s “Portland House”: check it’s the RYA one.</p></li>
-                <li class="rec c-stay" data-cat="stay" data-x="-1000" data-y="1400"><span class="rec-k">Stay · on site</span><h3>Campervan at WPNSA</h3><p>In a campervan or motorhome? You can stay on site at WPNSA, with electric hook-up: book through <a href="https://www.wpnsa.org.uk/event/campervans/" target="_blank" rel="noopener">the WPNSA website</a> or reception.</p></li>
-                <li class="rec c-stay" data-cat="stay"><span class="rec-k">Stay · Weymouth</span><h3>The Weymouth side</h3><p>A lot more options: the caravan park, and independent Airbnb and Booking.com places. The nice ones are quite expensive.</p></li>
-                <li class="rec c-eat c-coffee" data-cat="eat coffee" data-x="-1063" data-y="-2683"><span class="rec-k">Eat · Coffee</span><h3>Nautico Lounge</h3><p>Good craic. The best breakfast or lunch, and the best coffee in Weymouth.</p></li>
-                <li class="rec c-eat" data-cat="eat" data-x="-1090" data-y="-2494" data-zone="1"><span class="rec-k">Eat · dinner</span><h3>Seafront and the town bridge</h3><p>For dinner, the pub restaurants along the seafront and down by the town bridge are the good zone.</p></li>
-                <li class="rec c-eat" data-cat="eat" data-x="-1124" data-y="-3177"><span class="rec-k">Eat · Indian</span><h3>Shalim’s Balti House</h3><p>Just a really good Indian.</p><p class="todo">Pin is the “Balti House” on Commercial Road in OpenStreetMap: is that Shalim’s?</p></li>
-                <li class="rec c-coffee" data-cat="coffee" data-x="-1016" data-y="-2833"><span class="rec-k">Coffee</span><h3>Finca</h3><p>The most London place in Weymouth.</p></li>
-                <li class="rec c-coffee" data-cat="coffee" data-x="-924" data-y="-2762"><span class="rec-k">Coffee</span><h3>Caffeine 44</h3><p>On the Esplanade. Good coffee.</p></li>
-                <li class="rec c-coffee" data-cat="coffee"><span class="rec-k">Coffee</span><h3>Beehive and Riptide</h3><p>Both good for coffee. Riptide is too small to work in and Beehive is busy: both are loud.</p><p class="todo">Not on OpenStreetMap: where are they? Then they get pins.</p></li>
-                <li class="rec c-watch" data-cat="watch"><span class="rec-k">Watch</span><h3>Billy Winters</h3><p>On Portland: grab a coffee and watch the racing. It’s cold in winter, so wrap up.</p><p class="todo">Not on OpenStreetMap: where is it? Then it gets a pin.</p></li>
-                <li class="rec c-work" data-cat="work" data-x="-1091" data-y="-2912"><span class="rec-k">Work</span><h3>Weymouth Library</h3><p>Actually quite nice. Great George Street; 10–5 Monday to Wednesday and Friday, 10–6 Thursday, 10–4 Saturday, closed Sunday.</p></li>
-                <li class="rec c-work" data-cat="work" data-x="-826" data-y="1614"><span class="rec-k">Work</span><h3>Salt, Portland Marina</h3><p>Quiet, and close to the club.</p></li>
-                <li class="rec c-work" data-cat="work"><span class="rec-k">Work</span><h3>Spinnakers</h3><p>The usual option.</p><p class="todo">Where is Spinnakers? Not on OpenStreetMap.</p></li>
+                <li class="recs-gh" id="picks-stay" data-group="stay"><span class="recs-gh-t c-stay">Stay</span></li>
+                <li data-group="stay" class="rec c-stay" data-cat="stay" data-x="-550" data-y="2024"><span class="rec-k">Stay · Portland</span><h3><a href="https://www.rya.org.uk/membership-benefits/rya-portland-house" target="_blank" rel="noopener">RYA Portland House</a></h3><p>Our number one if you can get it. It’s run by the RYA for RYA members, and it books up fast over weekends and big events, so get in early. There are other places to stay on Portland, but we’d rather not talk about them.</p><p class="todo">Pin is OpenStreetMap’s “Portland House”: check it’s the RYA one.</p></li>
+                <li data-group="stay" class="rec c-stay" data-cat="stay" data-x="-1000" data-y="1400"><span class="rec-k">Stay · on site</span><h3>Campervan at WPNSA</h3><p>In a campervan or motorhome? You can stay on site at WPNSA, with electric hook-up: book through <a href="https://www.wpnsa.org.uk/event/campervans/" target="_blank" rel="noopener">the WPNSA website</a> or reception.</p></li>
+                <li data-group="stay" class="rec c-stay" data-cat="stay"><span class="rec-k">Stay · Weymouth</span><h3>The Weymouth side</h3><p>A lot more options: the caravan park, and independent Airbnb and Booking.com places. The nice ones are quite expensive.</p></li>
+                <li class="recs-gh" id="picks-eat" data-group="eat"><span class="recs-gh-t c-eat">Eat</span></li>
+                <li data-group="eat" class="rec c-eat c-coffee" data-cat="eat coffee" data-x="-1063" data-y="-2683"><span class="rec-k">Eat · Coffee</span><h3>Nautico Lounge</h3><p>Good craic. The best breakfast or lunch, and the best coffee in Weymouth.</p></li>
+                <li data-group="eat" class="rec c-eat" data-cat="eat" data-x="-1090" data-y="-2494" data-zone="1"><span class="rec-k">Eat · dinner</span><h3>Seafront and the town bridge</h3><p>For dinner, the pub restaurants along the seafront and down by the town bridge are the good zone.</p></li>
+                <li data-group="eat" class="rec c-eat" data-cat="eat" data-x="-1124" data-y="-3177"><span class="rec-k">Eat · Indian</span><h3>Shalim’s Balti House</h3><p>Just a really good Indian.</p><p class="todo">Pin is the “Balti House” on Commercial Road in OpenStreetMap: is that Shalim’s?</p></li>
+                <li class="recs-gh" id="picks-coffee" data-group="coffee"><span class="recs-gh-t c-coffee">Coffee</span></li>
+                <li data-group="coffee" class="rec c-coffee" data-cat="coffee" data-x="-1016" data-y="-2833"><span class="rec-k">Coffee</span><h3>Finca</h3><p>The most London place in Weymouth.</p></li>
+                <li data-group="coffee" class="rec c-coffee" data-cat="coffee" data-x="-924" data-y="-2762"><span class="rec-k">Coffee</span><h3>Caffeine 44</h3><p>On the Esplanade. Good coffee.</p></li>
+                <li data-group="coffee" class="rec c-coffee" data-cat="coffee"><span class="rec-k">Coffee</span><h3>Beehive and Riptide</h3><p>Both good for coffee. Riptide is too small to work in and Beehive is busy: both are loud.</p><p class="todo">Not on OpenStreetMap: where are they? Then they get pins.</p></li>
+                <li class="recs-gh" id="picks-watch" data-group="watch"><span class="recs-gh-t c-watch">Watch</span></li>
+                <li data-group="watch" class="rec c-watch" data-cat="watch"><span class="rec-k">Watch</span><h3>Billy Winters</h3><p>On Portland: grab a coffee and watch the racing. It’s cold in winter, so wrap up.</p><p class="todo">Not on OpenStreetMap: where is it? Then it gets a pin.</p></li>
+                <li class="recs-gh" id="picks-work" data-group="work"><span class="recs-gh-t c-work">Work</span></li>
+                <li data-group="work" class="rec c-work" data-cat="work" data-x="-1091" data-y="-2912"><span class="rec-k">Work</span><h3>Weymouth Library</h3><p>Actually quite nice. Great George Street; 10–5 Monday to Wednesday and Friday, 10–6 Thursday, 10–4 Saturday, closed Sunday.</p></li>
+                <li data-group="work" class="rec c-work" data-cat="work" data-x="-826" data-y="1614"><span class="rec-k">Work</span><h3>Salt, Portland Marina</h3><p>Quiet, and close to the club.</p></li>
+                <li data-group="work" class="rec c-work" data-cat="work"><span class="rec-k">Work</span><h3>Spinnakers</h3><p>The usual option.</p><p class="todo">Where is Spinnakers? Not on OpenStreetMap.</p></li>
               </ul>
             </div>
             <p class="recs-credit">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</p>

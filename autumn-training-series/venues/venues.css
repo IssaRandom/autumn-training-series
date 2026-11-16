@@ -277,14 +277,40 @@
 .rec .rec-k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
 .rec.is-on { background: var(--surface-2); transform: translateX(3px); }
 .recs-credit { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
-/* phones: map on top, cards swipe sideways underneath */
+/* James 17 Nov: chips + map pin under the contents bar, cards scroll past in groups (Stay, Eat, Coffee, Watch, Work)
+   and the map shows the group being read. No JS: no map, no chips, the cards read as a plain list. */
+.recs:not(.recs-on) .recs-stage { display: none; }
+.recs-stage { z-index: 6; background: var(--bg); }
+.recs-on .recs-stage { position: sticky; top: calc(var(--nav-h) + 10px); padding: 6px 0 10px; transition: transform var(--dur-slow, .4s) var(--ease); }
+.venue-page.nav-hid .recs-on .recs-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+.recs-on .recs-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-bottom: 8px; }
+.recs-on .recs-filter::-webkit-scrollbar { display: none; }
+.recs-on .recs-chip { flex: none; }
+@media (max-width: 420px) { .recs-on .recs-filter { gap: 4px; } .recs-on .recs-chip { padding: 0 10px; gap: 5px; font-size: 12.5px; } .recs-on .recs-chip::before { width: 7px; height: 7px; } }
+.recs-on .recs-body { display: block; }
+.recs-on .recs-rail { max-height: none; overflow: visible; padding: 4vh 0 30vh; gap: 0; }
+.recs-on .rec { margin: 0 0 10vh; cursor: default; }
+.recs-gh { margin: 6vh 0 12px; }
+.recs-gh:first-child { margin-top: 0; }
+.recs-gh-t { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
+.recs-gh-t::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.recs:not(.recs-on) .rec { margin-bottom: 8px; }
+@media (min-width: 761px) {
+  .recs-on { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0 18px; align-items: start; }
+  .recs-on .recs-map { aspect-ratio: auto; height: calc(100svh - var(--nav-h) - 110px); max-height: 640px; }
+  .recs-on .recs-rail { padding-top: 22vh; }
+  .recs-on .recs-credit { grid-column: 1 / -1; }
+  .recs-on .recs-filter { flex-wrap: wrap; overflow: visible; }
+}
+@media (max-width: 900px) {
+  .recs-on .recs-stage { top: calc(var(--nav-h) + 52px); }
+  .venue-page.nav-hid .recs-on .recs-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
+}
 @media (max-width: 760px) {
-  .recs-body { grid-template-columns: minmax(0, 1fr); }
-  .recs-map { aspect-ratio: 1 / 1; max-height: none; }
-  .recs-rail { grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; overflow-y: hidden; max-height: none; scroll-snap-type: x mandatory; padding: 2px 8% 8px 0; gap: 10px; }
-  .rec { scroll-snap-align: center; }
+  .recs-on .recs-map { aspect-ratio: auto; height: 34svh; min-height: 220px; max-height: none; }
   .rec.is-on { transform: none; }
 }
+@media (prefers-reduced-motion: reduce) { .recs-on .recs-stage, .rec { transition: none; } .rm-pin.is-on { animation: none; } }
 
 /* ---- Sticky note (same as the advice articles; James 16 Nov: "the wall over-reads") ---- */
 .venue-page .note { position: relative; max-width: 30rem; margin: 34px auto; padding: 24px 22px 20px; border: 0;
