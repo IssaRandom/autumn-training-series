@@ -78,7 +78,9 @@
       const fuel = v.mpg ? (v.miles * 2 / v.mpg) * LITRES_PER_GALLON * v.ppl : 0;
       const stay = v.nights * v.night;
       $("[data-total]", calc).textContent = gbp(fuel + stay + v.entry + v.ferry);
-      $("[data-break]", calc).textContent = `Fuel ${gbp(fuel)} return · stay ${gbp(stay)} · entry ${gbp(v.entry)}${v.ferry ? ` · ferry/tolls ${gbp(v.ferry)}` : ""}`;
+      /* receipt (17 Nov): one line per cost, ferry only when there is one */
+      const line = (t, n) => `<span class="rc-l"><span>${t}</span><i aria-hidden="true"></i><b>${gbp(n)}</b></span>`;
+      $("[data-break]", calc).innerHTML = line("Fuel, there and back", fuel) + line(`Stay, ${v.nights} night${v.nights === 1 ? "" : "s"}`, stay) + line("Entry", v.entry) + (v.ferry ? line("Ferry / tolls", v.ferry) : "");
     };
     calc.addEventListener("input", run);
     run();
