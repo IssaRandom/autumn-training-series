@@ -4,19 +4,11 @@ _Audit 16 Nov 2026 with the article-design skill. Page: `autumn-training-series/
 
 **Heads-up:** another session is still editing the Weymouth page, `venues.css/js` and `explorer.css/js` (uncommitted, filling in James's answers). Nothing here touches those files until it's done.
 
-## P0 status (16 Nov, evening)
-**Ready, not applied.** All P0 edits live in `tools/weymouth-p0.py` as exact-string patches. They were dry-run against the current files and tested on preview copies (since deleted):
-- rhythm_check at 375: **8 beats, longest plain run 1.64 screens, all limits met** (was 6 beats, 3.82, two fails); 1.51 MB, first screen 350 KB.
-- Desktop: the site plan no longer slides over the "Launching and ashore" heading (it only moves up with the nav once it's pinned; checked −60 px when pinned, none before).
-- Phone: gaps between plan steps 211 → 97 px; all five steps still switch the plan (headless Chromium).
-
-To apply once the other session has committed:
-```
-python tools/weymouth-p0.py --check
-python tools/weymouth-p0.py
-python tools/beta-bust.py
-```
-If `--check` fails on a patch, the other session has changed those lines: re-read them and update that patch (never force it). Patches whose text is already gone ("tide weak", "changing card": the other session removed them) are skipped. **Left out on purpose:** the parents' timeline (the other session was editing it with James's answers), so P0 item 4's timeline part is still open.
+## Status (16 Nov, night)
+- **P0 done**, commit fcb20b5 (timeline .wip included). Patches the other session had already handled were skipped (takeaways, at-a-glance para, tide stat, checklist, desktop step gap).
+- **P1 done**, commit dacb423: photo bands (5), teal parents' half, mini calendar + 3 events, finish-line ending to /book/. Sticky notes were already done by the other session; tide WIP strip NOT shrunk (James chose "title + big gauge" in round 2).
+- rhythm_check 375: longest run 1.28 screens, 22 beats, 1.92 MB, first screen ~560 KB (over the 500 KB guide: uncompressed CSS + Caveat font; possible fix = split the bands/finish/minical rules out of article.css).
+- **Next: P2** (explorer becomes the spine: map pinned under the nav, notes scroll beneath and drive pins/layers).
 
 ---
 
