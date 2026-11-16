@@ -17,14 +17,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../beta.css?v=20261117a">
-  <link rel="stylesheet" href="../../fx.css?v=20261117a">
-  <script>document.documentElement.classList.add("js")</script>
-  <script src="../../vt.js?v=20261117a"></script>
-  <link rel="stylesheet" href="../../advice/advice.css?v=20261117a">
-  <link rel="stylesheet" href="../../advice/article.css?v=20261117a">
-  <link rel="stylesheet" href="../venues.css?v=20261117a">
-  <link rel="stylesheet" href="../explorer.css?v=20261117a">
+  <link rel="stylesheet" href="../../beta.css?v=20261116z">
+  <link rel="stylesheet" href="../../fx.css?v=20261116z">
+  <script src="../../vt.js?v=20261116z"></script>
+  <link rel="stylesheet" href="../../advice/advice.css?v=20261116z">
+  <link rel="stylesheet" href="../../advice/article.css?v=20261116z">
+  <link rel="stylesheet" href="../venues.css?v=20261116z">
+  <link rel="stylesheet" href="../explorer.css?v=20261116z">
 </head>
 <body class="guide-page venue-page art-page">
   <a class="sr-only" href="#main">Skip to content</a>
@@ -97,66 +96,63 @@
 
           <!-- VENUE EXPLORER (James 14 Nov): tap an area to zoom in; the wind dial turns the chart so the wind always blows
                down the screen. Harbour = wind lines (stronger on the left in a SW), Bay = swell refraction round the Bill and the wall.
-               Engine: ../explorer.js + ../explorer.css. Coastline: geo.js (OpenStreetMap). Notes: the .vx-story chapters below (P2). -->
-          <!-- P2 (17 Nov, James said yes): the explorer is the chapter's spine. The map pins under the contents bar
-               (phones) or sits sticky on the left (desktop); James's note paragraphs scroll beside/under it and each one
-               (data-show) drives the map: zones, pins, lanes and a schematic course turned with the wind. Marks and the
-               course are OURS, drawn from his words; positions marked tbc are placeholders until James confirms them.
-               No JS: the map is hidden and the notes read as plain sections. -->
-          <div class="vx-spine" data-beat="pin">
-            <figure class="vx" data-explorer data-area="overview">
-              <div class="vx-bar" role="group" aria-label="Area">
-                <button type="button" data-go="overview" aria-pressed="true">Overview</button>
-                <button type="button" data-go="harbour" aria-pressed="false">Harbour</button>
-                <button type="button" data-go="bay" aria-pressed="false">Bay</button>
-              </div>
-              <div class="vx-view">
-                <div class="vx-world"><canvas class="vx-waves" aria-hidden="true"></canvas></div>
-                <canvas class="vx-wind" aria-hidden="true"></canvas>
-                <div class="vx-over"></div>
-                <div class="vx-arrow" aria-hidden="true"><span class="vx-arrow-l"><small>Wind</small><span data-vx-dir>W · 270°</span></span><svg viewBox="0 0 26 46"><path d="M13 2v34" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M3 30l10 13 10-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <button type="button" class="vx-north" aria-pressed="false" aria-label="North up"><i aria-hidden="true"></i></button>
-                <div class="vx-dial" role="radiogroup" aria-label="Wind direction (where it blows from)"></div>
-                <p class="vx-hint" hidden></p>
-                <span class="vx-busy-dot" aria-hidden="true">Drawing the swell…</span>
-              </div>
-              <figcaption>The chart turns so the wind always blows down the screen; tap the compass for north up. Drag to look round. Coastline © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Wind lines and swell show the pattern, not a forecast.</figcaption>
-            </figure>
-            <div class="vx-story">
-              <section class="vx-chap" id="vx-overview" data-area="overview" data-dir="W">
-                <p data-vx-beat data-show="overview">Tap the harbour or the bay to zoom in, then pick a wind on the dial. We start on the south-west to north-west slice because it’s the one you’ll get most. The three slices are what the wind has blown over before it reaches you: across Chesil Beach (SW to NW), straight off the land (NW to ENE), or in off the sea and round the Bill (ENE to SW).</p>
-              </section>
-              <section class="vx-chap" id="vx-harbour-W" data-area="harbour" data-dir="W">
-                <h3 class="vx-chap-h"><span class="area area-harbour" data-flag="P">Portland Harbour</span> Across Chesil (SW to NW)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:75"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left: the top right never comes in</em></div>
-                <p data-vx-beat data-show="zones">The breeze comes across Chesil Beach and leaves a generally steady breeze. <strong>The areas shaded in pink are lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it is squeezed along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
-                <p data-vx-beat data-show="zones course inner tint-left"><strong>Inner loop:</strong> play the left, but don’t hammer it. The right always looks fine, fine, fine… then 200 metres on there’s an extra 10 degrees of left that just never disappears, and slightly less breeze over there too. It feels random enough that, if you didn’t know better, you’d try the right several times before giving up.</p>
-                <p data-vx-beat data-show="zones course outer gate-right"><strong>Outer loop:</strong> it’s just left. Take the right-turn gate (the right-hand mark as you come down the run), which sends you off to the left, pretty much every time, unless you’re building leverage on some pressure, and then you’ve got to get back to the left again.</p>
-                <p data-vx-beat data-show="zones course corner-bl corner-tr" class="wind-watch"><b>Watch for</b> the bottom left: it doesn’t always come out. But the top right never comes in.</p>
-              </section>
-              <section class="vx-chap" id="vx-harbour-N" data-area="harbour" data-dir="N">
-                <h3 class="vx-chap-h"><span class="area area-harbour" data-flag="P">Portland Harbour</span> Off the land (NW to ENE)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:62"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>First beat: left about 60:40 to 65:35</em></div>
-                <p data-vx-beat data-show="middle-wall blocks">A harbour-only feature. In a northerly to north-easterly, especially racing down by the middle wall, watch for <strong>persistent-shift-style blocks of pressure</strong>. Not every day, but often enough. The shifts are long, roughly 20 degrees either way, and the pressure brings the shift and it stays in.</p>
-                <p data-vx-beat data-show="tint-left flat-right">The water’s certainly flatter on the right, so there’s a temptation to go hard right. It rarely works: the breeze drops off the land on the left, so the left is more consistent for pressure. <strong>Left is the percentage play, about 60:40, maybe 65:35</strong>, but only on the first beat.</p>
-                <p data-vx-beat data-show="course inner"><strong>Inner loop / first beat:</strong> you have no clue on duration. It could be a 30-second, 35-degree swing, or one 15-minute shift that’s the only shift on the beat. The holes are bigger and the pressure less stable, so you can really get caught. Expect one, maybe one and a half, things per beat.</p>
-                <p data-vx-beat data-show="course outer nothe-line" data-cam="nothe"><strong>Outer loop / second beat:</strong> more of a coin toss. You’re almost directly downwind of the Nothe, with fairly high land on the left and well-mixed air, so it’s normal shifty, pressure-driven sailing: two, three, four things per beat. For us that’s more predictable, because it’s just random, dropping breeze.</p>
-                <p data-vx-beat data-show="course nothe-arc" data-cam="nothe" class="wind-watch"><b>Watch for</b> the breeze clocking past the Nothe. Once it’s got any east in it, it’s a bit more persistent again; left of the Nothe it’s random.</p>
-                <p data-vx-beat data-show="course bend">On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. <!-- EDIT LATER: the map pins arrive in P2; show this again then --><span class="todo">See pin 3 on the map.</span></p>
-                <div data-vx-beat data-show="" class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
-              </section>
-              <section class="vx-chap" id="vx-harbour-SE" data-area="harbour" data-dir="SE">
-                <h3 class="vx-chap-h"><span class="area area-harbour" data-flag="P">Portland Harbour</span> Off the sea and the Bill (ENE to SW)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:85"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>South-east: left along the wall about 85:15</em></div>
-                <p data-vx-beat data-show="wall-lane"><strong>South-east:</strong> left is strong. There’s always a little more wind along the wall (you notice it wing-foiling or in a WASZP when you’re struggling to get up on the foil). Hammer against the wall: inexplicably, it comes out about 85:15. It isn’t always a huge gain. You can get up to about ten boat lengths from the wall, and that’s your max gain.</p>
-                <p data-vx-beat data-show="dead-spot wrap" data-cam="bill"><strong>Southerly:</strong> occasional, and they should never race you in one in the harbour, but they do. There’s a big dead spot behind the Bill. The wind wraps round either side of it and flicks from one side to the other, so it’s never truly southerly. Pick your poison: decide which side you think will prevail, and don’t go middle.</p>
-              </section>
-              <section class="vx-chap" id="vx-bay-W" data-area="bay" data-dir="W">
-                <h3 class="vx-chap-h"><span class="area area-bay" data-flag="W">Weymouth Bay</span> Across Chesil (SW to NW)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>No strong side: the swell decides</em></div>
-                <p data-vx-beat data-show="swell-bend qualifier">This is where you get the classic offset swell. It wraps round Portland Bill itself, then round the harbour wall, so it keeps bending further and further round. Where they race the UKLA qualifiers, a <strong>west-south-westerly can give full cross swell</strong>. The further south the breeze goes in this range, the less cross swell you get. You’re typically bow-on to it on starboard.</p>
-                <p data-vx-beat data-show="course">In the classic west-south-westerly, the trap is <strong>getting too greedy on port</strong>. Read the phase of the shift to judge whether you can drop the bow, go low on port and get over some boats. Usually it’s better to save up, save up, save up, then drop the bow. It’s a high-risk move.</p>
-                <div data-vx-beat data-show="course" class="table-wrap">
+               Engine: ../explorer.js + ../explorer.css. Coastline: geo.js (OpenStreetMap). Notes: the template data-note blocks below. -->
+          <figure class="vx" data-explorer data-area="overview">
+            <div class="vx-bar" role="group" aria-label="Area">
+              <button type="button" data-go="overview" aria-pressed="true">Overview</button>
+              <button type="button" data-go="harbour" aria-pressed="false">Harbour</button>
+              <button type="button" data-go="bay" aria-pressed="false">Bay</button>
+            </div>
+            <div class="vx-view">
+              <div class="vx-world"><canvas class="vx-waves" aria-hidden="true"></canvas></div>
+              <canvas class="vx-wind" aria-hidden="true"></canvas>
+              <div class="vx-over"></div>
+              <div class="vx-arrow" aria-hidden="true"><span class="vx-arrow-l"><small>Wind</small><span data-vx-dir>W · 270°</span></span><svg viewBox="0 0 26 46"><path d="M13 2v34" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M3 30l10 13 10-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <button type="button" class="vx-north" aria-pressed="false" aria-label="North up"><i aria-hidden="true"></i></button>
+              <div class="vx-dial" role="radiogroup" aria-label="Wind direction (where it blows from)"></div>
+              <p class="vx-hint" hidden></p>
+              <span class="vx-busy-dot" aria-hidden="true">Drawing the swell…</span>
+            </div>
+            <div class="vx-notes" aria-live="polite"></div>
+            <figcaption>The chart turns so the wind always blows down the screen; tap the compass for north up. Drag to look round. Coastline © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. Wind lines and swell show the pattern, not a forecast.</figcaption>
+
+            <!-- NOTES per area + direction. All of this is James's to write: drafts from the 11 Nov James/Kai transcript stay;
+                 anything else is a yellow "To add" slot. Key = area-DIR; "area-*" = any direction in that area; "soon" = fallback. -->
+            <template data-note="overview-*"><p>Tap the harbour or the bay to zoom in, then pick a wind on the dial. We start on the south-west to north-west slice because it’s the one you’ll get most. The three slices are what the wind has blown over before it reaches you: across Chesil Beach (SW to NW), straight off the land (NW to ENE), or in off the sea and round the Bill (ENE to SW).</p></template>
+
+            <template data-note="harbour-W">
+              <div class="bias" style="--left:75"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left: the top right never comes in</em></div>
+              <p>The breeze comes across Chesil Beach and leaves a generally steady breeze. <strong>The areas shaded in pink are lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it is squeezed along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
+              <p><strong>Inner loop:</strong> play the left, but don’t hammer it. The right always looks fine, fine, fine… then 200 metres on there’s an extra 10 degrees of left that just never disappears, and slightly less breeze over there too. It feels random enough that, if you didn’t know better, you’d try the right several times before giving up.</p>
+              <p><strong>Outer loop:</strong> it’s just left. Take the right-turn gate (the right-hand mark as you come down the run), which sends you off to the left, pretty much every time, unless you’re building leverage on some pressure, and then you’ve got to get back to the left again.</p>
+              <p class="wind-watch"><b>Watch for</b> the bottom left: it doesn’t always come out. But the top right never comes in.</p>
+            </template>
+            <template data-note="harbour-N">
+              <div class="bias" style="--left:62"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>First beat: left about 60:40 to 65:35</em></div>
+                <p>A harbour-only feature. In a northerly to north-easterly, especially racing down by the middle wall, watch for <strong>persistent-shift-style blocks of pressure</strong>. Not every day, but often enough. The shifts are long, roughly 20 degrees either way, and the pressure brings the shift and it stays in.</p>
+                <p>The water’s certainly flatter on the right, so there’s a temptation to go hard right. It rarely works: the breeze drops off the land on the left, so the left is more consistent for pressure. <strong>Left is the percentage play, about 60:40, maybe 65:35</strong>, but only on the first beat.</p>
+                <p><strong>Inner loop / first beat:</strong> you have no clue on duration. It could be a 30-second, 35-degree swing, or one 15-minute shift that’s the only shift on the beat. The holes are bigger and the pressure less stable, so you can really get caught. Expect one, maybe one and a half, things per beat.</p>
+                <p><strong>Outer loop / second beat:</strong> more of a coin toss. You’re almost directly downwind of the Nothe, with fairly high land on the left and well-mixed air, so it’s normal shifty, pressure-driven sailing: two, three, four things per beat. For us that’s more predictable, because it’s just random, dropping breeze.</p>
+                <p class="wind-watch"><b>Watch for</b> the breeze clocking past the Nothe. Once it’s got any east in it, it’s a bit more persistent again; left of the Nothe it’s random.</p>
+                <p>On the left there’s a wind bend. Sail into it and it lifts you, but overstand and you’ll pop out the other side too high. <!-- EDIT LATER: the map pins arrive in P2; show this again then --><span class="todo">See pin 3 on the map.</span></p>
+                <div class="callout callout-tip"><p class="callout-title">Not the same in the bay</p><p>The same direction out in the bay doesn’t do this. Check which area your race is in before you plan the first beat.</p></div>
+            </template>
+            <template data-note="harbour-SE">
+              <div class="bias" style="--left:85"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>South-east: left along the wall about 85:15</em></div>
+              <p><strong>South-east:</strong> left is strong. There’s always a little more wind along the wall (you notice it wing-foiling or in a WASZP when you’re struggling to get up on the foil). Hammer against the wall: inexplicably, it comes out about 85:15. It isn’t always a huge gain. You can get up to about ten boat lengths from the wall, and that’s your max gain.</p>
+              <p><strong>Southerly:</strong> occasional, and they should never race you in one in the harbour, but they do. There’s a big dead spot behind the Bill. The wind wraps round either side of it and flicks from one side to the other, so it’s never truly southerly. Pick your poison: decide which side you think will prevail, and don’t go middle.</p>
+            </template>
+            <template data-note="harbour-*">
+              <p class="todo"><b>Wind:</b> what this direction does inside the harbour walls (bends, holes, stronger lanes).</p>
+              <p class="todo"><b>Which side pays</b> and how sure we are.</p>
+              <p class="todo"><b>Technique</b> and <b>watch for</b>.</p>
+            </template>
+
+            <template data-note="bay-W">
+              <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>No strong side: the swell decides</em></div>
+              <p>This is where you get the classic offset swell. It wraps round Portland Bill itself, then round the harbour wall, so it keeps bending further and further round. Where they race the UKLA qualifiers, a <strong>west-south-westerly can give full cross swell</strong>. The further south the breeze goes in this range, the less cross swell you get. You’re typically bow-on to it on starboard.</p>
+              <p>In the classic west-south-westerly, the trap is <strong>getting too greedy on port</strong>. Read the phase of the shift to judge whether you can drop the bow, go low on port and get over some boats. Usually it’s better to save up, save up, save up, then drop the bow. It’s a high-risk move.</p>
+                <div class="table-wrap">
                   <table>
                     <thead><tr><th scope="col">Leg</th><th scope="col">What to change</th></tr></thead>
                     <tbody>
@@ -166,26 +162,29 @@
                     </tbody>
                   </table>
                 </div>
-                <p data-vx-beat data-show="course" class="todo">Where is this table from? It isn’t in the 16 Nov notes (shuffle back about 3 inches, etc.).</p>
-                <p data-vx-beat data-show="swell-bend qualifier" data-cam="portland" class="wind-watch"><b>Watch for</b> the swell angle changing as you get closer to Portland.</p>
-              </section>
-              <section class="vx-chap" id="vx-bay-N" data-area="bay" data-dir="N">
-                <h3 class="vx-chap-h"><span class="area area-bay" data-flag="W">Weymouth Bay</span> Off the land (NW to ENE)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:60"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Top left pays a little more</em></div>
-                <p data-vx-beat data-show="cliff-drop">Anything from north-west to north-east is the same in the bay, inner loop or outer: the breeze is dropping down off the land. Compared with the harbour, the sea state changes and you don’t get the persistent blocks.</p>
-                <p data-vx-beat data-show="course bounce">It’s hard to predict. The land is high above the cliffs and the pressure bounces down, so what you see isn’t what you get: sail to pressure you can see upwind and you’re probably doing the wrong thing. <strong>Pressure first, then attack the lift</strong>, not sailing through pressure to get to a shift. Be ready to get dunked.</p>
-                <p data-vx-beat data-show="course corner-tl">An old venue guide said top left pays about 70:30 in a bay northerly. Top left does seem to pay a little more than the right; from mid-beat down we don’t think there’s anything in it either way. Courses are usually much bigger in the bay too.</p>
-                <p data-vx-beat data-show="course" class="wind-watch"><b>Watch for</b> the other side. It can feel like the left is really working, then somebody comes out of the right. Sail your own beat: what’s happening to you isn’t happening everywhere on the course. Head out of the boat, look confident.</p>
-              </section>
-              <section class="vx-chap" id="vx-bay-SE" data-area="bay" data-dir="SE">
-                <h3 class="vx-chap-h"><span class="area area-bay" data-flag="W">Weymouth Bay</span> Off the sea and the Bill (ENE to SW)</h3>
-                <div data-vx-beat data-show="" class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Speed day: no strong side</em></div>
-                <p data-vx-beat data-show="course osc">Our favourite: east through to south in the bay. It’s a speed day, and now you’ve got the swell. Expect longer-phase oscillations.</p>
-                <p data-vx-beat data-show="course wave-angle"><strong>Downwind speed is the number one priority.</strong> Understand the wave angle and think about how it changes your downwind decisions.</p>
-                <p data-vx-beat data-show="gates" data-cam="entrances" class="wind-watch"><b>Watch for</b> the tide. On neaps, ignore it. On springs, if the course is set really close to the harbour entrances, think about it.</p>
-              </section>
-            </div>
-          </div>
+                <p class="todo">Where is this table from? It isn’t in the 16 Nov notes (shuffle back about 3 inches, etc.).</p>
+                <p class="wind-watch"><b>Watch for</b> the swell angle changing as you get closer to Portland.</p>
+            </template>
+            <template data-note="bay-N">
+              <div class="bias" style="--left:60"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Top left pays a little more</em></div>
+                <p>Anything from north-west to north-east is the same in the bay, inner loop or outer: the breeze is dropping down off the land. Compared with the harbour, the sea state changes and you don’t get the persistent blocks.</p>
+                <p>It’s hard to predict. The land is high above the cliffs and the pressure bounces down, so what you see isn’t what you get: sail to pressure you can see upwind and you’re probably doing the wrong thing. <strong>Pressure first, then attack the lift</strong>, not sailing through pressure to get to a shift. Be ready to get dunked.</p>
+                <p>An old venue guide said top left pays about 70:30 in a bay northerly. Top left does seem to pay a little more than the right; from mid-beat down we don’t think there’s anything in it either way. Courses are usually much bigger in the bay too.</p>
+                <p class="wind-watch"><b>Watch for</b> the other side. It can feel like the left is really working, then somebody comes out of the right. Sail your own beat: what’s happening to you isn’t happening everywhere on the course. Head out of the boat, look confident.</p>
+            </template>
+            <template data-note="bay-SE">
+              <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Speed day: no strong side</em></div>
+                <p>Our favourite: east through to south in the bay. It’s a speed day, and now you’ve got the swell. Expect longer-phase oscillations.</p>
+                <p><strong>Downwind speed is the number one priority.</strong> Understand the wave angle and think about how it changes your downwind decisions.</p>
+                <p class="wind-watch"><b>Watch for</b> the tide. On neaps, ignore it. On springs, if the course is set really close to the harbour entrances, think about it.</p>
+            </template>
+            <template data-note="bay-*">
+              <p class="todo"><b>Waves:</b> how the sea runs into the bay in this direction.</p>
+              <p class="todo"><b>Wind</b> and <b>which side pays</b>.</p>
+              <p class="todo"><b>Technique</b> and <b>watch for</b>.</p>
+            </template>
+            <template data-note="soon"><p class="todo">Notes for this direction.</p></template>
+          </figure>
         </section>
 
         <section class="g-sec" id="history" data-part="Sailing">
@@ -434,12 +433,12 @@
   </footer>
   <span class="beta-flag" aria-hidden="true">Beta preview</span>
 
-  <script src="../../data/events.js?v=20261117a"></script>
-  <script src="../../calendar/cal-core.js?v=20261117a"></script>
-  <script src="../../advice/advice.js?v=20261117a"></script>
-  <script src="../venues.js?v=20261117a"></script>
-  <script src="../../advice/minical.js?v=20261117a"></script>
-  <script src="geo.js?v=20261117a"></script>
+  <script src="../../data/events.js?v=20261116z"></script>
+  <script src="../../calendar/cal-core.js?v=20261116z"></script>
+  <script src="../../advice/advice.js?v=20261116z"></script>
+  <script src="../venues.js?v=20261116z"></script>
+  <script src="../../advice/minical.js?v=20261116z"></script>
+  <script src="geo.js?v=20261116z"></script>
   <script>
     /* Weymouth explorer setup. Metres from lon -2.44, lat 50.585 (x east, y south). */
     window.VENUE_EXPLORER = {
@@ -475,28 +474,13 @@
         { t: "North Ship Channel", x: 568, y: -1137, k: "spot" }, { t: "East Ship Channel", x: 1706, y: -59, k: "spot" }, { t: "Weymouth Bay", x: 4200, y: -3600, k: "sea", zoom: true },
         { t: "English Channel", x: 3600, y: 6600, k: "sea" }
       ],
-      /* P2 (17 Nov): marks shown per paragraph. All OURS, drawn from James's notes; tbc = position not confirmed by James yet.
-         course: schematic trapezoid turned with the wind (left/right always right), centred per area. cams: wider shots for some paragraphs. */
-      course: { harbour: { x: 300, y: 380, len: 1600 }, bay: { x: 3300, y: -1700, len: 2800 } },
-      cams: { bill: { x: 300, y: 4200, span: 13000 }, portland: { x: 2300, y: 1400, span: 12500 }, nothe: { x: 100, y: -900, span: 6600 }, entrances: { x: 1500, y: -900, span: 5200 } },
-      marks: {
-        nothe: [-300, -2550],
-        pins: { "middle-wall": { x: 1090, y: -580, t: "Middle wall", tbc: true } },   /* tbc: our guess = the outer breakwater, the middle of the three walls */
-        lanes: { "wall-lane": { p: [598, -1037, 1578, -114], n: [-.694, .72], w: 60, t: "Wall lane: 10 boat lengths", tbc: true } },   /* tbc: which wall */
-        blobs: { "dead-spot": { x: 350, y: 1050, rx: 950, ry: 560, t: "Dead spot", tbc: true },
-                 "qualifier": { x: 3500, y: -1600, rx: 1300, ry: 1300, t: "Qualifier area", tbc: true } },   /* tbc: where the UKLA qualifiers race */
-        flows: {
-          wrap: { t: "Wind wraps round both sides", at: [-300, 4600], lines: [[-2700, 9200, -3100, 4800, -1900, 1400, -500, 700], [1000, 9200, 2500, 4800, 2000, 1600, 1100, 750]] },
-          "swell-bend": { t: "Swell bends round the Bill, then the wall", at: [2600, 2400], lines: [[-4200, 9800, -900, 9900, 1500, 7600, 2700, 3600, 2900, 700, 3500, -1100]] }
-        }
-      },
       waveBox: [-12600, -12800, 15000, 14600], waveCell: 70, waveLength: 650, waveSpeed: 7,
       waveAmp: { W: 1, SE: .7, N: .2 },
       /* harbour entrances, wall end to wall end (from geo.js): closed for the swell, so none gets in or leaks back out */
       gates: [[538, -1236, 598, -1037], [1579, -92, 1834, -26], [1383, 1710, 1262, 1743], [830, 1935, 760, 1990], [-670, -1863, -740, -1900]]
     };
   </script>
-  <script src="../explorer.js?v=20261117a"></script>
-  <script src="../../fx.js?v=20261117a" defer></script>
+  <script src="../explorer.js?v=20261116z"></script>
+  <script src="../../fx.js?v=20261116z" defer></script>
 </body>
 </html>
