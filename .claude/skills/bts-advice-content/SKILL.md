@@ -29,6 +29,15 @@ Sailing guide + parents' guide per venue. Weymouth/Portland first (USP: tide, sw
 - Ask the British team what they'd let us read/publish from their Weymouth notes (not confirmed).
 - Later: season templates per sailor type with a map route + costs, and a "travel information" directory (STATUS.md has the list).
 
+### Weymouth interactive explorer (James, 14 Nov)
+- Only TWO areas: **Portland Harbour** and **Weymouth Bay**. Overview chart → tap an area → zoom-in transition → that area's conditions. A button jumps harbour ↔ bay with its own transition.
+- Wind direction control starts at **SW** (the most common breeze). Choosing a direction rotates the chart so the wind blows straight **down the screen**, with an arrow showing it.
+- Harbour: windy.com-style flowing wind particles, stronger breeze on the **left-hand side** (James may send a sketch). A 3D start-line view is a later step.
+- Bay: wave refraction animation: SW swell wraps round Portland Bill and especially round the harbour wall, arriving in the racing area from SSW / more southerly.
+- All conditions text (wind, waves, technique) is James's to write: our drafts are shown with yellow "to add" markers only.
+- The Navigator app chart (live wind arrows round Portland) goes in the forecast / live-wind section, recommending his BTS Race Navigator for live readings. It is NOT the annotated map.
+
 ## Workflow (token-cheap)
 James/Kai record a voice note per topic → send transcript → clean it (keep their voice), draft section copy into the page template, mark facts to verify. Old ILCA UK new-to-class guide exists (dated) — use for facts only, rewrite.
+Graphics: James makes illustrations in his own design tool. Leave a placeholder slot with a written prompt; never spend tokens drawing artwork. See the bts-article-playbook memory.
 Tone: British English, direct, technically grounded, friendly to parents. No serial comma.
