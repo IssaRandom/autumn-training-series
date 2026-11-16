@@ -17,7 +17,7 @@ const MAIL_RESERVE = 25; // sign-in codes stop when the MailApp daily quota fall
 
 const TABS = {
   Bookings: ['booking_id', 'created', 'parent_email', 'sailor_id', 'sailor_name', 'camp_id', 'camp_title', 'amount', 'late_fee_applied', 'reference', 'payment_due', 'status', 'admin_notes'],
-  Camps: ['camp_id', 'title', 'start', 'end', 'venue', 'price', 'ref_code', 'booking_deadline', 'late_fee', 'capacity', 'open'],
+  Camps: ['camp_id', 'title', 'start', 'end', 'venue', 'price', 'ref_code', 'booking_deadline', 'late_fee', 'capacity', 'open', 'signups_offline', 'second_group', 'waitlist'],
   Parents: ['email', 'name', 'phone', 'emergency_name', 'emergency_phone', 'created'],
   Sailors: ['sailor_id', 'parent_email', 'first_name', 'surname', 'dob', 'rig', 'sail_number', 'club', 'image_consent', 'show_on_list', 'medical_date', 'created'],
   Settings: ['key', 'value', 'notes'],
@@ -260,7 +260,7 @@ function book_(email, campId, sailorIds) {
         booking_id: 'B' + shortId_(), created: new Date(), parent_email: email, sailor_id: id, sailor_name: name,
         camp_id: campId, camp_title: camp.title, amount: Number(camp.price || 0) + fee, late_fee_applied: fee ? 'Y' : 'N',
         reference: reference_(camp, sailor, bookings), payment_due: t.due,
-        status: left === null || left > 0 ? 'Awaiting payment' : 'Waitlist', admin_notes: '',
+        status: left > 0 ? 'Awaiting payment' : 'Waitlist', admin_notes: '',
       };
       append_('Bookings', b);
       bookings = bookings.concat([b]);
@@ -284,13 +284,27 @@ function whoIsGoing_(email, campId) {
   const sailors = byId_(rows_('Sailors'), 'sailor_id');
   const list = bookings.map(b => sailors[b.sailor_id]).filter(x => x && yes_(x.show_on_list))
     .map(x => ({ name: `${x.first_name} ${String(x.surname).charAt(0)}.`, club: x.club || '', rig: x.rig }));
-  return { camp: campOut_(camp, rows_('Bookings')), booked: bookings.length, listed: list };
+  /* Sailors booked by the Google Form / WhatsApp (signups_offline) never gave consent to show their names,
+   * so they count as mystery sailors (James, 15 Nov). Only the number reaches the page. */
+  const offline = Number(camp.signups_offline) || 0;
+  return { camp: campOut_(camp, rows_('Bookings')), booked: bookings.length + offline, listed: list };
 }
 
+/* Places left, same rule as the live site (James, 15 Nov 2026; live script.js placesLeft):
+ * count down from 6 until 4 sailors are in (a group can run), then hold at "2 places left".
+ * Sailors counted = signups_offline (booked via the Google Form / WhatsApp, typed in by hand) + online bookings.
+ * second_group = Y shows "Second group forming". waitlist = Y shows "Waiting list only" and new bookings go in as Waitlist.
+ * capacity is no longer used. Returns 0 only when waitlist = Y. */
 function placesLeft_(camp, bookings) {
-  if (camp.capacity === '' || camp.capacity === null) return null;
-  const taken = bookings.filter(b => b.camp_id === camp.camp_id && ACTIVE(b.status) && b.status !== 'Waitlist').length;
-  return Math.max(0, Number(camp.capacity) - taken);
+  if (yes_(camp.waitlist)) return 0;
+  const online = bookings.filter(b => b.camp_id === camp.camp_id && ACTIVE(b.status) && b.status !== 'Waitlist').length;
+  const n = (Number(camp.signups_offline) || 0) + online;
+  return n < 4 ? 6 - n : 2;
+}
+function placesLabel_(camp, left) {
+  if (yes_(camp.waitlist)) return 'Waiting list only';
+  if (yes_(camp.second_group)) return 'Second group forming';
+  return `${left} ${left === 1 ? 'place' : 'places'} left`;
 }
 
 /* Reference: "BTS XMAS26 SMITH", max 18 characters (UK Faster Payments). Siblings on one camp get an initial.
@@ -401,7 +415,9 @@ function medicalAnswers_(e, s) {
     resp.getItemResponses().forEach(ir => {
       const t = ir.getItem().getTitle(), v = ir.getResponse();
       if (norm_(t) === norm_(qName) || (!name && /sailor/i.test(t) && /name/i.test(t))) name = String(v);
+      // Consent lives in James's "Please confirm the following" tick boxes (one option covers photo/video), or a photo question.
       if (/photo|video|image/i.test(t)) consent = [].concat(v).some(consentOk);
+      else if (/confirm/i.test(t)) consent = consent || [].concat(v).some(x => /photo|video|image/i.test(String(x)) && !/\bnot\b|don.t/i.test(String(x)));
     });
     let email = '';
     try { email = resp.getRespondentEmail() || ''; } catch (err) { /* the form does not collect emails */ }
@@ -413,8 +429,10 @@ function medicalAnswers_(e, s) {
   const nameKey = keys.find(k => norm_(k) === norm_(qName)) || keys.find(k => /sailor/i.test(k) && /name/i.test(k));
   const emailKey = keys.find(k => /^email address$/i.test(k.trim())) || keys.find(k => norm_(k) === norm_(s.medical_q_email || ''));
   const consentKey = keys.find(k => /photo|video|image/i.test(k));
+  const confirmKey = keys.find(k => /confirm/i.test(k));
+  const confirmed = confirmKey ? /photo|video|image/i.test(get(confirmKey)) : false;
   return { name: nameKey ? get(nameKey) : '', email: emailKey ? get(emailKey).toLowerCase() : '',
-    consent: consentKey ? consentOk(get(consentKey)) : false, when: new Date() };
+    consent: consentKey ? consentOk(get(consentKey)) : confirmed, when: new Date() };
 }
 
 /* Finds the sailor a response belongs to. With an email (form collects emails) only that family is searched;
@@ -505,6 +523,34 @@ function syncMedical() {
   return n;
 }
 
+/* Run from the editor when a medical form doesn't tick: changes nothing, just prints (View > Logs / Execution log)
+ * whether the form opens, whether the submit trigger exists, the form's question titles, and for the latest
+ * responses which name was read and which sailor (if any) it matched. */
+function checkMedical() {
+  const s = settings_();
+  const out = [];
+  let form;
+  try { form = medicalForm_(s); } catch (err) { out.push('CANNOT OPEN THE FORM: ' + err.message + ' (the account running this script needs edit access to the form)'); }
+  if (!form) { if (!out.length) out.push('medical_form_id is blank in Booking settings.'); console.log(out.join('\n')); return; }
+  out.push('Form: ' + form.getTitle() + ' (' + form.getId() + ')');
+  const trig = ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'onMedicalSubmit');
+  out.push('onMedicalSubmit triggers: ' + trig.length + ' -> ' + trig.map(t => String(t.getTriggerSourceId()) === form.getId() ? 'ON THE FORM (good)' : 'on ' + t.getTriggerSource()).join(', '));
+  if (!trig.some(t => String(t.getTriggerSourceId()) === form.getId())) out.push('  !! No trigger on the form: run setup again.');
+  out.push('Name question setting (medical_q_sailor): "' + (s.medical_q_sailor || 'Sailors full name') + '"');
+  out.push('Questions: ' + form.getItems().map(i => '"' + i.getTitle() + '"').join(' | '));
+  const sailors = rows_('Sailors');
+  out.push('Sailors in the sheet: ' + sailors.map(x => x.first_name + ' ' + x.surname + (medicalDone_(x, s) ? ' [done]' : '')).join(', '));
+  const since = s.season_start ? new Date(s.season_start) : new Date(0);
+  const resp = form.getResponses(since);
+  out.push('Responses since ' + iso_(since) + ': ' + resp.length + '. Latest 8:');
+  resp.slice(-8).forEach(r => {
+    const a = medicalAnswers_(r, s), x = medicalMatch_(a, sailors);
+    out.push('  ' + Utilities.formatDate(r.getTimestamp(), TZ, 'd MMM HH:mm') + '  name read: "' + a.name + '"  consent: ' + a.consent +
+      '  -> ' + (x ? 'matches ' + x.first_name + ' ' + x.surname : 'NO SINGLE MATCH (needs exactly one sailor with that full name)'));
+  });
+  console.log(out.join('\n'));
+}
+
 /* The medical form from medical_form_id (an id, or the editor URL .../forms/d/<id>/edit). Null when blank. */
 function medicalForm_(s) {
   const raw = String(s.medical_form_id || '').trim();
@@ -531,6 +577,11 @@ function setup() {
     if (sh.getLastRow() === 0) {
       sh.getRange(1, 1, 1, TABS[name].length).setValues([TABS[name]]).setFontWeight('bold').setBackground('#e8eef3');
       sh.setFrozenRows(1);
+    } else {
+      // Add any new columns (e.g. signups_offline, second_group, waitlist on Camps) to the end of an existing tab.
+      const have = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+      const missing = TABS[name].filter(k => have.indexOf(k) < 0);
+      if (missing.length) sh.getRange(1, have.length + 1, 1, missing.length).setValues([missing]).setFontWeight('bold').setBackground('#e8eef3');
     }
   });
   // In a sheet setup just created, remove the empty default tab ("Sheet1" or its name in another language).
@@ -554,6 +605,8 @@ function setup() {
   // Dropdowns
   dropdown_('Bookings', 'status', STATUSES);
   dropdown_('Camps', 'open', ['Y', 'N']);
+  dropdown_('Camps', 'second_group', ['Y', 'N']);
+  dropdown_('Camps', 'waitlist', ['Y', 'N']);
 
   // Colour the status column
   const bsh = sh_('Bookings');
@@ -696,7 +749,7 @@ function campOut_(c, bookings) {
   const t = terms_(c, new Date());
   return { camp_id: c.camp_id, title: c.title, start: iso_(c.start), end: iso_(c.end), venue: c.venue, price: Number(c.price || 0),
     late_fee: Number(c.late_fee || 0), late_now: t.late, price_now: Number(c.price || 0) + t.fee, payment_due_now: iso_(t.due),
-    capacity: c.capacity === '' ? null : Number(c.capacity), places_left: left, full: left === 0 };
+    places_left: left, places_label: placesLabel_(c, left), full: left === 0 };
 }
 /* What a booking made on `now` costs and when it must be paid (see PAY_DAYS). */
 function terms_(camp, now) {
