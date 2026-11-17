@@ -11,6 +11,7 @@ import datetime, html, json, os, re
 ROOT = os.path.join(os.path.dirname(__file__), "..", "autumn-training-series")
 SITE = "https://beyondtheshift.co.uk"
 TODAY = datetime.date.today().isoformat()
+# Book buttons go to the booking system (/book/?camp=<id>), which offers the Google Form itself when a camp is not open online.
 FORM = "https://forms.gle/X7offBwNaL24wZ4t7"
 # cache stamp: follow whatever the homepage uses (tools/beta-bust.py bumps it)
 STAMP = re.search(r"beta\.css\?v=([0-9a-z]+)", open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()).group(1)
@@ -123,7 +124,7 @@ def page(f, d):
         <p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p>
         <p class="camp-deadline">{e(d['deadline'])}</p>
         <div class="camp-actions">
-          <a class="btn btn-accent" href="{FORM}" target="_blank" rel="noopener noreferrer" data-splash>Book this camp <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-accent" href="/book/?camp={e(f['id'])}" data-splash>Book this camp <span aria-hidden="true">→</span></a>
           <a class="btn btn-ghost" href="../../#dates">See all camp dates</a>
         </div>
       </article>
