@@ -426,10 +426,10 @@ html.cal-lock .cal-source { display: none; }
   .cal-page .nav .wrap { width: auto; margin: 0; }
   .cal-page .nav-inner { height: calc(56px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); justify-content: center; }
   .cal-page .logo { display: none; }
-  .cal-page .nav-toggle { margin: 0; padding: 0 11px; }
+  .cal-page .nav-toggle { margin: 0; padding: 0 11px; }  /* glass capsule, sail only */
   .cal-page .nt-word { display: none; }
   .cal-page .nav-inner { gap: 0; } /* the hidden logo/CTA left a 28 px gap that pushed ☰ 5 px off-screen */
-  .cal-page .nav-links { inset: calc(56px + env(safe-area-inset-top)) 0 auto; }
+  .cal-page .nav-links { inset: calc(58px + env(safe-area-inset-top)) 10px auto; } /* glass sheet floats 10px in */
   .cal-main { padding-top: 0; }
   .cal-toolbar { top: 0; padding: calc(8px + env(safe-area-inset-top)) 52px 8px 12px; }
   .tb-main { min-height: 40px; gap: 6px; justify-content: flex-start; }
