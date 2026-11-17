@@ -70,61 +70,6 @@
       const light = () => { ticking = false; nav.style.setProperty("--lg-a", (135 + 38 * Math.sin(scrollY / 240)).toFixed(1) + "deg"); };
       addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(light); } }, { passive: true });
     }
-    const phone = matchMedia("(max-width: 820px)");
-    /* light under the finger (beta.css ::after) */
-    const lightAt = (el, e) => { const r = el.getBoundingClientRect();
-      el.style.setProperty("--lg-x", (e.clientX - r.left).toFixed(0) + "px"); el.style.setProperty("--lg-y", (e.clientY - r.top).toFixed(0) + "px"); };
-    [btn, sheet].forEach(el => {
-      if (!el) return;
-      el.addEventListener("pointerdown", e => { lightAt(el, e); el.classList.add("lg-lit"); });
-      el.addEventListener("pointermove", e => { if (el.classList.contains("lg-lit")) lightAt(el, e); });
-      ["pointerup", "pointercancel", "pointerleave"].forEach(t => el.addEventListener(t, () => el.classList.remove("lg-lit")));
-    });
-    /* the liquid lens in the menu */
-    if (sheet) {
-      const pill = document.createElement("span");
-      pill.className = "lg-pill"; pill.setAttribute("aria-hidden", "true"); pill.innerHTML = "<i></i>";
-      sheet.prepend(pill);
-      const items = () => [...sheet.querySelectorAll(":scope > li")];
-      const home = () => { const a = sheet.querySelector("a[aria-current]"); return a && a.closest("li"); };
-      let on = null, drag = null, swallow = false;
-      sheet.addEventListener("click", e => { if (swallow) { swallow = false; e.preventDefault(); e.stopPropagation(); } }, true); // the native click after a drag-release
-      const place = (li, glide) => {
-        if (on && on !== li) on.classList.remove("lg-on");
-        if (!li) { pill.classList.remove("is-on"); on = null; return; }
-        const row = document.body.classList.contains("nav-up") && !nav.classList.contains("is-open");
-        const x = row ? li.offsetLeft : li.offsetLeft - 10, y = row ? 5 : li.offsetTop + 3;
-        const w = row ? li.offsetWidth : li.offsetWidth + 20, h = row ? 36 : li.offsetHeight - 6;
-        if (!glide) pill.style.transition = "none";
-        pill.style.width = w + "px"; pill.style.height = h + "px"; pill.style.transform = `translate(${x}px, ${y}px)`;
-        if (!glide) { pill.offsetWidth; pill.style.transition = ""; }
-        else if (on !== li && !still && pill.firstChild.animate) // stretch like a drop on the move
-          pill.firstChild.animate([{ transform: "scale(1)" }, { transform: row ? "scale(1.12, .9)" : "scale(1.04, .8)", offset: .3 }, { transform: "scale(1)" }],
-            { duration: 520, easing: "cubic-bezier(.3, 1.3, .5, 1)" });
-        pill.classList.add("is-on");
-        if (glide || nav.classList.contains("is-open")) li.classList.add("lg-on");
-        on = li;
-      };
-      const rest = glide => { const h = home(); if (h) place(h, glide); else place(null); if (h && !nav.classList.contains("is-open")) h.classList.remove("lg-on"); };
-      const under = e => { const t = document.elementFromPoint(e.clientX, e.clientY); return t && t.closest && t.closest(".nav-links > li"); };
-      sheet.addEventListener("pointerdown", e => { if (!phone.matches) return; drag = { x: e.clientX, y: e.clientY, moved: false }; const li = under(e); if (li) place(li, true); });
-      sheet.addEventListener("pointermove", e => {
-        if (!drag || !nav.classList.contains("is-open")) return;
-        if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 8) drag.moved = true;
-        const li = under(e); if (li && li !== on) place(li, true);
-      });
-      sheet.addEventListener("pointerup", e => {
-        const d = drag; drag = null;
-        if (d && d.moved && nav.classList.contains("is-open")) { const li = under(e), a = li && li.querySelector("a"); if (a) { a.click(); swallow = true; setTimeout(() => { swallow = false; }, 450); return; } }
-      });
-      sheet.addEventListener("pointercancel", () => { drag = null; rest(true); });
-      sheet.addEventListener("pointerleave", () => { if (!drag) rest(true); });
-      // on open: lens sits on the current page; on close/resize/row mode: re-place without gliding
-      new MutationObserver(() => requestAnimationFrame(() => rest(false))).observe(nav, { attributes: true, attributeFilter: ["class"] });
-      new MutationObserver(() => requestAnimationFrame(() => rest(false))).observe(document.body, { attributes: true, attributeFilter: ["class"] });
-      addEventListener("resize", () => rest(false));
-      rest(false);
-    }
     const chromium = navigator.userAgentData && navigator.userAgentData.brands.some(b => /Chromium/.test(b.brand));
     if (!chromium || matchMedia("(prefers-reduced-transparency: reduce)").matches || !window.ResizeObserver) return;
     const NS = "http://www.w3.org/2000/svg";
@@ -151,12 +96,7 @@
       f.setAttribute("filterUnits", "userSpaceOnUse"); f.setAttribute("primitiveUnits", "userSpaceOnUse");
       f.setAttribute("color-interpolation-filters", "sRGB");
       f.innerHTML = `<feImage href="data:image/svg+xml,${encodeURIComponent(map)}" x="0" y="0" width="${w}" height="${h}" result="map" preserveAspectRatio="none"/>` +
-        // rainbow edge: red, green and blue bend by slightly different amounts, like real glass
-        [["r", 1, "1 0 0 0 0"], ["g", .9, "0 1 0 0 0"], ["b", .8, "0 0 1 0 0"]].map(([c, k, row]) =>
-          `<feDisplacementMap in="SourceGraphic" in2="map" scale="${(strength * k).toFixed(1)}" xChannelSelector="R" yChannelSelector="B" result="d${c}"/>` +
-          `<feColorMatrix in="d${c}" type="matrix" values="${c === "r" ? row : "0 0 0 0 0"} ${c === "g" ? row : "0 0 0 0 0"} ${c === "b" ? row : "0 0 0 0 0"} 0 0 0 1 0" result="c${c}"/>`).join("") +
-        `<feComposite in="cr" in2="cg" operator="arithmetic" k2="1" k3="1" result="rg"/>` +
-        `<feComposite in="rg" in2="cb" operator="arithmetic" k2="1" k3="1"/>`;
+        `<feDisplacementMap in="SourceGraphic" in2="map" scale="${strength}" xChannelSelector="R" yChannelSelector="B"/>`;
     };
     const draw = () => {
       if (btn) lens("lg-lens-btn", btn, 10, -26);
