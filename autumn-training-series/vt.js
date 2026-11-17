@@ -35,3 +35,19 @@
     if (localStorage.getItem("bts-review") === "1") document.documentElement.classList.add("review");
   } catch (e) {}
 })();
+
+/* Menu button extras, shared by every page (each page's own script still does the open/close):
+   Escape or a tap outside closes the menu and hands focus back; Android gets a tiny tick (POLISH #24). */
+(() => {
+  const btn = () => document.querySelector("[data-nav-toggle]");
+  const isOpen = () => { const n = document.querySelector("[data-nav]"); return n && n.classList.contains("is-open"); };
+  addEventListener("click", e => {
+    const b = btn();
+    if (!b) return;
+    if (b.contains(e.target)) { if (navigator.vibrate) try { navigator.vibrate(8); } catch (_) {} return; }
+    if (isOpen() && !e.target.closest("[data-nav]")) b.click();
+  }, true);
+  addEventListener("keydown", e => {
+    if (e.key === "Escape" && isOpen()) { const b = btn(); b.click(); b.focus(); }
+  });
+})();

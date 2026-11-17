@@ -426,7 +426,8 @@ html.cal-lock .cal-source { display: none; }
   .cal-page .nav .wrap { width: auto; margin: 0; }
   .cal-page .nav-inner { height: calc(56px + env(safe-area-inset-top)); padding-top: env(safe-area-inset-top); justify-content: center; }
   .cal-page .logo { display: none; }
-  .cal-page .nav-toggle { margin: 0; }
+  .cal-page .nav-toggle { margin: 0; padding: 0 11px; }
+  .cal-page .nt-word { display: none; }
   .cal-page .nav-inner { gap: 0; } /* the hidden logo/CTA left a 28 px gap that pushed ☰ 5 px off-screen */
   .cal-page .nav-links { inset: calc(56px + env(safe-area-inset-top)) 0 auto; }
   .cal-main { padding-top: 0; }
