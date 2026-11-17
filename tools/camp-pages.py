@@ -72,7 +72,7 @@ def page(f, d):
   <script>document.documentElement.classList.add("js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../beta.css?v={STAMP}">
   <link rel="stylesheet" href="../../fx.css?v={STAMP}">
   <link rel="stylesheet" href="../camps.css?v={STAMP}">
@@ -94,7 +94,7 @@ def page(f, d):
         </ul>
       </nav>
       <a class="btn btn-accent nav-cta" href="../../#dates">Book a camp</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span class="nt-word" aria-hidden="true"><span>Menu</span><span>Close</span></span><span class="nt-sail" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">Menu</span></button>
     </div>
   </header>
 
