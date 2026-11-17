@@ -239,7 +239,7 @@
               <div class="vx-world"><canvas class="vx-waves" aria-hidden="true"></canvas></div>
               <canvas class="vx-wind" aria-hidden="true"></canvas>
               <div class="vx-over"></div>
-              <div class="vx-arrow" aria-hidden="true"><span class="vx-arrow-l"><small>Wind</small><span data-vx-dir>W · 270°</span></span><svg viewBox="0 0 26 46"><path d="M13 2v34" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M3 30l10 13 10-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="vx-arrow" aria-hidden="true"><span class="vx-arrow-l"><small>Wind</small><span data-vx-dir>WSW · 248°</span></span><svg viewBox="0 0 26 46"><path d="M13 2v34" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><path d="M3 30l10 13 10-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <button type="button" class="vx-north" aria-pressed="false" aria-label="North up"><i aria-hidden="true"></i></button>
               <div class="vx-dial" role="radiogroup" aria-label="Wind direction (where it blows from)"></div>
               <p class="vx-hint" hidden></p>
@@ -250,9 +250,9 @@
 
             <!-- NOTES per area + direction. All of this is James's to write: drafts from the 11 Nov James/Kai transcript stay;
                  anything else is a yellow "To add" slot. Key = area-DIR; "area-*" = any direction in that area; "soon" = fallback. -->
-            <template data-note="overview-*"><p>Tap the harbour or the bay to zoom in, then pick a wind on the dial. We start on the south-west to north-west slice because it’s the one you’ll get most. The three slices are what the wind has blown over before it reaches you: across Chesil Beach (SW to NW), straight off the land (NW to ENE), or in off the sea and round the Bill (ENE to SW).</p></template>
+            <template data-note="overview-*"><p>Tap the harbour or the bay to zoom in, then pick a wind on the dial. We start on a west-south-westerly because it’s the one you’ll get most.</p></template>
 
-            <template data-note="harbour-W">
+            <template data-note="harbour-WSW">
               <div class="bias" style="--left:75"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>Left: the top right never comes in</em></div>
               <p>The breeze comes across Chesil Beach and leaves a generally steady breeze. <strong>The areas shaded in pink are lighter:</strong> Portland’s high ground throws a wind shadow along the south wall and out past it, and the breeze is soft in under the north shore where it lifts off the land. <strong>Green is more breeze:</strong> it is squeezed along the edge of that shadow, off the WPNSA and Osprey Quay side.</p>
               <p><strong>Inner loop:</strong> play the left, but don’t hammer it. The right always looks fine, fine, fine… then 200 metres on there’s an extra 10 degrees of left that just never disappears, and slightly less breeze over there too. It feels random enough that, if you didn’t know better, you’d try the right several times before giving up.</p>
@@ -280,7 +280,7 @@
               <p class="todo"><b>Technique</b> and <b>watch for</b>.</p>
             </template>
 
-            <template data-note="bay-W">
+            <template data-note="bay-WSW">
               <div class="bias" style="--left:50"><span>Left</span><div class="bias-bar"><i></i></div><span>Right</span><em>No strong side: the swell decides</em></div>
               <p>This is where you get the classic offset swell. It wraps round Portland Bill itself, then round the harbour wall, so it keeps bending further and further round. Where they race the UKLA qualifiers, a <strong>west-south-westerly can give full cross swell</strong>. The further south the breeze goes in this range, the less cross swell you get. You’re typically bow-on to it on starboard.</p>
               <p>In the classic west-south-westerly, the trap is <strong>getting too greedy on port</strong>. Read the phase of the shift to judge whether you can drop the bow, go low on port and get over some boats. Usually it’s better to save up, save up, save up, then drop the bow. It’s a high-risk move.</p>
@@ -450,16 +450,12 @@
           <!-- Band photo (James sent 16 Nov): Weymouth old harbour from the air. Page blocked to us: photographer and licence to check. -->
           <div class="band band--photo"><img class="band__img" src="bands/parents-750.webp" srcset="bands/parents-375.webp 375w, bands/parents-750.webp 750w, bands/parents-1280.webp 1280w" sizes="(min-width: 900px) 900px, 100vw" alt="" loading="lazy" decoding="async" style="object-position:50% 55%"><h2><strong>Parents’ guide: the weekend</strong></h2><p class="band__credit">Photo: <a href="https://www.cntraveller.com/article/the-best-things-to-do-in-weymouth" target="_blank" rel="noopener">Condé Nast Traveller</a> <span class="todo">photographer + licence?</span></p></div>
           <p>What an event day looks like from the shore, so you know when you’re needed, when you can grab a coffee, and roughly what the whole trip will cost (calculator further down).</p>
-          <!-- TIMELINE: shape kept, James to give a typical event day (times + what happens). Only the car park line is James's (16 Nov).
-               EDIT LATER, our drafts (not used): 07:30 Arrive and park; 08:00 Registration "Usually the morning of day 1 or the evening before.";
-               09:30 Briefing "Sailors only. Prime time to sort lunch bags and find the coffee."; 10:55 First warning signal "Boats leave the
-               slipway about an hour before."; 16:00 Back ashore "Help wash down, then results go up online." -->
           <ol class="timeline">
-            <li><time aria-label="time to add">--:--</time><b>Arrive and park</b><span>The brick car park fills fast, and the gravel car park fills after that.</span></li>
-            <li><time aria-label="time to add">--:--</time><b>Registration</b><span><span class="wip">To add</span></span></li>
-            <li><time aria-label="time to add">--:--</time><b>Briefing</b><span><span class="wip">To add</span></span></li>
-            <li><time aria-label="time to add">--:--</time><b>First warning signal</b><span><span class="wip">To add</span></span></li>
-            <li><time aria-label="time to add">--:--</time><b>Back ashore</b><span><span class="wip">To add</span></span></li>
+            <li><time>07:30</time><b>Arrive and park</b><span>The brick car park fills fast, and the gravel car park fills after that.</span></li>
+            <li><time>08:00</time><b>Registration</b><span>Usually the morning of day 1 or the evening before.</span></li>
+            <li><time>09:30</time><b>Briefing</b><span>Sailors only. Prime time to sort lunch bags and find the coffee.</span></li>
+            <li><time>10:55</time><b>First warning signal</b><span>Boats leave the slipway about an hour before.</span></li>
+            <li><time>16:00</time><b>Back ashore</b><span>Help wash down, then results go up online.</span></li>
           </ol>
           <p class="todo">Times are examples. The NoR on each event in our calendar has the real ones.</p>
         </section>
@@ -583,23 +579,23 @@
     /* Weymouth explorer setup. Metres from lon -2.44, lat 50.585 (x east, y south). */
     window.VENUE_EXPLORER = {
       geo: window.WEY_GEO,
-      start: { area: "overview", dir: "W" },
-      /* James 16 Nov: three slices by what the wind blows over. SW–NW comes across Chesil Beach; NW–ENE straight off
-         the land; ENE–SW in off the sea and round or over the Bill. Each snaps to one direction. */
+      start: { area: "overview", dir: "WSW" },
+      /* James 15 Nov: three slices, each snaps to one direction. SW–W is the start (most common).
+         Restored 17 Nov: the 16 Nov change to NW–ENE / ENE–SW / SW–NW was never asked for. Matches WEYMOUTH-NOTES.md. */
       sectors: [
-        { id: "N",  label: "NW–ENE", from: 315,  to: 67.5, bear: 0,   name: "Off the land (NW to ENE)" },
-        { id: "SE", label: "ENE–SW", from: 67.5, to: 225,  bear: 135, name: "Off the sea and the Bill (ENE to SW)" },
-        { id: "W",  label: "SW–NW",  from: 225,  to: 315,  bear: 270, name: "Across Chesil (SW to NW)" }
+        { id: "N",   label: "NW–NE", from: 292.5, to: 67.5,  bear: 0,     name: "Northerly (NW to NE)" },
+        { id: "SE",  label: "E–S",   from: 67.5,  to: 202.5, bear: 135,   name: "South-easterly (E to S)" },
+        { id: "WSW", label: "SW–W",  from: 202.5, to: 292.5, bear: 247.5, name: "West-south-westerly (SW to W)" }
       ],
       overviewHint: "Tap the harbour or the bay to zoom in",
       overview: { x: 1200, y: 900, span: 15500 },
       areas: {
         harbour: { label: "Portland Harbour", flag: "P", tag: "area-harbour", x: 300, y: 450, span: 5000, hx: 250, hy: 350, layer: "wind",
                    seed: [500, 300], exit: "bay", hint: "Tap or drag past the wall for the bay",
-                   field: { W: { gain: .6 }, "*": { gain: 0 } },
+                   field: { WSW: { gain: .6 }, "*": { gain: 0 } },
                    /* James's sketch, 16 Nov (drawn on the harbour view in a WSW): lighter in Portland's shadow along the
                       south wall and out past it, and in under the north shore; more breeze off the WPNSA / Osprey side. */
-                   zones: { W: [
+                   zones: { WSW: [
                      { k: "light", p: [1633,4000, 1400,3440, 1279,2877, 964,2395, 704,2021, 246,2080, -295,2043, -560,1890, -745,1530, -581,1461, -236,1449, 527,1175, 862,1561, 1180,1692, 1300,1729, 1621,2121, 1876,2628, 2162,3210, 2327,3711] },
                      { k: "light", p: [-2117,-19, -2198,-318, -1818,-669, -1383,-1096, -863,-1531, -748,-1886, -707,-2209, -132,-2510, 51,-2175, -306,-1877, -549,-1618, -919,-1245, -1423,-772, -1815,-346, -1977,-104] },
                      { k: "more",  p: [-506,1430, -779,1237, -948,957, -357,737, 54,671, 477,846, 900,1020, 1460,1312, 1740,1459, 1590,1626, 1167,1767, 877,1555, 533,1190, -152,1440] }
@@ -615,7 +611,7 @@
         { t: "English Channel", x: 3600, y: 6600, k: "sea" }
       ],
       waveBox: [-12600, -12800, 15000, 14600], waveCell: 70, waveLength: 650, waveSpeed: 7,
-      waveAmp: { W: 1, SE: .7, N: .2 },
+      waveAmp: { WSW: 1, SE: .7, N: .2 },
       /* harbour entrances, wall end to wall end (from geo.js): closed for the swell, so none gets in or leaks back out */
       gates: [[538, -1236, 598, -1037], [1579, -92, 1834, -26], [1383, 1710, 1262, 1743], [830, 1935, 760, 1990], [-670, -1863, -740, -1900]]
     };
