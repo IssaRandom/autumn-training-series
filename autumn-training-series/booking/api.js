@@ -66,6 +66,41 @@
     return out.data;
   }
 
+  /* Bot check (Cloudflare Turnstile) before a sign-in code is emailed, so a script can't use up the sending limit
+     and lock parents out. Only on the real system, and only once turnstileSiteKey is set in config.js. The widget
+     is invisible unless Cloudflare wants a click; then it appears inside the form (host). Resolves to a one-use token. */
+  let tsLoad = null;
+  function loadTurnstile() {
+    if (window.turnstile) return Promise.resolve();
+    if (!tsLoad) {
+      tsLoad = new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        s.async = true; s.onload = res; s.onerror = () => { tsLoad = null; rej(); };
+        document.head.appendChild(s);
+      });
+    }
+    return tsLoad;
+  }
+  async function humanToken(host, force) {
+    if (!CFG.turnstileSiteKey || (mode !== "live" && !force)) return "";
+    const robot = () => new BookingError("We couldn't check you're not a robot. Please refresh the page and try again.", "BUSY");
+    try { await loadTurnstile(); } catch (e) { throw robot(); }
+    return new Promise((resolve, reject) => {
+      const box = document.createElement("div");
+      box.className = "bk-human";
+      (host || document.body).appendChild(box);
+      let id;
+      const end = fn => v => { try { window.turnstile.remove(id); } catch (e) { /* already gone */ } box.remove(); fn(v); };
+      id = window.turnstile.render(box, {
+        sitekey: CFG.turnstileSiteKey, action: "sign-in", appearance: "interaction-only",
+        callback: end(resolve),
+        "error-callback": end(() => reject(robot())),
+        "timeout-callback": end(() => reject(robot())),
+      });
+    });
+  }
+
   /* Public camp list (places left, price today). Cached for 2 minutes per tab so the calendar and pages share it. */
   async function camps(fresh) {
     if (!fresh) {
@@ -108,7 +143,13 @@
     get token() { return store.get(TOKEN); },
     get email() { return store.get(EMAIL); },
     get signedIn() { return !!store.get(TOKEN); },
-    async requestCode(email) { store.set(EMAIL, email.trim().toLowerCase()); return call("requestCode", { email }); },
+    async requestCode(email, host) {
+      store.set(EMAIL, email.trim().toLowerCase());
+      const human = await humanToken(host);
+      return call("requestCode", human ? { email, human } : { email });
+    },
+    humanToken, // exposed for testing in the console
+
     async verifyCode(email, code) {
       const r = await call("verifyCode", { email, code });
       store.set(TOKEN, r.token); store.set(EMAIL, r.email);

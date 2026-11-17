@@ -45,6 +45,25 @@ From then on each submission: marks the sailor done on My bookings, sets `image_
 
 "Anyone" only means the website can reach the script. The sheet itself stays private, and the script only ever gives a signed-in parent their own rows.
 
+## 5b. Security update (17 Nov 2026) — how to install it
+`Code.gs` now blocks spreadsheet formulas in anything parents type, pauses sign-in for an email after 10 wrong
+codes in 6 hours, and caches the camp list and sign-ins so a flood of requests barely touches the sheet.
+1. Paste the new `Code.gs` over the old one in the Apps Script editor and save.
+2. Run **setup** once from the editor. Google asks for one new permission ("connect to an external service"),
+   needed by the optional bot check below. **Do this before step 3**, or the live web app can fail.
+3. Deploy ▸ Manage deployments ▸ ✏ ▸ Version: *New version* ▸ Deploy (same URL).
+
+### Optional: bot check on sign-in (Cloudflare Turnstile, free)
+Stops scripts from requesting sign-in codes in bulk (which would use up the 100-a-day email limit and lock
+parents out). Most parents never see it; occasionally Cloudflare shows a single tick box.
+1. Cloudflare dashboard ▸ **Turnstile** ▸ Add widget. Hostnames: `beyondtheshift.co.uk` (add `localhost` if you
+   want to test locally). Mode: **Managed**. You get a **site key** and a **secret key**.
+2. Send Claude the **site key** only (it goes in `booking/config.js`, which is public; that's fine). Wait until the
+   site with the key is live.
+3. Then in Apps Script: Project Settings (⚙) ▸ Script properties ▸ Add `TURNSTILE_SECRET` = the **secret key**.
+   Never paste the secret into `Code.gs` or the website: the repo is public.
+To switch it off, delete the `TURNSTILE_SECRET` property.
+
 ## 6. Share with Kai
 Use the **Share** button on the sheet and give Kai **Editor** access. Don't share it with anyone else.
 

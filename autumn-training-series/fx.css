@@ -121,7 +121,9 @@
    rides that edge, and the old page eases back a touch. The nav is its own group, so it stays put.
    Going Back (html.vt-back, vt.js) washes the other way. About 0.45 s, mostly in the first half (the BTS ease). */
 @view-transition { navigation: auto; }
-.nav { view-transition-name: nav; }
+/* Only while a page change runs (html.vt-on, vt.js): a view-transition-name makes the nav a "backdrop root",
+   which would stop the liquid glass menu from blurring the page behind it. */
+html.vt-on .nav { view-transition-name: nav; }
 .vt-wake {
   position: fixed; z-index: 2147483647; top: 0; left: 0; width: 140px; height: 100vh; pointer-events: none;
   view-transition-name: wake;   /* vt.js adds it before the first frame and removes it when done */

@@ -11,15 +11,13 @@
   const toggle = document.querySelector("[data-nav-toggle]");
   const setSolid = () => nav.classList.toggle("is-solid", window.scrollY > window.innerHeight * 0.6);
   setSolid();
-  /* Hide on the way down, back (logo, menu and Coaching button) on the first scroll up (James, 15 Nov; same as article.js). */
+  /* Hide on the way down, back (logo, menu and Book a camp button) on the first scroll up (James, 15 Nov; same as article.js). */
   let lastY = window.scrollY;
   const navScroll = () => {
     const y = window.scrollY, d = y - lastY;
     setSolid();
     if (Math.abs(d) < 4 && y > 80) return;
     document.body.classList.toggle("nav-hid", y > 80 && d > 0 && !nav.classList.contains("is-open"));
-    // Phones: when the bar comes back on a scroll up, the menu titles come back with it as a row under the bar.
-    document.body.classList.toggle("nav-up", y > 80 && d < 0);
     lastY = y;
   };
   window.addEventListener("scroll", navScroll, { passive: true });
@@ -80,7 +78,7 @@
       <ul>${d.expect.map(x => `<li>${C.esc(x)}</li>`).join("")}</ul>
       <p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p>
       <p class="camp-deadline">${C.esc(d.deadline)}</p>
-      <a class="btn btn-accent camp-book" href="${b.href}"${b.ext ? ' target="_blank" rel="noopener noreferrer"' : ""} data-splash>Book this camp ${b.ext ? '<span aria-hidden="true">↗</span>' : '<span class="beta-tag">Online · Beta</span>'}</a>
+      <a class="btn btn-accent camp-book" href="${b.href}"${b.ext ? ' target="_blank" rel="noopener noreferrer"' : ""} data-splash>Book this camp ${b.ext ? '<span aria-hidden="true">↗</span>' : ''}</a>
       ${b.ext ? "" : `<a class="camp-alt" href="${FORM}" target="_blank" rel="noopener noreferrer">Prefer the booking form?</a>`}
       ${d.slug ? `<a class="camp-alt" href="camps/${encodeURIComponent(d.slug)}/">Full camp details →</a>` : ""}`;
   };

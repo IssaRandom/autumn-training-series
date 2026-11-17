@@ -37,14 +37,27 @@
       U.offNotice(step);
       return;
     }
+    let camps;
     try {
-      const camps = await B.camps(true);
+      camps = await B.camps(true);
       camp = camps.find(c => c.camp_id === campId) || null;
     } catch (e) {
       campHost.innerHTML = `<div class="bk-card"><h1 class="bk-h">Booking</h1><p class="bk-error" role="alert">${esc(e.message)}</p>
         <div class="bk-actions"><button class="btn btn-line" type="button" data-retry>Try again</button>
         <a class="btn btn-accent" href="${esc(CFG.fallbackForm)}" target="_blank" rel="noopener">Use the booking form</a></div></div>`;
       $("[data-retry]", campHost).addEventListener("click", () => location.reload());
+      return;
+    }
+    /* Keep other query flags (e.g. ?mock=1 for testing) when a camp is picked. */
+    const pickQs = id => { const q = new URLSearchParams(location.search); q.set("camp", id); return q.toString(); };
+    if (!camp && !campId) {
+      /* No camp in the link (17 Nov audit): list the camps open online instead of an error. */
+      campHost.innerHTML = `<h1 class="bk-title">Book a training camp</h1>`;
+      step.innerHTML = `<div class="bk-card"><h2 class="bk-h3">Pick a camp</h2>` + (camps.length
+        ? `<div class="bk-pick">${camps.map(c => `<a class="bk-pick-item" href="?${esc(pickQs(c.camp_id))}" style="text-decoration:none">
+            <span style="flex:1"><span class="bk-pick-name">${esc(c.title)}</span><span class="bk-pick-sub">${esc(range(c.start, c.end))} · ${esc(c.venue)}${placesText(c) ? ` · ${esc(placesText(c))}` : ""}</span></span>
+            <span class="arrow" aria-hidden="true" style="font-weight:700;color:var(--blue)">${money(c.price_now)}</span></a>`).join("")}</div>`
+        : `<p class="bk-muted">No camps are open for online booking right now. See the <a href="../calendar/">calendar</a> for dates, or use our <a href="${esc(CFG.fallbackForm)}" target="_blank" rel="noopener">booking form</a>.</p>`) + `</div>`;
       return;
     }
     if (!camp) {

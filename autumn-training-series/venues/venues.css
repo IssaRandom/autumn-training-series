@@ -87,7 +87,7 @@
 .calc input { width: 100%; font: inherit; font-size: 16px; font-weight: 700; color: var(--heading); background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); padding: 9px 10px; }
 .calc input:focus { outline: none; border-color: var(--blue-300); box-shadow: 0 0 0 3px rgba(143, 181, 255, .25); }
 .calc-out { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-top: 12px; border-top: 1px solid var(--line); }
-.calc-total { font-family: var(--font-display); font-size: clamp(34px, 4.4vw, 46px); font-weight: 800; color: var(--heading); letter-spacing: -.02em; }
+.calc-total { font-family: var(--font-display); font-size: clamp(34px, 4.4vw, 46px); font-weight: 800; color: var(--heading); letter-spacing: -.005em; }
 .calc-break { font-size: 14px; color: var(--muted); }
 /* receipt (17 Nov): one line per cost with a dotted leader, total underneath */
 .calc-out { flex-direction: column; align-items: stretch; gap: 0; margin-top: 4px; padding: 14px 16px 12px; border: 1px dashed var(--line-strong); border-radius: var(--radius-sm); background: var(--bg-2); }
@@ -272,7 +272,7 @@
 .rec[hidden] { display: none; }
 .rec h3 { margin: 2px 0 4px; font-size: 17px; }
 .rec p { margin: 0 0 4px; font-size: 15px; color: var(--muted); }
-.rec .rec-k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+.rec .rec-k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 62%, #fff); } /* lifted for contrast on the dark card (17 Nov audit) */
 .rec.is-on { background: var(--surface-2); transform: translateX(3px); }
 .recs-credit { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
 /* James 17 Nov: chips + map pin under the contents bar, cards scroll past in groups (Stay, Eat, Coffee, Watch, Work)
@@ -290,7 +290,7 @@
 .recs-on .rec { margin: 0 0 14px; cursor: default; }   /* 17 Nov (James): close the gaps between cards */
 .recs-gh { margin: 34px 0 10px; }
 .recs-gh:first-child { margin-top: 0; }
-.recs-gh-t { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
+.recs-gh-t { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 62%, #fff); }
 .recs-gh-t::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
 .recs:not(.recs-on) .rec { margin-bottom: 8px; }
 @media (min-width: 761px) {

@@ -371,29 +371,30 @@
   <script>document.documentElement.classList.add("js");if(location.hash.length>1)document.documentElement.classList.add("no-intro");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="beta.css?v=20261117d">
-  <link rel="stylesheet" href="fx.css?v=20261117d">
-  <script src="vt.js?v=20261117d"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="beta.css?v=20261117p">
+  <link rel="stylesheet" href="fx.css?v=20261117p">
+  <script src="vt.js?v=20261117p"></script>
 </head>
 <body>
   <a class="sr-only" href="#main">Skip to content</a>
 
   <header class="nav" data-nav>
     <div class="wrap nav-inner">
-      <a class="logo" href="./">Beyond the <b>Shift</b></a>
+      <a class="logo" href="/">Beyond the <b>Shift</b></a>
       <nav aria-label="Main">
         <ul class="nav-links" id="nav-links">
-          <li><a href="advice/">Advice</a></li>
-          <li><a href="calendar/">Calendar</a></li>
-          <li><a href="venues/">Venues</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="account/">My bookings</a></li>
-          <li class="mobile-only"><a href="/coaching/">Coaching &amp; booking</a></li>
+          <li class="mobile-only"><a href="/" aria-current="page">Home</a></li>
+          <li class="mobile-only"><a href="/#dates">Camps &amp; booking</a></li>
+          <li><a href="/calendar/">Calendar</a></li>
+          <li><a href="/venues/">Venues</a></li>
+          <li><a href="/advice/">Advice</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/account/">My bookings</a></li>
         </ul>
       </nav>
-      <a class="btn btn-accent nav-cta" href="/coaching/">Coaching</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+      <a class="btn btn-accent nav-cta" href="/#dates">Book a camp</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span class="nt-word" aria-hidden="true"><span>Menu</span><span>Close</span></span><span class="nt-sail" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">Menu</span></button>
     </div>
   </header>
 
@@ -506,10 +507,10 @@
         </div>
         <div class="cards scroll-x">
           <a class="card reveal" href="advice/new-to-ilca/"><div class="card-body"><span class="tag">Basics of ILCAs</span><h3>New to ILCAs</h3><p>Overarching guide to starting out in ILCAs.</p><span class="arrow">Read guide </span></div></a>
-          <a class="card reveal card-soon" href="advice/rigging/"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Rigging guide</h3><p>Tips and tricks for how to get the most from your equipment.</p><span class="arrow">Preview </span></div></a>
-          <a class="card reveal card-soon" href="advice/campaign-management/"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>How to structure a season</h3><p>Campaign management.</p><span class="arrow">Preview </span></div></a>
-          <a class="card reveal card-soon" href="advice/ilca-4-to-6/"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Transitioning from an ILCA 4 to a 6</h3><span class="arrow">Preview </span></div></a>
-          <a class="card reveal card-soon" href="advice/fitness/"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Fitness for ILCA sailing</h3><span class="arrow">Preview </span></div></a>
+          <div class="card reveal card-soon" aria-disabled="true"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Rigging guide</h3><p>Tips and tricks for how to get the most from your equipment.</p></div></div>
+          <div class="card reveal card-soon" aria-disabled="true"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>How to structure a season</h3><p>Campaign management.</p></div></div>
+          <div class="card reveal card-soon" aria-disabled="true"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Transitioning from an ILCA 4 to a 6</h3></div></div>
+          <div class="card reveal card-soon" aria-disabled="true"><div class="card-body"><span class="tag tag-soon">Coming soon</span><h3>Fitness for ILCA sailing</h3></div></div>
         </div>
       </div>
     </section>
@@ -535,7 +536,7 @@
       </div>
     </section>
 
-    <!-- 6. VENUE GUIDES — [PLACEHOLDER] picsum images + copy -->
+    <!-- 6. VENUE GUIDES — real venue aerials (credited with links on the venues hub) -->
     <section class="section" id="venues">
       <div class="wrap">
         <div class="section-head reveal">
@@ -546,10 +547,10 @@
           <a class="link-more arrow" href="venues/">All venue guides</a>
         </div>
         <div class="cards scroll-x">
-          <a class="card reveal" href="venues/weymouth/"><div class="card-img"><img src="https://picsum.photos/seed/weymouth/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">New guide</span><h3>Weymouth &amp; Portland</h3><p>Tide, wind shifts and where to launch at WPNSA.</p></div></a>
-          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/hayling/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island</h3><p>Bar, tide gates and the Solent approach.</p></div></a>
-          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/rutland/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Rutland Water</h3><p>Inland shifts and pressure lines for the Inlands.</p></div></a>
-          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="https://picsum.photos/seed/grafham/800/500" alt="" loading="lazy"></div><div class="card-body"><span class="tag">Coming soon</span><h3>Grafham Water</h3><p>Cambridgeshire, inland.</p></div></a>
+          <a class="card reveal" href="venues/weymouth/"><div class="card-img"><img src="venues/photos/portland-800.webp" alt="Aerial view of Portland Harbour and Osprey Quay" width="800" height="500" loading="lazy" decoding="async"><span class="credit">Photo: Portland Port</span></div><div class="card-body"><span class="tag">New guide</span><h3>Weymouth &amp; Portland</h3><p>Tide, wind shifts and where to launch at WPNSA.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="venues/photos/hayling-800.webp" alt="Aerial view of Hayling Island, the harbour mouth and the Solent" width="800" height="500" loading="lazy" decoding="async"><span class="credit">Photo: The Portsmouth News</span></div><div class="card-body"><span class="tag">Coming soon</span><h3>Hayling Island</h3><p>Bar, tide gates and the Solent approach.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="venues/photos/rutland-800.webp" alt="Aerial view of Rutland Water and the Hambleton peninsula" width="800" height="500" loading="lazy" decoding="async"><span class="credit">Photo: Spanhoe Lodge</span></div><div class="card-body"><span class="tag">Coming soon</span><h3>Rutland Water</h3><p>Inland shifts and pressure lines for the Inlands.</p></div></a>
+          <a class="card reveal" href="venues/#soon"><div class="card-img"><img src="venues/photos/grafham-800.webp" alt="Grafham Water Sailing Club clubhouse and dinghy park from the water" width="800" height="500" loading="lazy" decoding="async"><span class="credit">Photo: Yachts &amp; Yachting</span></div><div class="card-body"><span class="tag">Coming soon</span><h3>Grafham Water</h3><p>Cambridgeshire, inland.</p></div></a>
         </div>
       </div>
     </section>
@@ -611,7 +612,7 @@
         <h2>Get in touch</h2>
         <a href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener noreferrer">WhatsApp information group</a>
         <a href="account/">My bookings</a>
-        <a href="https://forms.gle/X7offBwNaL24wZ4t7" target="_blank" rel="noopener noreferrer">Booking form</a>
+        <a href="book/">Book a camp</a>
         <a href="privacy/">Privacy notice</a>
         <a href="terms/">Terms and conditions</a>
         <a href="cancellation/">Cancellation policy</a>
@@ -635,12 +636,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="data/events.js?v=20261117d"></script>
-  <script src="data/camps.js?v=20261117d"></script>
-  <script src="booking/config.js?v=20261117d"></script>
-  <script src="booking/api.js?v=20261117d"></script>
-  <script src="calendar/cal-core.js?v=20261117d"></script>
-  <script src="beta.js?v=20261117d"></script>
-  <script src="fx.js?v=20261117d" defer></script>
+  <script src="data/events.js?v=20261117p"></script>
+  <script src="data/camps.js?v=20261117p"></script>
+  <script src="booking/config.js?v=20261117p"></script>
+  <script src="booking/api.js?v=20261117p"></script>
+  <script src="calendar/cal-core.js?v=20261117p"></script>
+  <script src="beta.js?v=20261117p"></script>
+  <script src="fx.js?v=20261117p" defer></script>
 </body>
 </html>

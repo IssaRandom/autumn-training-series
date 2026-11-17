@@ -5,6 +5,9 @@
 window.BTS_BOOKING = {
   api: "https://script.google.com/macros/s/AKfycbzNqYWLGQAdU0Hi_5mqaOOegH9W2a8ZtYrN0NTKkC9h8Vr-Aa3lzxcIJsTfetAMBHKZGg/exec",
   fallbackForm: "https://forms.gle/X7offBwNaL24wZ4t7",
+  /* Cloudflare Turnstile site key (public, safe here). Blank = no bot check. Set this and deploy the site FIRST,
+     then add TURNSTILE_SECRET to the Apps Script's Script properties, or sign-in will refuse every request. */
+  turnstileSiteKey: "",
   lateFee: 20,
   payDays: 7,
 };

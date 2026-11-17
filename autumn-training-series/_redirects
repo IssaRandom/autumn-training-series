@@ -6,3 +6,9 @@
 /terms.html /terms/ 301
 /cancellation.html /cancellation/ 301
 /photography.html /photography/ 301
+# The old KW | JF coaching site must never be reached (James, 17 Nov 2026): camps + booking are on the homepage
+/coaching /#dates 301
+/coaching/ /#dates 301
+/coaching/* /#dates 301
+/thank-you.html / 301
+/thank-you / 301

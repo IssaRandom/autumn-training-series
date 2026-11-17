@@ -76,7 +76,7 @@
       f.addEventListener("submit", ev => {
         ev.preventDefault();
         email = f.email.value.trim();
-        quiet(busy($("button", f), f, async () => { await B.requestCode(email); step2(); }));
+        quiet(busy($("button", f), f, async () => { await B.requestCode(email, f); step2(); }));
       });
       if (!email) f.email.focus();
     }
@@ -102,7 +102,7 @@
       });
       $("[data-back]", f).addEventListener("click", step1);
       $("[data-resend]", f).addEventListener("click", ev => quiet(busy(ev.currentTarget, f, async () => {
-        await B.requestCode(email);
+        await B.requestCode(email, f);
         const e = $("[data-error]", f); e.textContent = "New code sent."; e.hidden = false; e.classList.add("is-ok");
       })));
     }

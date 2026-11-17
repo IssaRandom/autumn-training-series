@@ -302,7 +302,16 @@
   font: 800 14px/1 var(--font); color: #2b1200; background: var(--hl); }
 /* on: the section pins full-bleed; scrolling down slides the cards across, the boat pans to each part */
 .hz.hz-on { height: var(--hz-h, 500svh); width: var(--fw, 100vw); margin-left: var(--ml, 0); }   /* full-bleed: JS sets --fw/--ml from the column's position */
-.hz-on .hz-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--bg); }
+.hz-on .hz-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--bg); touch-action: pan-y; }   /* sideways swipes are ours (JS steps the cards); up/down stays the browser's */
+/* "Swipe" hint (ours, touch screens only): shows on the first card, gone after the first swipe or step */
+.hz-hint { position: absolute; left: 50%; bottom: calc(var(--hint-b, 200px)); transform: translateX(-50%); display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+  border-radius: 999px; background: color-mix(in srgb, var(--bg) 80%, transparent); border: 1px solid var(--line); color: var(--heading); font-size: 12px; font-weight: 700;
+  letter-spacing: .04em; pointer-events: none; transition: opacity var(--dur-slow) var(--ease); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.hz-hint i { display: inline-block; color: var(--hl); font-style: normal; animation: hz-nudge 1.4s var(--ease) infinite; }
+.hz-hint i:first-child { animation-direction: reverse; }
+.hz-hint.is-gone { opacity: 0; }
+@keyframes hz-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+.art-page .hz-on .hz-track > li:not(.is-on) { cursor: pointer; }
 .hz-on .hz-grid { display: block; position: absolute; inset: 0 -160px 0 0; transform: translate3d(var(--gx, 0), 0, 0);
   background-image: linear-gradient(rgba(143, 181, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 181, 255, .08) 1px, transparent 1px);
   background-size: 34px 34px; }

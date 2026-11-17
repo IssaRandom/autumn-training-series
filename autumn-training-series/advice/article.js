@@ -115,6 +115,7 @@
     const tallest = Math.max(...hzItems.map(li => li.offsetHeight));
     if (tallest > vh - 110) { hz.classList.remove("hz-on"); hzOn = false; return; }   // too short a screen: plain list
     hzOn = true;
+    hz.style.setProperty("--hint-b", (hzItems[0].offsetHeight + 34) + "px");   // just above card 1 (the hint only shows there)
     hz.style.setProperty("--hz-h", Math.round(vh + (hzItems.length - 1) * vh * .6) + "px");
     hzStep = -1;
   };
@@ -139,8 +140,100 @@
       hzDots.forEach((d, k) => d.classList.toggle("on", k <= step));
       writeCap(step);
     }
+    if (step > 0) hideHint();
     return r.top <= 0 && r.bottom >= L.vh;
   };
+
+  /* Sideways: a finger swipe (or trackpad sideways scroll) drives the same timeline.
+     The cards follow the finger 1:1 by moving the page, then snap to the nearest card;
+     a quick flick or a third of a card goes to the next one. Up/down is left to the browser. */
+  let hzHint = null, glide = 0;
+  const hideHint = () => { if (hzHint) hzHint.classList.add("is-gone"); };
+  const hzGeo = () => {
+    const r = hz.getBoundingClientRect(), n = hzItems.length;
+    const per = (hz.offsetHeight - L.vh) / (n - 1);              // page px per card
+    return { top: window.scrollY + r.top, per, ratio: per / (L.cw + L.gap), n,
+             f: clamp(-r.top / (hz.offsetHeight - L.vh), 0, 1) * (n - 1), pinned: r.top <= 1 && r.bottom >= L.vh - 1 };
+  };
+  const stopGlide = () => { if (glide) cancelAnimationFrame(glide); glide = 0; };
+  const glideTo = y => {   /* own tween: same feel on every phone, and a new touch can stop it */
+    stopGlide();
+    const y0 = window.scrollY, d = y - y0, t0 = performance.now(), ms = clamp(Math.abs(d) * .6, 240, 520);
+    if (Math.abs(d) < 1) return;
+    const tick = now => {
+      const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+      window.scrollTo(0, y0 + d * e);
+      glide = k < 1 ? requestAnimationFrame(tick) : 0;
+    };
+    glide = requestAnimationFrame(tick);
+  };
+  const goStep = s => { const g = hzGeo(); glideTo(g.top + clamp(s, 0, g.n - 1) * g.per); };
+  if (hz && hzItems.length > 1) {
+    const pin = hz.querySelector(".hz-pin");
+    if (matchMedia("(pointer: coarse)").matches && !reduce) {
+      hzHint = document.createElement("span");
+      hzHint.className = "hz-hint";
+      hzHint.setAttribute("aria-hidden", "true");
+      const a = document.createElement("i"), b = document.createElement("i");
+      a.textContent = "‹"; b.textContent = "›";
+      hzHint.append(a, document.createTextNode("Swipe"), b);
+      pin.appendChild(hzHint);
+    }
+    let sw = null;
+    pin.addEventListener("pointerdown", e => {
+      if (!hzOn || e.pointerType === "mouse") return;
+      stopGlide();
+      const g = hzGeo();
+      sw = { id: e.pointerId, x: e.clientX, y: e.clientY, y0: window.scrollY, step: Math.round(g.f), mode: null, vx: 0, lx: e.clientX, lt: e.timeStamp };
+    }, { passive: true });
+    pin.addEventListener("pointermove", e => {
+      if (!sw || e.pointerId !== sw.id) return;
+      const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+      if (!sw.mode) {
+        if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2) sw.mode = "x";
+        else if (Math.abs(dy) > 8) { sw = null; return; }        // vertical: the browser's
+        else return;
+      }
+      const g = hzGeo();
+      window.scrollTo(0, clamp(sw.y0 - dx * g.ratio, g.top, g.top + (g.n - 1) * g.per));
+      const dt = e.timeStamp - sw.lt;
+      if (dt > 0) { sw.vx = .7 * ((e.clientX - sw.lx) / dt) + .3 * sw.vx; sw.lx = e.clientX; sw.lt = e.timeStamp; }
+      hideHint();
+    }, { passive: true });
+    const endSwipe = e => {
+      if (!sw || e.pointerId !== sw.id) return;
+      const s = sw; sw = null;
+      if (s.mode !== "x") return;
+      const g = hzGeo(), dx = e.clientX - s.x;
+      let to = Math.round(g.f);
+      if (to === s.step && (Math.abs(s.vx) > .35 || Math.abs(dx) > L.cw / 3)) to = s.step + (dx < 0 ? 1 : -1);
+      goStep(to);
+    };
+    pin.addEventListener("pointerup", endSwipe);
+    pin.addEventListener("pointercancel", e => {   /* browser took the gesture: just settle on the nearest card */
+      if (!sw || e.pointerId !== sw.id) return;
+      const m = sw.mode; sw = null;
+      if (m === "x") goStep(Math.round(hzGeo().f));
+    });
+    /* trackpads / sideways mouse wheels */
+    let wheelT = 0;
+    pin.addEventListener("wheel", e => {
+      if (!hzOn || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      const g = hzGeo();
+      if (!g.pinned) return;
+      e.preventDefault();
+      stopGlide();
+      window.scrollTo(0, clamp(window.scrollY + e.deltaX * g.ratio, g.top, g.top + (g.n - 1) * g.per));
+      hideHint();
+      clearTimeout(wheelT);
+      wheelT = setTimeout(() => goStep(Math.round(hzGeo().f)), 140);
+    }, { passive: false });
+    /* tap a faded card to go to it */
+    hzItems.forEach((li, k) => li.addEventListener("click", e => {
+      if (!hzOn || li.classList.contains("is-on") || e.target.closest("a")) return;
+      goStep(k);
+    }));
+  }
 
   /* ---------- Towing: van along the route ---------- */
   const trip = document.querySelector("[data-trip]");

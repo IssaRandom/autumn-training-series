@@ -11,6 +11,7 @@ import datetime, html, json, os, re
 ROOT = os.path.join(os.path.dirname(__file__), "..", "autumn-training-series")
 SITE = "https://beyondtheshift.co.uk"
 TODAY = datetime.date.today().isoformat()
+# Book buttons go to the booking system (/book/?camp=<id>), which offers the Google Form itself when a camp is not open online.
 FORM = "https://forms.gle/X7offBwNaL24wZ4t7"
 # cache stamp: follow whatever the homepage uses (tools/beta-bust.py bumps it)
 STAMP = re.search(r"beta\.css\?v=([0-9a-z]+)", open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()).group(1)
@@ -43,7 +44,12 @@ def page(f, d):
     addr, guide = VENUE_INFO.get(f["venue"], (f["venue"], None))
     town = {"WPNSA": "Weymouth", "Poole Yacht Club": "Poole"}.get(f["venue"], f["venue"])
     name = d["title"].replace("Winter Training Series - ", "")
-    title = f"{name}, {d['date']} | {rigs.replace(' and ILCA ', ' & ')} training, {town}"
+    # Google cuts titles at about 60 characters: short months, no years, and drop the dates if still too long
+    short = re.sub(r"\s*\b(19|20)\d\d\b", "", d["date"])
+    short = re.sub(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b", r"\1", short)
+    title = f"{name}, {short} | {rigs.replace(' and ILCA ', ' & ')}, {town}"
+    if len(title) > 60:
+        title = f"{name} | {rigs.replace(' and ILCA ', ' & ')} training, {town}"
     desc = (f"{d['title']}: {rigs} training at {f['venue']}, {d['date']}. {d['price']}. "
             f"Coached by James Foster and Kai Wolgram. {d['intro']}")
     if len(desc) > 160:
@@ -67,7 +73,7 @@ def page(f, d):
   <script>document.documentElement.classList.add("js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../beta.css?v={STAMP}">
   <link rel="stylesheet" href="../../fx.css?v={STAMP}">
   <link rel="stylesheet" href="../camps.css?v={STAMP}">
@@ -89,7 +95,7 @@ def page(f, d):
         </ul>
       </nav>
       <a class="btn btn-accent nav-cta" href="../../#dates">Book a camp</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span></span><span class="sr-only">Menu</span></button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle><span class="nt-word" aria-hidden="true"><span>Menu</span><span>Close</span></span><span class="nt-sail" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">Menu</span></button>
     </div>
   </header>
 
@@ -118,7 +124,7 @@ def page(f, d):
         <p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p>
         <p class="camp-deadline">{e(d['deadline'])}</p>
         <div class="camp-actions">
-          <a class="btn btn-accent" href="{FORM}" target="_blank" rel="noopener noreferrer" data-splash>Book this camp <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-accent" href="/book/?camp={e(f['id'])}" data-splash>Book this camp <span aria-hidden="true">→</span></a>
           <a class="btn btn-ghost" href="../../#dates">See all camp dates</a>
         </div>
       </article>
