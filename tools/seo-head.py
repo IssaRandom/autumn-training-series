@@ -9,7 +9,8 @@ What it writes into each page's <head> (no visible change to any page):
   - canonical link (the page's main address, with trailing slash)
   - link-preview tags (og:/twitter:) built from the page's existing <title> and description
   - JSON-LD: WebSite + Organization (Beyond the Shift) + the two coaches, on every indexable page;
-    upcoming Beyond the Shift camps (Event) on the homepage and /coaching/;
+    upcoming Beyond the Shift camps (Event) on the homepage and /coaching/, and each camp's own Event
+    + breadcrumb on its /camps/<slug>/ page (run tools/camp-pages.py first);
     Article on finished advice guides.
   - noindex on draft advice guides (DRAFT_GUIDES) and the account page.
 """
@@ -87,8 +88,9 @@ def load_camps():
         if f.get("end", "") < TODAY or f.get("venue") not in VENUES:
             continue
         d = details.get(f["id"], {})
+        page = f"{SITE}/camps/{d['slug']}/" if d.get("slug") else SITE + "/#dates"
         e = {
-            "@type": "Event", "@id": f"{SITE}/coaching/#{f['id']}",
+            "@type": "Event", "@id": page + "#event",
             "name": d.get("title") or f["name"],
             "startDate": f["start"], "endDate": f["end"],
             "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
@@ -96,8 +98,9 @@ def load_camps():
             "location": VENUES[f["venue"]],
             "organizer": {"@id": ORG_ID},
             "performer": [{"@id": PEOPLE["james"]["@id"]}, {"@id": PEOPLE["kai"]["@id"]}],
-            "url": SITE + "/coaching/",
+            "url": page,
         }
+        e["_page"] = f"camps/{d['slug']}/" if d.get("slug") else None
         if d.get("intro"):
             e["description"] = d["intro"] + (" " + d["detailFocus"] if d.get("detailFocus") else "")
         if d.get("photo"):
@@ -105,7 +108,7 @@ def load_camps():
         price = re.sub(r"[^\d.]", "", d.get("price", ""))
         if price:
             e["offers"] = {"@type": "Offer", "price": price, "priceCurrency": "GBP",
-                           "availability": "https://schema.org/InStock", "url": SITE + "/coaching/"}
+                           "availability": "https://schema.org/InStock", "url": page}
         camps.append(e)
     return camps
 
@@ -142,7 +145,14 @@ def block_for(rel, h, camps):
     if not noindex:
         graph = [WEBSITE, ORG, PEOPLE["james"], PEOPLE["kai"]]
         if rel in EVENT_PAGES:
-            graph += camps
+            graph += [{k: v for k, v in c.items() if k != "_page"} for c in camps]
+        own = [c for c in camps if c["_page"] == rel]
+        if own:
+            graph += [{k: v for k, v in c.items() if k != "_page"} for c in own]
+            graph.append({"@type": "BreadcrumbList", "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": "Training camps", "item": SITE + "/#dates"},
+                {"@type": "ListItem", "position": 3, "name": own[0]["name"], "item": url}]})
         if rel in ARTICLES:
             graph.append({"@type": "Article", "@id": url + "#article", "headline": title.split(" — ")[0].split(" – ")[0],
                           "description": desc, "url": url, "inLanguage": "en-GB",

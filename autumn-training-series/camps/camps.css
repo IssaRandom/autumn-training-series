@@ -1,0 +1,16 @@
+/* Camp pages (/camps/<slug>/), written by tools/camp-pages.py. Builds on the .legal-* page styles in beta.css. */
+.camp-card { padding-top: 0; overflow: hidden; }
+.camp-hero { position: relative; margin: 0 calc(-1 * clamp(24px, 4vw, 48px)) 28px; aspect-ratio: 16 / 8; overflow: hidden; }
+.camp-hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.camp-hero .credit { position: absolute; right: 8px; bottom: 6px; padding: 2px 6px; border-radius: 3px; background: rgba(3, 19, 46, .7); color: #dbe6f6; font-size: .62rem; }
+.camp-card h1 { font-size: clamp(2rem, 4.6vw, 3.2rem); }
+.camp-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 22px 0 26px; border: 1px solid var(--line); border-radius: var(--radius-sm, 8px); overflow: hidden; background: var(--line); }
+.camp-facts div { padding: 12px 16px; background: var(--surface); }
+.camp-facts dt { font-size: .7rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-300); }
+.camp-facts dd { margin: 4px 0 0; color: var(--ink); font-weight: 600; font-size: .94rem; line-height: 1.45; }
+.camp-lede { font-size: 1.08rem !important; color: var(--ink) !important; }
+.camp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.camp-facts .is-wide { grid-column: 1 / -1; }
+@media (max-width: 700px) { .camp-facts { grid-template-columns: 1fr 1fr; } }
+.legal-card .camp-actions .btn-accent { color: #fff; }
+.legal-card .camp-actions .btn-ghost { color: var(--ink); }
