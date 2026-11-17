@@ -96,7 +96,7 @@ HTML = [
 
     # 11. Ending: booking goes to the new booking system
     ("ending booking",
-     """<p class="soft-cta">We train at WPNSA through the winter. <a href="/coaching/">See our coaching</a>""",
+     """<p class="soft-cta">We train at WPNSA through the winter. <a href="/#dates">See our coaching</a>""",
      """<p class="soft-cta">We train at WPNSA through the winter. <a href="../../book/">See our coaching</a>"""),
 
     # 12. Beats rhythm_check should count

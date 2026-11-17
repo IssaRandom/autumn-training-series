@@ -9,7 +9,7 @@ What it writes into each page's <head> (no visible change to any page):
   - canonical link (the page's main address, with trailing slash)
   - link-preview tags (og:/twitter:) built from the page's existing <title> and description
   - JSON-LD: WebSite + Organization (Beyond the Shift) + the two coaches, on every indexable page;
-    upcoming Beyond the Shift camps (Event) on the homepage and /coaching/, and each camp's own Event
+    upcoming Beyond the Shift camps (Event) on the homepage, and each camp's own Event
     + breadcrumb on its /camps/<slug>/ page (run tools/camp-pages.py first);
     Article on finished advice guides.
   - noindex on draft advice guides (DRAFT_GUIDES) and the account page.
@@ -24,8 +24,8 @@ TODAY = datetime.date.today().isoformat()
 DRAFT_GUIDES = {"calendar-suggestions", "campaign-management", "fitness", "ilca-4-to-6", "international",
                 "nutrition", "pathway", "rigging", "sports-psychology", "technique"}
 NOINDEX_EXTRA = {"account/"}
-SKIP = {"loader-test/", "navigator/", "venues/weymouth/"}  # noindex for now; Weymouth: add when the guide goes public
-EVENT_PAGES = {"", "coaching/"}
+SKIP = {"loader-test/", "navigator/", "venues/weymouth/", "coaching/"}  # coaching/ = forwarding stub to /#dates, never the old site  # noindex for now; Weymouth: add when the guide goes public
+EVENT_PAGES = {""}
 ARTICLES = {"advice/new-to-ilca/": "kai"}      # finished guides -> author key
 
 ORG_ID, SITE_ID = SITE + "/#organisation", SITE + "/#website"
