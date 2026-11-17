@@ -110,6 +110,13 @@
     labels.forEach(l => { const [sx, sy] = toScreen(l.x, l.y); l.el.style.transform = `translate(${sx}px,${sy}px) ${l.k === "spot" ? "translate(-3.5px,-50%)" : "translate(-50%,-50%)"}`; });   // spots: the dot sits on the point
   };
 
+  /* course flags (James 16 Nov): the race committee hoists P for Portland Harbour, W for Weymouth Bay */
+  const FLAGS = {
+    P: '<svg class="vx-flag" viewBox="0 0 24 18" aria-hidden="true"><rect width="24" height="18" fill="#1b4fb3"/><rect x="8" y="6" width="8" height="6" fill="#fff"/></svg>',
+    W: '<svg class="vx-flag" viewBox="0 0 24 18" aria-hidden="true"><rect width="24" height="18" fill="#1b4fb3"/><rect x="4" y="3" width="16" height="12" fill="#fff"/><rect x="8" y="6" width="8" height="6" fill="#e5364a"/></svg>'
+  };
+  const flagOf = a => (a && a.flag && FLAGS[a.flag]) || "";
+
   /* labels + hotspots live in screen space so they stay upright */
   const labels = (CFG.labels || []).map(l => {
     const el = document.createElement("span");
@@ -122,7 +129,7 @@
   Object.entries(CFG.areas).forEach(([id, a]) => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "vx-hot"; b.dataset.go = id;
-    b.innerHTML = `<span class="vx-hot-ring" aria-hidden="true"></span><span class="vx-hot-t">${a.label}</span>`;
+    b.innerHTML = `<span class="vx-hot-ring" aria-hidden="true"></span><span class="vx-hot-t">${flagOf(a)}${a.label}</span>`;
     over.append(b);
     labels.push({ x: a.hx ?? a.x, y: a.hy ?? a.y, el: b });
   });
@@ -253,7 +260,7 @@
     notes.innerHTML = "";
     const head = document.createElement("p");
     head.className = "vx-notes-head";
-    head.innerHTML = a ? `<span class="area ${a.tag || ""}">${a.label}</span> ${SEC(st.dir).name}` : `<span class="area">Pick an area</span> ${SEC(st.dir).name}`;
+    head.innerHTML = a ? `<span class="area ${a.tag || ""}">${flagOf(a)}${a.label}</span> ${SEC(st.dir).name}` : `<span class="area">Pick an area</span> ${SEC(st.dir).name}`;
     notes.append(head, tpl.content.cloneNode(true));
   };
 
@@ -261,7 +268,7 @@
     const a = CFG.areas[st.area];
     root.dataset.area = st.area;
     root.dataset.layer = a ? a.layer : "overview";
-    windFx.set(a && a.layer === "wind" ? (a.field && (a.field[st.dir] || a.field["*"])) || {} : null, a ? zoneGrid(st.area, st.dir) : null);
+    windFx.set(a ? (a.field && (a.field[st.dir] || a.field["*"])) || {} : null, a ? zoneGrid(st.area, st.dir) : null);   /* wind in the bay too (James 16 Nov) */
     drawZones(st.area, st.dir);
     waveFx.set(st.dir);                                   // swell everywhere it can reach; faint in wind areas (CSS)
   };

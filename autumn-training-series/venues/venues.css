@@ -89,6 +89,19 @@
 .calc-out { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding-top: 12px; border-top: 1px solid var(--line); }
 .calc-total { font-family: var(--font-display); font-size: clamp(34px, 4.4vw, 46px); font-weight: 800; color: var(--heading); letter-spacing: -.02em; }
 .calc-break { font-size: 14px; color: var(--muted); }
+/* receipt (17 Nov): one line per cost with a dotted leader, total underneath */
+.calc-out { flex-direction: column; align-items: stretch; gap: 0; margin-top: 4px; padding: 14px 16px 12px; border: 1px dashed var(--line-strong); border-radius: var(--radius-sm); background: var(--bg-2); }
+.calc-break { display: grid; gap: 6px; order: 1; }
+.calc-total { order: 2; margin-top: 10px; padding-top: 10px; border-top: 2px solid var(--line-strong); display: flex; justify-content: space-between; align-items: baseline; }
+.calc-total::before { content: "Total"; font-family: var(--font); font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.rc-l { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 8px; font-size: 14px; }
+.rc-l i { border-bottom: 2px dotted var(--line-strong); transform: translateY(-4px); }
+.rc-l b { color: var(--heading); font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) {
+  .calc { grid-template-columns: 1fr 1fr; gap: 10px 10px; padding: 14px; }
+  .calc label { font-size: 11.5px; }
+  .calc input { padding: 8px 9px; }
+}
 
 /* events at this venue (from data/events.js) */
 .v-events { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 8px; }
@@ -136,10 +149,205 @@
 
 /* windy.app stats widget: their own white theme, so it sits on a white card */
 .v-windy { margin: 20px 0 8px; }
-.v-windy-box { background: #fff; border-radius: var(--radius); padding: 10px; min-height: 220px; overflow: hidden; }
+.v-windy-box { background: linear-gradient(160deg, #0c1d3d, #081631); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-height: 220px; overflow: hidden; }
 .v-windy figcaption { font-size: 12px; color: var(--muted); margin-top: 8px; }
 
 /* hero photo credit (15 Nov) */
 .g-hero { position: relative; }
 .hero-credit { position: absolute; right: 8px; bottom: 8px; z-index: 3; margin: 0; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; letter-spacing: .02em; }
 .hero-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* =====================================================================
+   16 Nov (James): tidal stream atlas, tidal model WIP, site plan walk, our picks map
+   ===================================================================== */
+
+/* ---- Tidal stream atlas: 13 hourly charts stacked, one shown ---- */
+.ta-title { margin-top: 30px; }
+.ta { margin: 16px 0 8px; }
+.ta-frame { position: relative; aspect-ratio: 1204 / 877; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #e6f3fb; }
+.ta-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s var(--ease); }
+.ta-frame img.is-on { opacity: 1; }
+.ta-badge { position: absolute; left: 10px; bottom: 10px; padding: 5px 11px; border-radius: 999px; background: rgba(3, 19, 46, .86); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .01em; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
+.ta-controls { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 12px; }
+.ta-play { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line-strong, var(--line)); background: var(--surface); color: var(--heading); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; transition: background var(--dur), border-color var(--dur); }
+.ta-play:hover { border-color: var(--blue-300); }
+.ta-play[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ta-play-i { width: 0; height: 0; border-left: 10px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+.ta-play[aria-pressed="true"] .ta-play-i { width: 10px; height: 12px; border: 0; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
+.ta-scrub input { width: 100%; height: 44px; margin: 0; appearance: none; -webkit-appearance: none; background: transparent; cursor: pointer; }
+.ta-scrub input::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--t-no) var(--p, 0%), var(--surface-2) var(--p, 0%)); }
+.ta-scrub input::-moz-range-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--t-no) var(--p, 0%), var(--surface-2) var(--p, 0%)); }
+.ta-scrub input::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -8px; border-radius: 50%; background: #fff; border: 3px solid var(--t-no); box-shadow: 0 2px 8px rgba(0, 0, 0, .3); }
+.ta-scrub input::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 3px solid var(--t-no); }
+.ta-scrub input:focus-visible { outline: 2px solid var(--blue-300); outline-offset: 2px; border-radius: 6px; }
+.ta-ticks { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--muted); margin-top: -6px; padding: 0 4px; }
+.ta figcaption { font-size: 12px; color: var(--muted); margin-top: 10px; }
+@media (max-width: 520px) { .ta-controls { grid-template-columns: minmax(0, 1fr); gap: 4px; } .ta-play { justify-self: start; } .ta-badge { font-size: 12px; left: 8px; bottom: 8px; } }
+
+/* ---- Tidal model: work in progress (tide gauge, water rising and falling, a buoy bobbing, hazard tape) ---- */
+.tide-wip { display: block; margin: 30px 0 10px; padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.tide-wip::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; background: repeating-linear-gradient(45deg, #ffd66b 0 12px, #0b1b36 12px 24px); }
+.tide-wip .eyebrow { color: #e0b23c; margin: 6px 0 2px; }
+.tide-wip h3 { margin: 0 0 14px; }
+.tw-svg { width: 100%; height: auto; display: block; border-radius: 10px; background: linear-gradient(#173466, #0b1b36); }
+.tw-pole rect { fill: #e9eef6; }
+.tw-marks path { stroke: #e9eef6; stroke-width: 2; }
+.tw-marks text { fill: #e9eef6; font: 800 11px var(--font, sans-serif); }
+.tw-wave-b path { fill: #2f6df6; opacity: .55; }
+.tw-wave-f path { fill: #2463eb; }
+.tw-buoy path, .tw-buoy rect { fill: #ffc531; }
+.tw-buoy circle { fill: #ff4d5e; }
+.tw-tide { animation: tw-tide 7s ease-in-out infinite; }
+.tw-wave-b { animation: tw-roll 3.4s linear infinite; }
+.tw-wave-f { animation: tw-roll 2.4s linear infinite reverse; }
+.tw-buoy { transform-box: fill-box; transform-origin: 50% 90%; animation: tw-bob 2.4s ease-in-out infinite; }
+.tw-buoy circle { animation: tw-blink 1.6s steps(1) infinite; }
+@keyframes tw-tide { 0%, 100% { transform: translateY(22px); } 50% { transform: translateY(-34px); } }
+@keyframes tw-roll { to { transform: translateX(40px); } }
+@keyframes tw-bob { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(4px) rotate(6deg); } }
+@keyframes tw-blink { 50% { opacity: .2; } }
+@media (prefers-reduced-motion: reduce) { .tw-tide, .tw-wave-b, .tw-wave-f, .tw-buoy, .tw-buoy circle { animation: none; } }
+
+/* ---- Site plan walk: plan pinned under the nav; steps scroll beneath and zoom it ---- */
+.pw { margin: 18px 0 10px; }
+.pw-stage { margin: 0 0 16px; z-index: 6; }
+.pw-frame { position: relative; aspect-ratio: 1600 / 1131; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #bdbdbd; }
+.pw-pic { position: absolute; inset: 0; transform-origin: 50% 50%; transition: transform .9s var(--ease); }
+.pw-pic img { width: 100%; height: 100%; display: block; }
+.pw-hl { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); height: calc(var(--h) * 1%); border-radius: 6px; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
+.pw-hl.is-on { opacity: 1; outline: 2px solid #fff; box-shadow: 0 0 0 3px var(--accent), 0 0 0 999vmax rgba(3, 19, 46, .42); animation: pw-pulse 1.8s ease-in-out infinite; }
+@keyframes pw-pulse { 50% { outline-color: rgba(255, 255, 255, .35); } }
+.pw-stage figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.pw-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.pw-step { padding: 14px 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); transition: border-color var(--dur) var(--ease), background var(--dur); }
+.pw-step h3 { margin: 2px 0 4px; font-size: 18px; }
+.pw-step p { margin: 0 0 6px; }
+.pw-k { font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-300); }
+.pw-step.is-on { border-left-color: var(--accent); background: var(--surface-2); }
+/* on (JS): the plan pins under the nav and the steps get room to scroll past it */
+.pw-on .pw-stage { position: sticky; top: calc(var(--nav-h) + 10px); background: var(--bg); padding-top: 4px; transition: transform var(--dur-slow, .4s) var(--ease); }
+.venue-page.nav-hid .pw-on .pw-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+/* phones: the contents bar (53px) sits under the nav, so the plan pins below it */
+@media (max-width: 900px) {
+  .pw-on .pw-stage { top: calc(var(--nav-h) + 52px); padding-top: 8px; }
+  .venue-page.nav-hid .pw-on .pw-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
+}
+.pw-on .pw-step { cursor: pointer; }
+.pw-on .pw-steps { gap: 12vh; padding-bottom: 10vh; }
+@media (min-width: 1100px) {
+  .pw-on { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+  .pw-on .pw-steps { gap: 16vh; padding: 10vh 0 14vh; }
+}
+@media (prefers-reduced-motion: reduce) { .pw-pic, .pw-hl { transition: none; } .pw-hl.is-on { animation: none; } }
+
+/* ---- Our picks map ---- */
+.recs { margin: 18px 0 14px; --c: var(--t-bts); }
+.c-stay { --c: #2f6df6; } .c-eat { --c: #ff8a3d; } .c-coffee { --c: #d9a066; } .c-watch { --c: #22c993; } .c-work { --c: #b98cff; }
+.recs-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.recs-chip { min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: background var(--dur), color var(--dur), border-color var(--dur); }
+.recs-chip:not([data-cat="all"])::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.recs-chip[aria-pressed="true"] { background: var(--heading); color: var(--bg); border-color: var(--heading); }
+.recs-body { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+.recs-map { position: relative; aspect-ratio: 4400 / 6400; max-height: 640px; width: 100%; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #0a2a57; }
+.recs-map svg { width: 100%; height: 100%; display: block; }
+.rm-sea { fill: #0a2a57; }
+.rm-land { fill: #183f2e; stroke: #3d7a5c; stroke-width: 14; stroke-linejoin: round; }
+.rm-water { fill: #0a2a57; stroke: #3d7a5c; stroke-width: 8; stroke-linejoin: round; }   /* harbour, marina, Radipole Lake */
+.rm-wall { fill: none; stroke: #9fb6d6; stroke-width: 30; stroke-linecap: round; stroke-linejoin: round; }
+.rm-lbl { fill: rgba(233, 240, 250, .8); font-family: Montserrat, sans-serif; font-weight: 800; letter-spacing: .04em; text-anchor: middle; paint-order: stroke; stroke: rgba(3, 19, 46, .7); stroke-width: .25em; pointer-events: none; }
+.rm-spot { fill: #ffd66b; }
+.rm-pin { cursor: pointer; outline: none; transition: opacity var(--dur); }
+.rm-dot { fill: var(--c); }
+.rm-ring { fill: #fff; }
+.rm-area { fill: var(--c); opacity: .2; stroke: var(--c); stroke-width: 20; stroke-dasharray: 60 40; }
+.rm-name { display: none; fill: #fff; font-family: Montserrat, sans-serif; font-weight: 800; paint-order: stroke; stroke: rgba(3, 19, 46, .85); stroke-width: .3em; stroke-linejoin: round; pointer-events: none; }
+.rm-pin.is-on .rm-name { display: inline; }
+.rm-pin.is-on .rm-ring { filter: drop-shadow(0 0 6px rgba(255, 255, 255, .7)); }
+.rm-pin.is-on { animation: rm-pop .5s var(--ease); }
+.rm-pin:focus-visible .rm-ring { fill: #ffd66b; }
+.rm-pin.is-off { opacity: 0; pointer-events: none; }
+@keyframes rm-pop { 40% { opacity: .5; } }
+.recs-rail { list-style: none; margin: 0; padding: 0 4px 0 0; display: grid; gap: 8px; max-height: 640px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.rec { padding: 12px 14px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c); cursor: pointer; transition: background var(--dur), transform var(--dur) var(--ease); }
+.rec[hidden] { display: none; }
+.rec h3 { margin: 2px 0 4px; font-size: 17px; }
+.rec p { margin: 0 0 4px; font-size: 15px; color: var(--muted); }
+.rec .rec-k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--c); }
+.rec.is-on { background: var(--surface-2); transform: translateX(3px); }
+.recs-credit { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+/* James 17 Nov: chips + map pin under the contents bar, cards scroll past in groups (Stay, Eat, Coffee, Watch, Work)
+   and the map shows the group being read. No JS: no map, no chips, the cards read as a plain list. */
+.recs:not(.recs-on) .recs-stage { display: none; }
+.recs-stage { z-index: 6; background: var(--bg); }
+.recs-on .recs-stage { position: sticky; top: calc(var(--nav-h) + 10px); padding: 6px 0 10px; transition: transform var(--dur-slow, .4s) var(--ease); }
+.venue-page.nav-hid .recs-on .recs-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+.recs-on .recs-filter { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-bottom: 8px; }
+.recs-on .recs-filter::-webkit-scrollbar { display: none; }
+.recs-on .recs-chip { flex: none; }
+@media (max-width: 420px) { .recs-on .recs-filter { gap: 4px; } .recs-on .recs-chip { padding: 0 10px; gap: 5px; font-size: 12.5px; } .recs-on .recs-chip::before { width: 7px; height: 7px; } }
+.recs-on .recs-body { display: block; }
+.recs-on .recs-rail { max-height: none; overflow: visible; padding: 4vh 0 30vh; gap: 0; }
+.recs-on .rec { margin: 0 0 14px; cursor: default; }   /* 17 Nov (James): close the gaps between cards */
+.recs-gh { margin: 34px 0 10px; }
+.recs-gh:first-child { margin-top: 0; }
+.recs-gh-t { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--c); }
+.recs-gh-t::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.recs:not(.recs-on) .rec { margin-bottom: 8px; }
+@media (min-width: 761px) {
+  .recs-on { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0 18px; align-items: start; }
+  .recs-on .recs-map { aspect-ratio: auto; height: calc(100svh - var(--nav-h) - 110px); max-height: 640px; }
+  .recs-on .recs-rail { padding-top: 22vh; }
+  .recs-on .recs-credit { grid-column: 1 / -1; }
+  .recs-on .recs-filter { flex-wrap: wrap; overflow: visible; }
+}
+@media (max-width: 900px) {
+  .recs-on .recs-stage { top: calc(var(--nav-h) + 52px); }
+  .venue-page.nav-hid .recs-on .recs-stage.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
+}
+@media (max-width: 760px) {
+  .recs-on .recs-map { aspect-ratio: auto; height: 34svh; min-height: 220px; max-height: none; }
+  .rec.is-on { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .recs-on .recs-stage, .rec { transition: none; } .rm-pin.is-on { animation: none; } }
+
+/* ---- Sticky note (same as the advice articles; James 16 Nov: "the wall over-reads") ---- */
+.venue-page .note { position: relative; max-width: 30rem; margin: 34px auto; padding: 24px 22px 20px; border: 0;
+  background: linear-gradient(170deg, #fff6b8, #ffe57f 70%, #f9d966); color: #2b2300;
+  border-radius: 2px 2px 18px 2px / 2px 2px 30px 2px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 18px 28px -10px rgba(0, 0, 0, .65);
+  transform: rotate(var(--tilt, -1.6deg)); }
+.venue-page .note::before { content: ""; position: absolute; top: -13px; left: 50%; width: 112px; height: 26px; margin-left: -56px; transform: rotate(-3deg);
+  background: rgba(255, 255, 255, .42); border-left: 1px dashed rgba(255, 255, 255, .5); border-right: 1px dashed rgba(255, 255, 255, .5); }
+.venue-page .note p { font: 500 1.45rem/1.25 "Caveat", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive; color: #2b2300; margin: 0; }
+.venue-page .note .note__label { display: inline-block; margin: 0 0 6px !important; font: 700 1.75rem/1 "Caveat", "Segoe Print", cursive !important; color: #b23a0b !important;
+  background: linear-gradient(transparent 70%, rgba(255, 138, 61, .45) 70% 88%, transparent 88%); }
+@media (max-width: 560px) { .venue-page .note { margin: 32px 6px; padding: 22px 18px 18px; } .venue-page .note p { font-size: 1.35rem; } }
+@media (prefers-reduced-motion: no-preference) {
+  .js-vnote .note { transition: opacity 260ms var(--ease), transform 560ms cubic-bezier(.34, 1.56, .64, 1); }
+  .js-vnote .note:not(.is-in) { opacity: 0; transform: translateY(24px) rotate(calc(var(--tilt, -1.6deg) * 4)) scale(.86); }
+  .js-vnote .note .wd.late { opacity: 0; }
+  .js-vnote .note.is-in .wd.late { opacity: 1; transition: opacity 140ms linear calc(380ms + var(--d) * 32ms); }
+}
+
+/* Navigator picture is a link */
+.v-shot-link a { display: block; border-radius: var(--radius); transition: transform var(--dur) var(--ease), box-shadow var(--dur); }
+@media (hover: hover) { .v-shot-link a:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0, 0, 0, .35); } }
+
+/* =====================================================================
+   P1 frame (WEYMOUTH-DESIGN-PLAN.md, 16 Nov): photo bands + finish line + mini calendar come from advice/article.css
+   (body.art-page). Here: chapter colour (19) for the parents' half, and band spacing on the venue page.
+   ===================================================================== */
+/* 19 Chapter colour: everything for parents sits on a lighter blue; the tokens switch inside the part, so cards, pins and links follow */
+.part--parents {
+  --bg: #0d2350; --bg-2: #10295b; --surface: #143166; --surface-2: #1a3b76;   /* 17 Nov (James): lighter blue, not teal */
+  --line: rgba(143, 181, 255, .2); --line-strong: rgba(143, 181, 255, .42);
+  --blue: #9cc0ff; --blue-300: #9cc0ff; --accent: #2f6df6; --muted: #b3c3de;
+  margin-top: clamp(48px, 7vw, 80px); padding-bottom: clamp(36px, 6vw, 64px);
+  background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax);
+}
+.part--parents > .g-sec:first-child { padding-top: clamp(28px, 5vw, 48px); }
+.part--parents .band::before { color: #9cc0ff; }
+@media (min-width: 901px) { .venue-page .toc { z-index: 3; } }   /* the blue part paints in the positioned layer: keep the contents rail above it */
+/* bands sit at the top of their section; the section's own top padding is enough */
+.venue-page .g-sec > .band:first-child { margin-top: 0; }
+.band__credit .todo { display: inline; margin: 0 0 0 4px; padding: 0 6px; font-size: 11px; color: #ffd66b; }   /* review mode only (hidden publicly by advice.css) */

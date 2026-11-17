@@ -70,9 +70,23 @@ Feeds `beta/venues/weymouth/` (sailing half + parents' half).
 
 ### Forecast and live wind (James, 16 Nov)
 - **Live readings on the wall over-read by about 4 kts** typically, so conditions can look windier than they are.
-- Forecast: **ECMWF** and **GFS**. The newer Met Office **UKV2** `[?]` (UKV?) works quite well, but James is still experimenting with it.
+- Forecast: **ECMWF** and **GFS**. The newer Met Office **UKV2** (the 2 km model) works quite well, but James is still experimenting with it.
 - Models available on most platforms: Windguru, windy.app, Windy.com.
-- On page: `#forecast` intro + "The wall over-reads" callout. `[?]` which Navigator station is "the wall".
+- Call them "the ones on the wall" (no station name needed). Over-read is just a thing to note (no rig advice).
+
+### Tide (James, 16 Nov)
+- Harbour tidal streams: **Weymouth Harbour Guide** (weymouth-harbour.co.uk/harbourguide/), full credit. James's cropped PDF `D:\Portland Tidal Streams.pdf` pp. 1–7 = 13 hourly charts HW−6…HW+6 Portland (HW Portland = HW Devonport +1 h; figures = neaps,springs in tenths of a knot). Rendered to `venues/weymouth/tide/*.webp`. Pages 8–11 are year-specific tide tables, not used.
+- His own Portland tidal model in the Navigator is **not finished**: don't say the Navigator has tide. WIP block on page with placeholder for a native viewer.
+
+### Ashore (James, 16 Nov)
+- Trolley tag: collect at registration.
+- WPNSA site plan: https://www.wpnsa.org.uk/wp-content/uploads/2025/04/WPNSA-Site-Plan-with-RIB-Trailer-Parking.pdf → `venues/weymouth/wpnsa-site-plan.webp`. Boats usually in **areas 3–7** for the regatta; **zone 8** sometimes between regattas.
+- **Two dinghy slipways side by side, in front of areas 3 and 4:** super steep one on the left, main one on the right (a little easier).
+- Parking: plenty, **free**. Bulk is the **gravel car park across the road** (= "Main Car Park" on the plan), can get messy. The **brick car park fills fast**, then the gravel one.
+- Course flags: **P** hoisted = Portland Harbour, **W** = Weymouth Bay.
+- Tide (James's words): bay, neaps ignore; springs think about it close to the harbour entrances or close to Portland Bill. **No tide in the harbour.** Swell is the most important factor in the bay in the directions where racing seems simple: swell direction relative to wind direction.
+- Events on the guide: National Opens + BTS coaching only (no ILCA UK training).
+- Picks map pins from OpenStreetMap. `[?]` RYA Portland House pin (OSM "Portland House"), Shalim's = OSM "Balti House", Commercial Road? Not on OSM: Billy Winters, Beehive, Riptide, Spinnakers.
 
 ### Seasonal
 - **Fog in spring (April) and autumn (late November).** Rolls in; plan for postponements.
