@@ -33,12 +33,24 @@
     optional: store.get("optional", false),
     dayW: null
   };
-  /* Links can pick the view and rig: ?view=year|month&rig=all|4|6|7 (homepage "See the season" = year plan, all rigs).
-     The choice is remembered like a normal tap, then the query is dropped from the address bar. */
+  /* The address bar always holds the current view, so it can be copied and shared:
+     ?view=year|month&rig=all|4|6|7&show=<type>,<type>|none&extra=1 (extra = the optional events switch).
+     A link's choices are remembered like a normal tap. */
   const qs = new URLSearchParams(location.search);
   if (/^(year|month)$/.test(qs.get("view") || "")) { state.view = qs.get("view"); store.set("view", state.view); }
   if (/^(all|4|6|7)$/.test(qs.get("rig") || "")) { state.rig = qs.get("rig"); store.set("rig", state.rig); }
-  if (qs.has("view") || qs.has("rig")) history.replaceState(null, "", location.pathname + location.hash);
+  if (qs.has("show")) {
+    const s = qs.get("show") === "none" ? [] : qs.get("show").split(",").filter(k => k in TYPES);
+    if (s.length || qs.get("show") === "none") { state.types = s; store.set("types.v2", s); }
+  }
+  if (qs.has("extra")) { state.optional = qs.get("extra") === "1"; store.set("optional", state.optional); }
+  function syncUrl() {
+    const p = new URLSearchParams();
+    p.set("view", state.view); p.set("rig", state.rig);
+    p.set("show", state.types.length ? Object.keys(TYPES).filter(k => state.types.includes(k)).join(",") : "none");
+    if (state.optional) p.set("extra", "1");
+    history.replaceState(null, "", `${location.pathname}?${p.toString().replace(/%2C/g, ",")}${location.hash}`);
+  }
   let booted = false; // true once the first paint and scroll-to-today are done (so those don't count as "the viewer scrolled")
   const rigOk = e => state.rig === "all" || !e.rigs.length || e.rigs.includes(Number(state.rig));
 
@@ -57,7 +69,7 @@
     ALL.forEach(e => { if ((!e.optional || optional) && rigOk(e)) c[e.type] = (c[e.type] || 0) + 1; });
     return c;
   }
-  function saveFilters() { store.set("types.v2", state.types); store.set("optional", state.optional); }
+  function saveFilters() { store.set("types.v2", state.types); store.set("optional", state.optional); syncUrl(); }
 
   /* ---------- toolbar: Filter button carries a dot per type that is on (a mini colour key) ---------- */
   function renderChips() {
@@ -69,7 +81,7 @@
 
   $$("[data-rig]").forEach(b => b.addEventListener("click", () => {
     if (state.rig === b.dataset.rig) return;
-    state.rig = b.dataset.rig; store.set("rig", state.rig); syncPressed(); renderChips(); render({ fx: true });
+    state.rig = b.dataset.rig; store.set("rig", state.rig); syncUrl(); syncPressed(); renderChips(); render({ fx: true });
     if (fsheet.open) renderFilter();
   }));
 
@@ -101,6 +113,20 @@
       </label>`;
     const total = visible().length;
     fApply.textContent = total ? `Done · ${total} event${total === 1 ? "" : "s"}` : "Done · nothing showing (bold choice)";
+  }
+  /* Share: the phone's share sheet where there is one, otherwise copy the link. The link is the address bar
+     (view, rig and filters), without any open event. */
+  function shareView(btn) {
+    syncUrl();
+    const url = location.origin + location.pathname + location.search;
+    const label = $("span", btn), was = "Share this calendar";
+    const said = t => { label.textContent = t; setTimeout(() => { label.textContent = was; }, 2200); };
+    const rig = state.rig === "all" ? "" : ` (ILCA ${state.rig})`;
+    if (navigator.share && phone.matches) {
+      navigator.share({ title: `ILCA season calendar${rig}`, url }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => said("Link copied"), () => said("Copy the address bar"));
+    } else said("Copy the address bar");
   }
   function applyFilter() { saveFilters(); hintDone("filter"); renderChips(); render({ fx: true }); renderFilter(); }
   // the dropdown hangs from the button, kept inside the window
@@ -143,6 +169,8 @@
   fsheet.addEventListener("click", ev => {
     if (ev.target === fsheet && !isDrop()) { closeFilter(); return; } // tap on the backdrop
     if (ev.target.closest("[data-fsheet-close], [data-f-apply]")) { closeFilter(true); return; }
+    const sh = ev.target.closest("[data-f-share]");
+    if (sh) { shareView(sh); return; }
     const p = ev.target.closest("[data-preset]");
     if (p) { state.types = PRESETS.find(x => x[0] === p.dataset.preset)[2].slice(); applyFilter(); }
   });
@@ -321,9 +349,14 @@
   function trackMonth() {
     ticking = false;
     if (state.view !== "month") return;
-    const line = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--tb-h")) || 200) + 24;
-    let idx = "0";
-    $$(".mcard", mv).forEach(c => { if (c.getBoundingClientRect().top <= line) idx = c.dataset.m; });
+    // the month that fills most of the screen below the toolbar (a month whose last row is
+    // still peeking out under the toolbar no longer counts)
+    const top = Math.max(0, toolbar.getBoundingClientRect().bottom), bottom = window.innerHeight;
+    let idx = "0", best = -1;
+    $$(".mcard", mv).forEach(c => {
+      const r = c.getBoundingClientRect(), seen = Math.min(r.bottom, bottom) - Math.max(r.top, top);
+      if (seen > best + 1) { best = seen; idx = c.dataset.m; }
+    });
     if (idx === lastIdx) return;
     lastIdx = idx;
     $$("[data-jump]", jump).forEach(a => a.classList.toggle("is-current", a.dataset.jump === idx));
@@ -740,7 +773,7 @@
     shownIds = ids;
   }
   function setView(v, monthIdx) {
-    state.view = v; store.set("view", v);
+    state.view = v; store.set("view", v); syncUrl();
     yp.hidden = v !== "year"; mv.hidden = v !== "month";
     document.documentElement.classList.toggle("cal-lock", v === "year");
     syncPressed(); renderHints(); size(); render({ intro: true });

@@ -9,10 +9,8 @@
   function banner() {
     const el = document.createElement("aside");
     el.className = "bk-banner";
-    el.setAttribute("aria-label", "Beta notice");
-    el.innerHTML = `<span class="bk-beta">Beta</span>
-      <p>Online booking is in beta. Your place is confirmed when we contact you personally after payment.
-      Prefer the old way? <a href="${esc(B.cfg.fallbackForm)}" target="_blank" rel="noopener">Use the booking form</a>.</p>`;
+    el.setAttribute("aria-label", "How booking works");
+    el.innerHTML = `<p>Book online, then pay by bank transfer. Your place is confirmed when we contact you personally after payment.</p>`;
     if (B.mode === "mock") el.insertAdjacentHTML("beforeend", `<p class="bk-mock"><b>Test mode (fake data on this computer).</b> Nothing is saved to the real sheet, no emails are sent, and medical forms won't tick here. Sign-in code is <b>123456</b>. <a href="?live=1">Switch to the real system</a>.</p>`);
     return el;
   }

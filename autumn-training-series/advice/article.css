@@ -489,7 +489,17 @@
   .js-walk .rigwalk.walk-on .rigwalk__stage { top: var(--nav-h); margin-inline: calc(-1 * var(--gutter)); }
   .js-walk .rigwalk.walk-on .rw { border-radius: 0; border-inline: 0; padding: 8px var(--gutter) 6px; }
 }
-@media (max-width: 420px) { .art-page .rw__kick { display: none; } .rw__head { justify-content: space-between; } }
+/* Phones: one fixed row for both chips (they used to wrap onto two rows when "race weight" appeared, so the
+   pinned panel grew and shoved the text), and a shorter picture so the panel covers less of the reading. */
+@media (max-width: 600px) {
+  .art-page .rw__kick { display: none; }
+  .rw__head { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+  .art-page .rw__chip { min-width: 0; }
+  .rw__chip em { min-width: 7.5ch; text-align: center; }
+  .rw__rw { display: none; }
+  .rw__chip em.is-race::after { content: " \2713"; }
+  .rw__scene { --sh: clamp(112px, 19svh, 160px); }
+}
 @media (prefers-reduced-motion: reduce) { .rw__boat, .rw__kid .arm-a { transition: none; } }
 
 /* ---------- Mini season calendar (Racing): tap, it zooms up, then the calendar opens ---------- */
