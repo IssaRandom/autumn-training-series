@@ -127,6 +127,32 @@
       ],
       "port": 8787,
       "autoPort": false
+    },
+    {
+      "name": "weymouth-slices",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8789",
+        "--directory",
+        "../bts-weymouth-slices/autumn-training-series"
+      ],
+      "port": 8789,
+      "autoPort": false
+    },
+    {
+      "name": "consolidate",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8791",
+        "--directory",
+        "../bts-consolidate/autumn-training-series"
+      ],
+      "port": 8791,
+      "autoPort": false
     }
   ]
 }

@@ -1,0 +1,228 @@
+{
+  "summary": {
+    "health_score": 65,
+    "business_type": "Sports coaching / training camps (no premises; trains at WPNSA and Poole YC)",
+    "top_findings": [
+      "Schema org name still 'KW | JF Sailing', only on /coaching/, includes 7 past camps",
+      "No canonical tags except /coaching/",
+      "Home and /coaching/ share the same H1; neither names the brand",
+      "Weymouth guide is in the sitemap but noindex",
+      "Calendar content is JS-rendered (92 words in HTML)"
+    ],
+    "quick_wins": [
+      "Rename Organization to Beyond the Shift + add WebSite/Person nodes sitewide",
+      "Self-referencing canonicals",
+      "Brand H1 on home; own H1 on /coaching/",
+      "Longer home meta description",
+      "Set up Search Console and request indexing"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 72,
+      "what_works": [
+        "HTTPS 301",
+        "/beta -> root 301s",
+        "Bots not blocked",
+        "robots.txt + 11-URL sitemap"
+      ],
+      "findings": [
+        {
+          "title": "Weymouth noindex but in sitemap",
+          "severity": "High",
+          "description": "Conflicting signals",
+          "recommendation": "Remove noindex or drop from sitemap"
+        },
+        {
+          "title": "Empty 404 body",
+          "severity": "Medium",
+          "description": "Custom 404 not served",
+          "recommendation": "Serve 404.html"
+        },
+        {
+          "title": "307 trailing-slash redirects",
+          "severity": "Medium",
+          "description": "Temporary redirects",
+          "recommendation": "Use 301"
+        },
+        {
+          "title": "No HSTS",
+          "severity": "Low",
+          "description": "Header missing",
+          "recommendation": "Add to _headers"
+        },
+        {
+          "title": "www does not resolve",
+          "severity": "Medium",
+          "description": "NXDOMAIN",
+          "recommendation": "Add DNS + 301"
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 68,
+      "what_works": [
+        "Strong coach credentials",
+        "5,900-word New to ILCAs guide"
+      ],
+      "findings": [
+        {
+          "title": "No coach pages",
+          "severity": "Medium",
+          "description": "Expertise buried in homepage",
+          "recommendation": "Add a page per coach with sameAs"
+        },
+        {
+          "title": "No UKLA mention",
+          "severity": "Low",
+          "description": "Old name still searched",
+          "recommendation": "One 'formerly UKLA' line"
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 60,
+      "what_works": [
+        "Branded titles"
+      ],
+      "findings": [
+        {
+          "title": "Missing canonicals",
+          "severity": "High",
+          "description": "Only /coaching/ has one",
+          "recommendation": "Add to all pages"
+        },
+        {
+          "title": "Duplicate H1 home and /coaching/",
+          "severity": "High",
+          "description": "Same H1, no brand",
+          "recommendation": "Distinct H1s"
+        },
+        {
+          "title": "Short home description",
+          "severity": "Low",
+          "description": "92 chars",
+          "recommendation": "140-155 chars"
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 35,
+      "what_works": [
+        "Event + Offer + Place markup on /coaching/"
+      ],
+      "findings": [
+        {
+          "title": "Wrong org name",
+          "severity": "High",
+          "description": "'KW | JF Sailing'",
+          "recommendation": "Beyond the Shift + alternateName"
+        },
+        {
+          "title": "Past events listed",
+          "severity": "Medium",
+          "description": "7 past camps",
+          "recommendation": "Future camps only"
+        },
+        {
+          "title": "No schema on other pages",
+          "severity": "High",
+          "description": "Home has none",
+          "recommendation": "WebSite/Organization sitewide"
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 80,
+      "what_works": [
+        "Light old page, preloaded hero"
+      ],
+      "findings": [
+        {
+          "title": "Not measured",
+          "severity": "Medium",
+          "description": "PSI rate-limited; new site adds GSAP/Lenis",
+          "recommendation": "Run pagespeed.web.dev on mobile"
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 60,
+      "what_works": [
+        "GPTBot/ClaudeBot allowed"
+      ],
+      "findings": [
+        {
+          "title": "JS-only calendar",
+          "severity": "Medium",
+          "description": "Non-JS crawlers see little",
+          "recommendation": "Plain-text intro + key dates"
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 85,
+      "what_works": [
+        "Alt text, dimensions, srcset, lazy loading"
+      ],
+      "findings": []
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Schema fix sitewide",
+          "Canonicals",
+          "Distinct H1s",
+          "Weymouth noindex/sitemap",
+          "Search Console + Bing",
+          "404, HSTS, www"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Coach pages",
+          "ILCA 4 / ILCA 6 pages",
+          "One URL per camp",
+          "Calendar text intro",
+          "UKLA line"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "portal.ilca.uk listings + coach register",
+          "Club/venue/sponsor links",
+          "Camp reports to sailing press",
+          "Social/profile links"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Monthly GSC check",
+          "Seasonal refresh",
+          "Re-audit in 8-12 weeks"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}
