@@ -274,7 +274,9 @@
     const band = Object.entries(K.race).find(([, [a, b2]]) => kg >= a && kg <= b2);
     K.inRace = band ? +band[0] : 0;
     K.kgEl.textContent = Math.round(kg);
-    K.rigEl.textContent = K.rig ? RIGN[K.rig] + (K.inRace === K.rig ? " · race weight" : "") : "Growing";
+    // " · race weight" is hidden on phones (a ✓ and the glow say it there) so the chips never wrap and the panel never changes height
+    K.rigEl.innerHTML = K.rig ? RIGN[K.rig] + (K.inRace === K.rig ? '<span class="rw__rw"> · race weight</span>' : "") : "Growing";
+    K.rigEl.classList.toggle("is-race", !!K.rig && K.inRace === K.rig);
     if (K.rig) K.rigEl.dataset.rigC = K.rig; else delete K.rigEl.dataset.rigC;
     K.chip.classList.toggle("race", !!K.inRace);
     K.el.classList.toggle("done", kg >= K.to);
