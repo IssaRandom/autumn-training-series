@@ -201,7 +201,7 @@
     svg.setAttribute("role", "img");
     svg.setAttribute("aria-label", "Map of Weymouth and Portland with our picks pinned");
     svg.innerHTML = `<rect class="rm-sea" x="-20000" y="-20000" width="40000" height="40000"/>` +
-      `<path class="rm-land" d="${G.land}"/>` + (G.walls || []).map(d => `<path class="rm-wall" d="${d}"/>`).join("") +
+      `<path class="rm-land" d="${G.land}"/>` + (G.water || []).map(d => `<path class="rm-water" d="${d}"/>`).join("") + (G.walls || []).map(d => `<path class="rm-wall" d="${d}"/>`).join("") +
       [["Weymouth", -2300, -3350], ["Portland Harbour", 600, 400], ["Portland", -150, 3600], ["Weymouth Bay", 900, -2300], ["WPNSA", -1500, 1150]]
         .map(([t, x, y]) => `<text class="rm-lbl${t === "WPNSA" ? " rm-spot" : ""}" x="${x}" y="${y}">${t}</text>`).join("") +
       `<g class="rm-pins"></g>`;
@@ -230,14 +230,14 @@
     };
     const fly = to => {
       cancelAnimationFrame(anim);
-      const from = vb.slice(), t0 = performance.now(), dur = still.matches ? 0 : 650;
+      const from = vb.slice(), t0 = performance.now(), dur = still.matches || document.hidden ? 0 : 650;
       const step = now => {
         const k = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - k, 3);
         vb = from.map((v, j) => v + (to[j] - v) * e);
         svg.setAttribute("viewBox", vb.map(n => n.toFixed(1)).join(" ")); sizePins();
         if (k < 1) anim = requestAnimationFrame(step);
       };
-      anim = requestAnimationFrame(step);
+      if (dur) anim = requestAnimationFrame(step); else step(t0);   /* no animation (reduced motion, hidden tab): jump now */
     };
     /* James 17 Nov: the chips + map pin under the contents bar; scroll through Stay, Eat, Coffee, Watch and Work and
        the map shows that group's pins, framed to fit them. The card being read lights its pin. */
@@ -246,7 +246,7 @@
     const inGroup = (c, g) => c.dataset.cat.split(" ").includes(g);
     const frameFor = g => {                                   /* viewBox round this group's pins, shaped like the map box */
       const pts = cards.filter(c => inGroup(c, g) && c.dataset.x).map(c => [+c.dataset.x, +c.dataset.y]);
-      if (!pts.length) return HOME;
+      if (!pts.length || !mapEl.clientWidth || !mapEl.clientHeight) return HOME;   /* map not laid out yet: no NaN viewBox */
       const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
       const pad = 700, cx = (Math.min(...xs) + Math.max(...xs)) / 2 + 700, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
       const r = mapEl.clientWidth / Math.max(1, mapEl.clientHeight);
