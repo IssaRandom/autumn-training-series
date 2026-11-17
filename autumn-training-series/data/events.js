@@ -25,31 +25,31 @@ window.BTS_EVENTS = [
   { id: "bts-summer-2", name: "BTS Summer Training Block 2", short: "BTS summer 2", start: "2027-08-23", end: "2027-08-27", venue: "WPNSA (TBC)", rigs: [4, 6], type: "bts-camp", status: "provisional", placeholder: true, note: "Placeholder: late-summer block after the Nationals, building towards the autumn National Opens. Dates to be set." },
 
   /* ---- ILCA UK training ---- */
-  { id: "nt-w1", name: "National Training W1", short: "NT W1", start: "2026-11-14", end: "2026-11-15", venue: "WPNSA", rigs: [], type: "ilca-uk-training", note: "Places by ranking", url: "https://portal.ilca.uk/events" },
-  { id: "rot-w3", name: "Regional Open Training W3", short: "Regional W3", start: "2026-11-21", end: "2026-11-22", venue: "Royal Harwich / Poole YC / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "rot-w4", name: "Regional Open Training W4", short: "Regional W4", start: "2026-12-05", end: "2026-12-06", venue: "Royal Harwich / WPNSA / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "nt-w2", name: "National Training W2", short: "NT W2", start: "2026-12-12", end: "2026-12-13", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "nt-w3", name: "National Training W3", short: "NT W3", start: "2027-01-09", end: "2027-01-10", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "rot-w5", name: "Regional Open Training W5", short: "Regional W5", start: "2027-01-16", end: "2027-01-17", venue: "Island Barn / WPNSA / Hollingworth Lake / Bartley", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "nt-w4", name: "National Training W4", short: "NT W4", start: "2027-02-13", end: "2027-02-14", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "rot-w6", name: "Regional Open Training W6", short: "Regional W6", start: "2027-02-27", end: "2027-02-28", venue: "Brightlingsea / WPNSA / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
-  { id: "nt-w5", name: "National Training W5", short: "NT W5", start: "2027-03-06", end: "2027-03-07", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "nt-w1", name: "ILCA UK National Training W1", short: "NT W1", start: "2026-11-14", end: "2026-11-15", venue: "WPNSA", rigs: [], type: "ilca-uk-training", note: "Places by ranking", url: "https://portal.ilca.uk/events" },
+  { id: "rot-w3", name: "ILCA UK Regional Open Training W3", short: "Regional W3", start: "2026-11-21", end: "2026-11-22", venue: "Royal Harwich / Poole YC / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "rot-w4", name: "ILCA UK Regional Open Training W4", short: "Regional W4", start: "2026-12-05", end: "2026-12-06", venue: "Royal Harwich / WPNSA / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "nt-w2", name: "ILCA UK National Training W2", short: "NT W2", start: "2026-12-12", end: "2026-12-13", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "nt-w3", name: "ILCA UK National Training W3", short: "NT W3", start: "2027-01-09", end: "2027-01-10", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "rot-w5", name: "ILCA UK Regional Open Training W5", short: "Regional W5", start: "2027-01-16", end: "2027-01-17", venue: "Island Barn / WPNSA / Hollingworth Lake / Bartley", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "nt-w4", name: "ILCA UK National Training W4", short: "NT W4", start: "2027-02-13", end: "2027-02-14", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "rot-w6", name: "ILCA UK Regional Open Training W6", short: "Regional W6", start: "2027-02-27", end: "2027-02-28", venue: "Brightlingsea / WPNSA / South Shields / Draycote", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
+  { id: "nt-w5", name: "ILCA UK National Training W5", short: "NT W5", start: "2027-03-06", end: "2027-03-07", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
   { id: "skills-week", name: "ILCA Skills Week", short: "Skills Week", start: "2027-07-28", end: "2027-08-01", venue: "WPNSA", rigs: [], type: "ilca-uk-training", url: "https://portal.ilca.uk/events" },
 
   /* ---- National Opens (rigs per NOR — 2026 had single-rig NOs) ---- */
-  { id: "no1", name: "National Open 1", sponsor: "Rooster", short: "NO1", start: "2027-03-13", end: "2027-03-14", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", url: "https://portal.ilca.uk/event/2026-NO6-1" },
-  { id: "no2", name: "National Open 2", sponsor: "Ovington", short: "NO2", start: "2027-03-20", end: "2027-03-21", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no3", name: "National Open 3", sponsor: "Sailingfast", short: "NO3", start: "2027-04-24", end: "2027-04-25", venue: "Hayling Island SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no4", name: "National Open 4", sponsor: "Rooster", short: "NO4", start: "2027-10-09", end: "2027-10-10", venue: "Warsash SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no5", name: "National Open 5", sponsor: "Ovington", short: "NO5", start: "2027-10-16", end: "2027-10-17", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
-  { id: "no6", name: "National Open 6", sponsor: "Sailingfast", short: "NO6", start: "2027-10-23", end: "2027-10-24", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no1", name: "ILCA UK National Open 1", sponsor: "Rooster", short: "NO1", start: "2027-03-13", end: "2027-03-14", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", url: "https://portal.ilca.uk/event/2026-NO6-1" },
+  { id: "no2", name: "ILCA UK National Open 2", sponsor: "Ovington", short: "NO2", start: "2027-03-20", end: "2027-03-21", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no3", name: "ILCA UK National Open 3", sponsor: "Sailingfast", short: "NO3", start: "2027-04-24", end: "2027-04-25", venue: "Hayling Island SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no4", name: "ILCA UK National Open 4", sponsor: "Rooster", short: "NO4", start: "2027-10-09", end: "2027-10-10", venue: "Warsash SC", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no5", name: "ILCA UK National Open 5", sponsor: "Ovington", short: "NO5", start: "2027-10-16", end: "2027-10-17", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
+  { id: "no6", name: "ILCA UK National Open 6", sponsor: "Sailingfast", short: "NO6", start: "2027-10-23", end: "2027-10-24", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
 
   /* ---- ILCA UK Grand Prix Series: regional club-run rounds (75+ events in 2026, late Apr to early Oct). 2027 rounds not published. ---- */
   { id: "gp-series-2027", name: "ILCA UK Grand Prix Series opens (regional rounds)", short: "GP Series opens", start: "2027-05-01", end: "2027-05-01", venue: "Clubs in 9 regions", rigs: [4, 6, 7], type: "national-open", status: "provisional", url: "https://portal.ilca.uk/events", note: "Sailingfast ILCA UK Grand Prix Series: regional club open meetings from about late April to early October (one marker here, not every round). 2027 rounds are not published yet; timing follows 2026. Find your region's rounds on the ILCA UK portal." },
 
   /* ---- Championships ---- */
   { id: "nationals", name: "ILCA UK Open & National Championships", short: "Nationals", start: "2027-08-07", end: "2027-08-13", venue: "Largs SC", rigs: [4, 6, 7], type: "championship", url: "https://portal.ilca.uk/events" },
-  { id: "inlands", name: "Inland Championships", short: "Inlands", start: "2027-11-06", end: "2027-11-07", venue: "Rutland SC", rigs: [4, 6, 7], type: "championship", url: "https://portal.ilca.uk/events" },
+  { id: "inlands", name: "ILCA UK Inland Championships", short: "Inlands", start: "2027-11-06", end: "2027-11-07", venue: "Rutland SC", rigs: [4, 6, 7], type: "championship", url: "https://portal.ilca.uk/events" },
 
   /* ---- International ---- */
   { id: "u21-worlds", name: "ILCA U21 Worlds", short: "U21 Worlds", start: "2027-01-10", end: "2027-01-17", venue: "Sandringham YC, Melbourne", rigs: [6, 7], type: "international", url: "https://2027ilcau21.ilca-worlds.org/", note: "U21 = born 2007–2010 for 2027 (inferred from the 2026 NoR: 17 to 20 in the year of the event). ILCA 6 women and ILCA 7 men. Age check: girls on the ILCA 6 ladder are already in U21 range, so many reach this sooner than boys." },

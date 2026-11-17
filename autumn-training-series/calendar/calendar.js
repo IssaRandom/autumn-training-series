@@ -22,7 +22,7 @@
     "bts-camp": "Our camps. Objectively the best bit.",
     "national-open": "Ranking events. Where the points live.",
     "championship": "Nationals, Youth Nats, Inlands. The big ones.",
-    "ilca-uk-training": "National and regional squad training",
+    "ilca-uk-training": "ILCA UK national and regional training",
     "international": "Euros, Worlds, Europa Cups. Passport required.",
     "deadline": "Entries, rankings, selection. Don't miss these."
   };
@@ -1136,4 +1136,13 @@
   });
   const m = location.hash.match(/event=([^&]+)/);
   if (m) openSheet(decodeURIComponent(m[1]));
+})();
+
+/* Fade the year-view intro note as soon as the visitor does anything (see .cal-intro in calendar.css). */
+(function () {
+  const seen = () => {
+    document.documentElement.classList.add("cal-intro-seen");
+    ["pointerdown", "keydown", "wheel", "touchstart"].forEach(t => removeEventListener(t, seen, true));
+  };
+  setTimeout(() => ["pointerdown", "keydown", "wheel", "touchstart"].forEach(t => addEventListener(t, seen, { capture: true, passive: true })), 800);
 })();
