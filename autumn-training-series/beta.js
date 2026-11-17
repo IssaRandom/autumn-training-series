@@ -80,7 +80,7 @@
       <ul>${d.expect.map(x => `<li>${C.esc(x)}</li>`).join("")}</ul>
       <p class="camp-suitable"><strong>Suitable for:</strong> ILCA 4 and 6 sailors, primarily those racing nationally with international aspirations.</p>
       <p class="camp-deadline">${C.esc(d.deadline)}</p>
-      <a class="btn btn-accent camp-book" href="${b.href}"${b.ext ? ' target="_blank" rel="noopener noreferrer"' : ""} data-splash>Book this camp ${b.ext ? '<span aria-hidden="true">↗</span>' : '<span class="beta-tag">Online · Beta</span>'}</a>
+      <a class="btn btn-accent camp-book" href="${b.href}"${b.ext ? ' target="_blank" rel="noopener noreferrer"' : ""} data-splash>Book this camp ${b.ext ? '<span aria-hidden="true">↗</span>' : ''}</a>
       ${b.ext ? "" : `<a class="camp-alt" href="${FORM}" target="_blank" rel="noopener noreferrer">Prefer the booking form?</a>`}
       ${d.slug ? `<a class="camp-alt" href="camps/${encodeURIComponent(d.slug)}/">Full camp details →</a>` : ""}`;
   };

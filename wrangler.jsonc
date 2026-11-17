@@ -1,0 +1,11 @@
+// Cloudflare Workers Builds config for beyondtheshift.co.uk (static site, no Worker code).
+// Added 17 Nov 2026: without it, unknown URLs returned an empty 404 instead of 404.html.
+{
+  "name": "autumn-training-series",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./autumn-training-series",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}

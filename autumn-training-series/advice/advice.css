@@ -155,5 +155,8 @@ html:not(.review) .verify { font-size: inherit !important; color: inherit !impor
 html:not(.review) .verify::before { content: none; }
 /* Venue guides: internal markers hidden unless review mode */
 html:not(.review) .todo, html:not(.review) .gfx-slot { display: none; }
+/* 17 Nov audit: unfilled "To add" slots and the "still working on this" lede only show in review mode */
+html:not(.review) .g-lede:has(> .wip:only-child), html:not(.review) .stat:has(.wip), html:not(.review) .timeline li:has(.wip) { display: none; }
+html:not(.review) .timeline time[aria-label="time to add"] { visibility: hidden; }
 html:not(.review) .draft { box-shadow: none; padding-left: 0; }
 html:not(.review) .draft::before { content: none; }

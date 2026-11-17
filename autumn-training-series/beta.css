@@ -356,8 +356,12 @@ a.training:active { background: rgba(255, 255, 255, .05); transition-duration: v
 .card h3 { font-size: 1.4rem; }
 .card p { margin: 0; color: var(--muted); font-size: .92rem; }
 .card .arrow { margin-top: auto; padding-top: 10px; font-weight: 800; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--blue-300); }
-.card-img { aspect-ratio: 16 / 10; overflow: hidden; background: var(--grey); }
+.card-img { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--grey); }
+.card-img .credit { position: absolute; right: 8px; bottom: 8px; z-index: 2; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; letter-spacing: .02em; line-height: 1.4; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+/* No photo yet (17 Nov audit): a name panel on chart-style lines instead of a random placeholder image */
+.card-img--none { display: grid; place-items: center; background: repeating-linear-gradient(-12deg, transparent 0 14px, rgba(147, 178, 255, .07) 14px 15px), linear-gradient(160deg, var(--surface-2), var(--bg-2)); }
+.card-img--none span { font: 800 clamp(1.4rem, 3vw, 1.9rem)/1 var(--font); letter-spacing: .04em; text-transform: uppercase; color: rgba(219, 230, 246, .35); }
 .card:hover .card-img img { transform: scale(1.05); }
 .tag { align-self: flex-start; font-size: .68rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; background: var(--info-bg); color: var(--info-tx); padding: 3px 8px; border-radius: 3px; }
 @media (max-width: 640px) {
