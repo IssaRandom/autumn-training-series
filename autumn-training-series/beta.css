@@ -620,3 +620,7 @@ mark.legal-todo { background: #ffdf27; color: #03132e; font-weight: 800; padding
 
 /* Site is live: the "Beta preview" flag stays hidden (kept in the HTML so a peer session's files need no edit). */
 .beta-flag { display: none !important; }
+
+/* "Coming soon" guide cards are placeholders, not links (SEO: no links to unfinished guides) */
+div.card-soon { cursor: default; }
+div.card-soon:hover { transform: none; border-color: var(--line); box-shadow: var(--shadow-sm); }

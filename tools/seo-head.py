@@ -24,9 +24,10 @@ TODAY = datetime.date.today().isoformat()
 DRAFT_GUIDES = {"calendar-suggestions", "campaign-management", "fitness", "ilca-4-to-6", "international",
                 "nutrition", "pathway", "rigging", "sports-psychology", "technique"}
 NOINDEX_EXTRA = {"account/"}
-SKIP = {"loader-test/", "navigator/", "venues/weymouth/"}  # noindex for now; Weymouth: add when the guide goes public
+SKIP = {"loader-test/", "navigator/"}  # noindex for now
 EVENT_PAGES = {"", "coaching/"}
-ARTICLES = {"advice/new-to-ilca/": "kai"}      # finished guides -> author key
+ARTICLES = {"advice/new-to-ilca/": "kai", "venues/weymouth/": "james"}      # finished guides -> author key
+ARTICLE_ABOUT = {"venues/weymouth/": "WPNSA"}   # venue guides -> the place they are about (VENUES key)
 
 ORG_ID, SITE_ID = SITE + "/#organisation", SITE + "/#website"
 PEOPLE = {
@@ -158,6 +159,8 @@ def block_for(rel, h, camps):
                           "description": desc, "url": url, "inLanguage": "en-GB",
                           "author": {"@id": PEOPLE[ARTICLES[rel]]["@id"]}, "publisher": {"@id": ORG_ID},
                           "isPartOf": {"@id": SITE_ID}, "image": SITE + "/assets/images/og-image.jpg"})
+            if rel in ARTICLE_ABOUT:
+                graph[-1]["about"] = VENUES[ARTICLE_ABOUT[rel]]
         js = json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=1)
         out.append(f'<script type="application/ld+json">\n{js}\n  </script>')
     return "<!-- seo:start (written by tools/seo-head.py, do not edit by hand) -->\n  " + "\n  ".join(out) + "\n  <!-- seo:end -->"

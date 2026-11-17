@@ -146,6 +146,7 @@ html { scroll-padding-top: 96px; }
 .az-list li { break-inside: avoid; padding: 10px 0; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .az-list a { color: var(--heading); text-decoration: none; font-weight: 600; min-height: 24px; }
 .az-list a:hover { color: var(--blue-300); }
+.az-list .az-soon { color: var(--ink-2); font-weight: 600; }
 .wip-panel { max-width: 680px; margin: 0 auto; text-align: center; padding: clamp(28px, 5vw, 48px); border: 1px dashed var(--warn-tx); border-radius: var(--radius); background: var(--surface); }
 .wip-panel .h2 { margin: 18px 0 12px; }
 .wip-panel p { color: var(--ink-2); margin: 0 auto 24px; max-width: 46ch; }

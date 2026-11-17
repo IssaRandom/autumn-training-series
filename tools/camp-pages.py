@@ -43,7 +43,12 @@ def page(f, d):
     addr, guide = VENUE_INFO.get(f["venue"], (f["venue"], None))
     town = {"WPNSA": "Weymouth", "Poole Yacht Club": "Poole"}.get(f["venue"], f["venue"])
     name = d["title"].replace("Winter Training Series - ", "")
-    title = f"{name}, {d['date']} | {rigs.replace(' and ILCA ', ' & ')} training, {town}"
+    # Google cuts titles at about 60 characters: short months, no years, and drop the dates if still too long
+    short = re.sub(r"\s*\b(19|20)\d\d\b", "", d["date"])
+    short = re.sub(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b", r"\1", short)
+    title = f"{name}, {short} | {rigs.replace(' and ILCA ', ' & ')}, {town}"
+    if len(title) > 60:
+        title = f"{name} | {rigs.replace(' and ILCA ', ' & ')} training, {town}"
     desc = (f"{d['title']}: {rigs} training at {f['venue']}, {d['date']}. {d['price']}. "
             f"Coached by James Foster and Kai Wolgram. {d['intro']}")
     if len(desc) > 160:
