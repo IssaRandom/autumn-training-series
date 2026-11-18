@@ -99,5 +99,5 @@
 .cyg-logo { margin: 18px auto 20px; width: min(200px, 60%); padding: 14px 16px; border-radius: var(--radius); background: #fff; }
 .cyg-logo img { display: block; width: 100%; height: auto; }
 @media (min-width: 700px) { .cyg-logo { float: right; width: 190px; margin: 6px 0 14px 24px; } .cyg-facts { clear: both; } }
-/* Road band: keep the whole MALTA 2027 line in shot on phones */
-@media (max-width: 760px) { .band.cyg-road-band { min-height: 0; aspect-ratio: 4 / 3; } }
+/* Group photo band (What is it?): keep the whole MALTA 2027 line in shot on phones */
+@media (max-width: 760px) { .band.cyg-group-band { min-height: 0; aspect-ratio: 4 / 3; } }

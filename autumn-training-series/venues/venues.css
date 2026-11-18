@@ -146,6 +146,12 @@
 .venue-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
 .venue-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
 .venue-page.nav-hid .toc { transform: translateY(calc(-1 * var(--nav-h))); }
+@media (max-width: 900px) {
+  /* phones (20 Nov): same as the guides (article.css): the sticky line moves to the top edge when the header hides,
+     so the bar never jumps while it is still in the page, and slides with the header once stuck */
+  .venue-page .toc { transition: top var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
+  .venue-page.nav-hid .toc { transform: none; top: 0; }
+}
 
 /* windy.app stats widget: their own white theme, so it sits on a white card */
 .v-windy { margin: 20px 0 8px; }

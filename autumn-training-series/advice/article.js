@@ -75,11 +75,17 @@
   const nav = document.querySelector("[data-nav]");
   const toc = document.querySelector("[data-toc]");
   let lastY = window.scrollY;
+  /* the contents bar only follows the header up once it has reached its sticky line (18 Nov) */
+  const tocStuck = () => {
+    const box = toc.parentElement, pad = parseFloat(getComputedStyle(box).paddingTop) || 0;
+    return box.getBoundingClientRect().top + pad <= (parseFloat(getComputedStyle(toc).top) || 0) + 1;
+  };
   const navScroll = () => {
     const y = window.scrollY, d = y - lastY;
     if (Math.abs(d) < 4 && y > 80) return;
     const busy = (nav && nav.classList.contains("is-open")) || (toc && toc.classList.contains("is-open"));
     body.classList.toggle("nav-hid", y > 80 && d > 0 && !busy);
+    if (toc) toc.classList.toggle("is-stuck", tocStuck());
     lastY = y;
   };
 
