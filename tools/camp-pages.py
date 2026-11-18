@@ -50,10 +50,14 @@ def page(f, d):
     title = f"{name}, {short} | {rigs.replace(' and ILCA ', ' & ')}, {town}"
     if len(title) > 60:
         title = f"{name} | {rigs.replace(' and ILCA ', ' & ')} training, {town}"
-    desc = (f"{d['title']}: {rigs} training at {f['venue']}, {d['date']}. {d['price']}. "
-            f"Coached by James Foster and Kai Wolgram. {d['intro']}")
-    if len(desc) > 160:
-        desc = desc[:157].rsplit(" ", 1)[0] + "…"
+    # Google cuts descriptions at about 155 characters, so add whole sentences only while they fit
+    desc = f"{name}: {rigs} training at {f['venue']}, {d['date']}. {d['price']}."
+    for extra in ["Coached by British Sailing Squad sailors James Foster and Kai Wolgram.",
+                  "Coached by James Foster and Kai Wolgram."] + re.split(r"(?<=[.!?])\s+", d["intro"]):
+        if extra.startswith("Coached") and "Coached" in desc:
+            continue
+        if len(desc) + 1 + len(extra) <= 155:
+            desc += " " + extra
     ph = d.get("photo") or "fleet"
     expect = "".join(f"<li>{e(x)}</li>" for x in d["expect"])
     guide_link = f'<a href="../../{guide}">{e(f["venue"])} venue guide</a>\n        ' if guide else ""

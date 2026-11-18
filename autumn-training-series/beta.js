@@ -132,7 +132,7 @@
       parts.push(`<article class="event-card${isNext ? " is-next" : ""}" role="listitem" data-event="${C.esc(e.id)}">
         <button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-${C.esc(e.id)}">
           <span class="event-date"><small>${C.esc(d.month)}</small>${C.esc(d.days)}</span>
-          <span class="event-main"><strong>${C.esc(d.short)}</strong><small>${C.esc(e.venue)} · ${C.esc(d.focus)}</small>${isNext ? `<span class="next-label">Next up · ${countdown(e)}</span>` : ""}${p ? `<span class="event-places${p.low ? " is-low" : ""}">${C.esc(p.label)}</span>` : ""}</span>
+          <span class="event-main"><strong>${C.esc(d.short)}</strong><small>${C.esc(e.venue)} · ${C.esc(d.focus)}</small>${isNext ? `<span class="next-label" data-nosnippet>Next up · ${countdown(e)}</span>` : ""}${p ? `<span class="event-places${p.low ? " is-low" : ""}">${C.esc(p.label)}</span>` : ""}</span>
           <span class="event-price">${C.esc(d.price || "New")}</span><span class="event-arrow" aria-hidden="true">→</span>
         </button>
         <div class="mobile-event-detail" id="detail-${C.esc(e.id)}"></div>

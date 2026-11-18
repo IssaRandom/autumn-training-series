@@ -88,7 +88,7 @@
       if (camp.season !== seasonShown && camp.season === "winter") parts.push(`<div class="winter-date-divider" role="presentation"><span>Winter 2026/27</span><strong>Booking now open</strong></div>`);
       seasonShown = camp.season;
       const isNext = camp.key === nextKey;
-      const flag = isNext ? `<span class="next-label">Next up · ${countdown(camp)}</span>` : "";
+      const flag = isNext ? `<span class="next-label" data-nosnippet>Next up · ${countdown(camp)}</span>` : "";
       const price = camp.price ? `<span class="event-price">${camp.price}</span>` : `<span class="event-price winter-new-pill">NEW</span>`;
       parts.push(`<article class="event-card${isNext ? " is-next" : ""}${camp.season === "winter" ? " winter-event-card" : ""}" role="listitem" data-event="${camp.key}" style="--i:${index}"><button class="event-trigger" type="button" aria-expanded="false" aria-controls="detail-${camp.key}"><span class="event-date"><small>${camp.month}</small>${camp.days}</span><span class="event-main"><strong>${camp.short}</strong><small>${camp.venue} · ${camp.focus}</small>${flag}${availabilityMarkup(camp)}</span>${price}<span class="event-arrow" aria-hidden="true">→</span></button><div class="mobile-event-detail" id="detail-${camp.key}"></div></article>`);
     });
