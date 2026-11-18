@@ -1,6 +1,6 @@
 # BTS /beta — status
 
-_Last updated: 2026-11-18 (contents bar fixes on branch toc-stick-1118, v=20261118c, NOT pushed)_
+_Last updated: 2026-11-18 (on branch toc-stick-1118, NOT pushed: phone scroll simplified + contents bar fixes, v=20261118n)_
 
 ## Where we are
 - **18 Nov (branch toc-stick-1118, v=20261118m, committed, NOT pushed):** New to ILCAs phone scrolling simplified (James: car/map clunky, boatwork swipe too complicated). Phones (<760px) only: towing map no longer pins or zooms; it sits in the page cropped to the route (viewBox 520 350 640 660), the car drives while the map scrolls past, cards are a plain list. Boatwork diagram no longer pins/scroll-jacks: boat picture + "n / 7" pill, then cards as a native sideways strip (overflow-x, scroll-snap x mandatory, centre) so the finger moves freely either way and the nearest card centres; lit card drives the boat spots. Desktop unchanged. Code: article.js `hzFree`/`updateFree`/`setHzStep`, phone branch of `updateTrip`; article.css `.hz-free` block + phone `.trip` rules. **Checked:** 375px preview layout, snap reaches last card, map crop. **Not checked:** real phone feel, desktop view (pane hidden, stuck at 375px).
