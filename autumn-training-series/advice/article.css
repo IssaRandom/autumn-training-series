@@ -307,7 +307,6 @@
 .hz-hint i:first-child { animation-direction: reverse; }
 .hz-hint.is-gone { opacity: 0; }
 @keyframes hz-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
-.art-page .hz-on .hz-track > li:not(.is-on) { cursor: pointer; }
 .hz-on .hz-grid { display: block; position: absolute; inset: 0 -160px 0 0; transform: translate3d(var(--gx, 0), 0, 0);
   background-image: linear-gradient(rgba(143, 181, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 181, 255, .08) 1px, transparent 1px);
   background-size: 34px 34px; }

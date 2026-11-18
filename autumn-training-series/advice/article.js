@@ -5,7 +5,7 @@
    - sticky notes: the second half of the note "writes" itself in
    - FAQ mystery boxes: tap a crate to open it (answers stay findable with Ctrl+F where supported)
    - boatwork: sideways timeline (01 + 16); vertical scroll moves the cards across, the blueprint pans
-     (touch: sideways swipes move it too, with a light centre lock when it comes to rest)
+     (touch: a sideways swipe moves it the same way, settling on the nearest card)
    - towing: van drives the route down the UK as each stop's card passes (phones: as the map scrolls past, no pin)
    - training: season board row for the paragraph being read lights up
    - which rig: compact pinned panel, girl + boy walk past the rigs; table rows + paragraph light up
@@ -153,10 +153,10 @@
     writeCap(step);
   }
 
-  /* Sideways (phones, 18 Nov round 2): the same full-screen pinned timeline, scrolled down as normal.
-     A sideways swipe also works: the cards follow the finger 1:1 (by moving the page), a flick carries on
-     as far as it was thrown, and wherever it stops the nearest card eases into the centre (a light lock).
-     Scrolling down and stopping between two cards does the same small settle. Up/down stays the browser's. */
+  /* Sideways (18 Nov, agreed with James): scrolling DOWN is the way through, exactly as before.
+     A sideways swipe does the same job: the cards follow the finger 1:1 (it moves the page), and on
+     letting go they settle on the nearest card (a quick flick goes to the next one, never more).
+     No settle after scrolling down, no tap-to-pick. Up/down is left to the browser. */
   let hzHint = null, glide = 0;
   const hideHint = () => { if (hzHint) hzHint.classList.add("is-gone"); };
   const hzGeo = () => {
@@ -193,7 +193,8 @@
     pin.addEventListener("pointerdown", e => {
       if (!hzOn || e.pointerType === "mouse") return;
       stopGlide();
-      sw = { id: e.pointerId, x: e.clientX, y: e.clientY, y0: window.scrollY, mode: null, vx: 0, lx: e.clientX, lt: e.timeStamp };
+      const g = hzGeo();
+      sw = { id: e.pointerId, x: e.clientX, y: e.clientY, y0: window.scrollY, step: Math.round(g.f), mode: null, vx: 0, lx: e.clientX, lt: e.timeStamp };
     }, { passive: true });
     pin.addEventListener("pointermove", e => {
       if (!sw || e.pointerId !== sw.id) return;
@@ -213,9 +214,10 @@
       if (!sw || e.pointerId !== sw.id) return;
       const s = sw; sw = null;
       if (s.mode !== "x") return;
-      const g = hzGeo();
-      const fresh = e.timeStamp - s.lt < 80 ? s.vx : 0;                // finger stopped before lifting: no throw
-      goStep(Math.round(g.f - fresh * 260 / (L.cw + L.gap)));          // throw = where the flick would coast to
+      const g = hzGeo(), dx = e.clientX - s.x;
+      let to = Math.round(g.f);
+      if (to === s.step && Math.abs(s.vx) > .35) to = s.step + (dx < 0 ? 1 : -1);   // a quick flick: the next card, never more
+      goStep(to);
     };
     pin.addEventListener("pointerup", endSwipe);
     pin.addEventListener("pointercancel", e => {   /* browser took the gesture: just settle on the nearest card */
@@ -236,28 +238,6 @@
       clearTimeout(wheelT);
       wheelT = setTimeout(() => goStep(Math.round(hzGeo().f)), 140);
     }, { passive: false });
-    /* light lock after scrolling down: once the page comes to rest inside the pinned section
-       between two cards, ease the nearest one into the centre (touch screens only; never mid-touch) */
-    if (matchMedia("(pointer: coarse)").matches && !reduce) {
-      let touching = false, restT = 0;
-      const settleSoon = () => {
-        clearTimeout(restT);
-        restT = setTimeout(() => {
-          if (!hzOn || touching || glide || sw) return;
-          const g = hzGeo(), off = g.f - Math.round(g.f);
-          if (g.pinned && Math.abs(off) > .03) goStep(Math.round(g.f));
-        }, 180);
-      };
-      window.addEventListener("touchstart", () => { touching = true; clearTimeout(restT); stopGlide(); }, { passive: true });
-      window.addEventListener("touchend", () => { touching = false; settleSoon(); }, { passive: true });
-      window.addEventListener("touchcancel", () => { touching = false; settleSoon(); }, { passive: true });
-      window.addEventListener("scroll", () => { if (hzOn && !glide && !sw) settleSoon(); }, { passive: true });
-    }
-    /* tap a faded card to go to it */
-    hzItems.forEach((li, k) => li.addEventListener("click", e => {
-      if (!hzOn || li.classList.contains("is-on") || e.target.closest("a")) return;
-      goStep(k);
-    }));
   }
 
   /* ---------- Towing: van along the route ---------- */
