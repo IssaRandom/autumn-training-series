@@ -26,6 +26,9 @@
   const setOpen = open => { toc.classList.toggle("is-open", open); tocBtn.setAttribute("aria-expanded", open); };
   tocBtn.addEventListener("click", () => setOpen(!toc.classList.contains("is-open")));
   links.forEach(a => a.addEventListener("click", () => setOpen(false)));
+  /* tap outside the glass sheet, or Escape, closes it (18 Nov) */
+  document.addEventListener("click", e => { if (toc.classList.contains("is-open") && !toc.contains(e.target)) setOpen(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && toc.classList.contains("is-open")) { setOpen(false); tocBtn.focus(); } });
 
   /* Reading time (approx 220 wpm) */
   const words = document.querySelector("[data-guide]").textContent.trim().split(/\s+/).length;

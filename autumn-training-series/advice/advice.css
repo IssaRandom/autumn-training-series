@@ -37,20 +37,65 @@ html { scroll-padding-top: 96px; }
 @media (max-width: 900px) {
   .g-layout { grid-template-columns: minmax(0, 1fr); padding-top: 0; gap: 24px; }
   .toc, .toc-toggle { min-width: 0; max-width: 100vw; }
-  .toc { top: 68px; z-index: 40; margin-inline: calc(-1 * var(--gutter)); background: var(--overlay); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
   .toc::before { display: none; }
-  .toc-toggle { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 0 var(--gutter); background: none; border: 0; text-align: left; cursor: pointer; }
-  .toc-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); flex: none; }
+}
+
+/* ---------- Phone contents: liquid glass (James 18 Nov, to match the glass menu in beta.css) ----------
+   The bar is now a glass capsule floating over the page (the strip around it is see-through), and the list is a
+   glass sheet that swells out of it, the same layers as the menu: tint + frosted backdrop, a turning rim light
+   (::before, --lg-a from vt.js), a top sheen (::after) and, in Chromium, lens refraction at the edges.
+   The .toc box stays 52px tall so the pinned stages below it (top: nav-h + 52px) still line up.
+   No backdrop-filter on .toc itself: that would stop the capsule and sheet blurring the page behind them. */
+@media (max-width: 900px) {
+  .toc { top: var(--nav-h); z-index: 40; margin-inline: calc(-1 * var(--gutter)); padding: 4px var(--gutter); pointer-events: none; }
+  .toc-toggle, .toc-panel { pointer-events: auto; isolation: isolate;
+    -webkit-backdrop-filter: blur(14px) saturate(185%) brightness(1.06); backdrop-filter: blur(14px) saturate(185%) brightness(1.06);
+    box-shadow: var(--lg-shadow); }
+  .toc-toggle::before, .toc-panel::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; padding: 1px; pointer-events: none;
+    background: linear-gradient(var(--lg-a), rgba(255, 255, 255, .8), rgba(255, 255, 255, .1) 30%, rgba(255, 255, 255, 0) 52%, rgba(255, 255, 255, .12) 72%, rgba(255, 255, 255, .5));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .toc-toggle::after, .toc-panel::after { content: ""; position: absolute; inset: 1px; z-index: -1; border-radius: inherit; pointer-events: none;
+    background: radial-gradient(120% 60% at 30% 0%, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 62%); }
+
+  /* the capsule */
+  .toc-toggle { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0 18px 0 20px;
+    border: 0; border-radius: 999px; background: var(--lg-tint); color: var(--heading); text-align: left; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; transition: background var(--dur-slow) var(--ease), transform 560ms var(--lg-spring); }
+  .toc-toggle:active { transform: scale(1.03, .92); transition-duration: var(--dur), 110ms; } /* jelly, like the menu button */
+  .toc.is-open .toc-toggle { background: var(--lg-tint-open); }
+  @media (hover: hover) { .toc-toggle:hover { background: rgba(30, 56, 104, .4); } }
+  .toc-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, .72); flex: none; }
   .toc-current { flex: 1; min-width: 0; font-weight: 700; font-size: 15px; color: var(--heading); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .toc-chev { width: 10px; height: 10px; border: solid var(--heading); border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-3px); transition: transform var(--dur) var(--ease); flex: none; }
+  .toc-chev { width: 9px; height: 9px; border: solid var(--heading); border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-3px); transition: transform var(--dur-slow) var(--lg-spring); flex: none; }
   .toc.is-open .toc-chev { transform: rotate(-135deg) translateY(-3px); }
-  .toc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur-slow) var(--ease); }
-  .toc.is-open .toc-panel { grid-template-rows: 1fr; }
-  .toc-list { overflow: hidden; min-height: 0; border: 0; padding: 0 var(--gutter); }
-  .toc.is-open { background: var(--bg); box-shadow: var(--shadow); }
-  .toc.is-open .toc-list { padding-bottom: 12px; }
-  .toc-list a { border-left: 0; padding: 12px 0; border-top: 1px solid var(--line); margin: 0; }
-  .toc-list a.is-active { color: var(--blue-300); }
+
+  /* the sheet: floats under the capsule, swells out of it, scrolls inside itself if the list is long */
+  .toc-panel { position: absolute; top: calc(100% + 4px); left: var(--gutter); right: var(--gutter);
+    max-height: calc(100svh - var(--nav-h) - 84px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none;
+    border-radius: 24px; background: var(--lg-sheet);
+    transform-origin: 50% -30px; transform: scale(.94, .18); opacity: 0; visibility: hidden;
+    transition: transform 240ms var(--ease-in), opacity 200ms var(--ease-in), visibility 0s 240ms; }
+  .toc-panel::-webkit-scrollbar { display: none; }
+  .nav-hid .toc-panel { max-height: calc(100svh - 84px); }
+  .toc.is-open .toc-panel { transform: none; opacity: 1; visibility: visible;
+    transition: transform 600ms var(--lg-swell), opacity 180ms var(--ease), visibility 0s; }
+  .toc-list { border: 0; padding: 6px 20px 10px; }
+  .toc-list a { border-left: 0; padding: 13px 0; border-top: 1px solid rgba(255, 255, 255, .1); margin: 0; color: rgba(255, 255, 255, .78); }
+  .toc-list li:first-child a, .toc-part + li a { border-top: 0; }
+  .toc-list a.is-active { color: var(--heading); }
+  .toc-list a.is-active::before { opacity: 1; color: var(--blue-300); }
+}
+@media (max-width: 900px) {
+  html.lg-refract .toc-toggle { backdrop-filter: url(#lg-lens-toc) blur(5px) saturate(185%) brightness(1.06); }
+  html.lg-refract .toc-panel { backdrop-filter: url(#lg-lens-tocsheet) blur(12px) saturate(185%) brightness(1.06); }
+}
+@media (max-width: 900px) and (prefers-reduced-transparency: reduce) {
+  .toc-toggle, .toc-panel, html.lg-refract .toc-toggle, html.lg-refract .toc-panel { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .toc-toggle { background: #12264b; } .toc-panel { background: var(--bg-2); }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .toc-toggle:active { transform: none; }
+  .toc-panel, .toc.is-open .toc-panel { transform: none; }
 }
 
 /* ---------- Body typography ---------- */
