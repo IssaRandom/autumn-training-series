@@ -89,3 +89,15 @@
 .cyg-unknown li { margin: 0; padding: 10px 14px 10px 40px; position: relative; border-radius: var(--radius-sm); border: 1px dashed var(--line-strong); color: var(--ink-2); }
 .cyg-unknown li::before { content: "?"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%;
   display: grid; place-items: center; font: 800 12px/1 var(--font); background: var(--surface-2); color: var(--blue-300); }
+
+/* Photos: hero credit, Malta 2027 logo card */
+.g-hero { position: relative; }
+.g-hero .g-hero-img { opacity: .5; object-position: 50% 60%; }
+.cyg-hero-credit { position: absolute; right: 12px; bottom: 10px; z-index: 2; margin: 0; padding: 3px 9px; border-radius: 999px;
+  background: rgba(0, 0, 0, .55); color: #fff; font-size: 11px; font-weight: 500; line-height: 1.35; }
+.cyg-hero-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.cyg-logo { margin: 18px auto 20px; width: min(200px, 60%); padding: 14px 16px; border-radius: var(--radius); background: #fff; }
+.cyg-logo img { display: block; width: 100%; height: auto; }
+@media (min-width: 700px) { .cyg-logo { float: right; width: 190px; margin: 6px 0 14px 24px; } .cyg-facts { clear: both; } }
+/* Road band: keep the whole MALTA 2027 line in shot on phones */
+@media (max-width: 760px) { .band.cyg-road-band { min-height: 0; aspect-ratio: 4 / 3; } }
