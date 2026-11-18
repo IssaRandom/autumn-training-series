@@ -145,7 +145,7 @@
 .venue-page .nav { transition: transform var(--dur-slow) var(--ease), background var(--dur-slow), box-shadow var(--dur-slow), color var(--dur); }
 .venue-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
 .venue-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
-.venue-page.nav-hid .toc { transform: translateY(calc(-1 * var(--nav-h))); }
+.venue-page.nav-hid .toc.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
 
 /* windy.app stats widget: their own white theme, so it sits on a white card */
 .v-windy { margin: 20px 0 8px; }

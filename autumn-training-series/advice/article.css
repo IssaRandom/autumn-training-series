@@ -180,7 +180,7 @@
 .art-page .nav { transition: transform var(--dur-slow) var(--ease), background var(--dur-slow), box-shadow var(--dur-slow), color var(--dur); }
 .art-page.nav-hid .nav:not(.is-open) { transform: translateY(-100%); box-shadow: none; }
 .art-page .toc { transition: transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
-.art-page.nav-hid .toc { transform: translateY(calc(-1 * var(--nav-h))); }
+.art-page.nav-hid .toc.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
 .season__stage, .trip__map, .rigwalk__stage { transition: transform var(--dur-slow) var(--ease); }
 .art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map, .art-page.nav-hid .walk-on .rigwalk__stage { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
 @media (max-width: 900px) {
