@@ -183,10 +183,6 @@
 .art-page.nav-hid .toc.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
 .season__stage, .trip__map, .rigwalk__stage { transition: transform var(--dur-slow) var(--ease); }
 .art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map, .art-page.nav-hid .walk-on .rigwalk__stage { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
-@media (max-width: 900px) {
-  /* one slim bar at a time: the contents pill steps aside while a picture is pinned */
-  .art-page.pinned .toc:not(.is-open) { opacity: 0; visibility: hidden; }
-}
 @media (prefers-reduced-motion: reduce) {
   .art-page .nav, .art-page .toc, .season__stage, .trip__map, .rigwalk__stage { transition: none; }
 }
@@ -544,3 +540,20 @@
 .minical__key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 11px; color: var(--muted); }
 .minical__key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .minical__key .k { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--bar); }
+
+/* ---------- Phones: the contents bar rides with the header over pinned pictures (James 18 Nov) ----------
+   It used to vanish whenever a picture was pinned, which on New to ILCAs was most of the page (rig walk,
+   season chart), so the contents only seemed to appear after Training. A bar at the bottom would cover the
+   text. Now the header and the bar move as one:
+   - reading down while a picture is pinned: header and bar both step aside, the picture takes the top;
+   - any scroll up: both come back and the picture slides down underneath them, so nothing covers it.
+   Outside pinned pictures the bar stays at the top as before. The pictures move by their sticky `top`
+   (not a transform), so a picture still sitting in the page never jumps. */
+@media (max-width: 900px) {
+  .art-page.pinned.nav-hid .toc:not(.is-open) { transform: translateY(calc(-1 * var(--nav-h) - 100% - 8px)); opacity: 0; visibility: hidden; }
+  .art-page .season__stage, .js-walk .art-page .rigwalk.walk-on .rigwalk__stage { top: calc(var(--nav-h) + 52px); transition: top var(--dur-slow) var(--ease); }
+  .art-page.nav-hid .season__stage, .js-walk .art-page.nav-hid .rigwalk.walk-on .rigwalk__stage { top: 8px; transform: none; }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .art-page .season__stage, .js-walk .art-page .rigwalk.walk-on .rigwalk__stage { transition: none; }
+}
