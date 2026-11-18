@@ -5,7 +5,7 @@
    - sticky notes: the second half of the note "writes" itself in
    - FAQ mystery boxes: tap a crate to open it (answers stay findable with Ctrl+F where supported)
    - boatwork: sideways timeline (01 + 16); vertical scroll moves the cards across, the blueprint pans
-     (phones: a free sideways strip with a light centre snap, nothing pinned)
+     (touch: sideways swipes move it too, with a light centre lock when it comes to rest)
    - towing: van drives the route down the UK as each stop's card passes (phones: as the map scrolls past, no pin)
    - training: season board row for the paragraph being read lights up
    - which rig: compact pinned panel, girl + boy walk past the rigs; table rows + paragraph light up
@@ -99,8 +99,7 @@
   const hzBoat = hz && hz.querySelector(".hz-boat");
   const names = hzItems.map(li => (li.querySelector("strong") || li).textContent.replace(/\s*→\s*$/, "").trim());
   const partX = hzItems.map((_, i) => { const s = hzSpots.find(sp => sp.dataset.part == i + 1); return s ? parseFloat(s.style.getPropertyValue("--x")) / 100 : .5; });
-  const hzTrack = hz && hz.querySelector(".hz-track");
-  let hzOn = false, hzFree = false, hzStep = -1, L = {};
+  let hzOn = false, hzStep = -1, L = {};
   const writeCap = n => {   /* text nodes only */
     if (!hzCap) return;
     const num = document.createElement("span");
@@ -113,11 +112,6 @@
     const vw = document.documentElement.clientWidth, vh = window.innerHeight, phone = vw < 760;
     L = { vw, vh, cw: phone ? Math.round(vw * .84) : Math.round(clamp(vw * .36, 340, 440)), gap: 16 };
     L.bw = phone ? vw * 1.9 : Math.min(vw * .94, (vh - 300) * 1.777, 1500);
-    /* phones (18 Nov): no pinning. The cards are a plain sideways strip the finger moves freely,
-       with a light snap that centres the nearest card; up/down scrolling is never touched */
-    hzFree = phone && !reduce;
-    hz.classList.toggle("hz-free", hzFree);
-    if (hzFree) { hz.classList.remove("hz-on"); hzOn = false; hzStep = -1; updateFree(); return; }
     if (reduce || vh < 520) { hz.classList.remove("hz-on"); hzOn = false; return; }
     hz.classList.add("hz-on");
     hz.style.setProperty("--fw", vw + "px");
@@ -158,22 +152,11 @@
     hzDots.forEach((d, k) => d.classList.toggle("on", k <= step));
     writeCap(step);
   }
-  /* phone strip: the card nearest the middle is the one lit (and its spots on the boat) */
-  function updateFree() {
-    if (!hzFree || !hzTrack) return;
-    const mid = hzTrack.scrollLeft + hzTrack.clientWidth / 2;
-    let best = 0, bd = Infinity;
-    hzItems.forEach((li, k) => { const d = Math.abs(li.offsetLeft + li.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
-    setHzStep(best);
-  }
-  if (hzTrack) {
-    let fr = 0;
-    hzTrack.addEventListener("scroll", () => { if (!fr) fr = requestAnimationFrame(() => { fr = 0; updateFree(); }); }, { passive: true });
-  }
 
-  /* Sideways: a finger swipe (or trackpad sideways scroll) drives the same timeline.
-     The cards follow the finger 1:1 by moving the page, then snap to the nearest card;
-     a quick flick or a third of a card goes to the next one. Up/down is left to the browser. */
+  /* Sideways (phones, 18 Nov round 2): the same full-screen pinned timeline, scrolled down as normal.
+     A sideways swipe also works: the cards follow the finger 1:1 (by moving the page), a flick carries on
+     as far as it was thrown, and wherever it stops the nearest card eases into the centre (a light lock).
+     Scrolling down and stopping between two cards does the same small settle. Up/down stays the browser's. */
   let hzHint = null, glide = 0;
   const hideHint = () => { if (hzHint) hzHint.classList.add("is-gone"); };
   const hzGeo = () => {
@@ -210,8 +193,7 @@
     pin.addEventListener("pointerdown", e => {
       if (!hzOn || e.pointerType === "mouse") return;
       stopGlide();
-      const g = hzGeo();
-      sw = { id: e.pointerId, x: e.clientX, y: e.clientY, y0: window.scrollY, step: Math.round(g.f), mode: null, vx: 0, lx: e.clientX, lt: e.timeStamp };
+      sw = { id: e.pointerId, x: e.clientX, y: e.clientY, y0: window.scrollY, mode: null, vx: 0, lx: e.clientX, lt: e.timeStamp };
     }, { passive: true });
     pin.addEventListener("pointermove", e => {
       if (!sw || e.pointerId !== sw.id) return;
@@ -231,10 +213,9 @@
       if (!sw || e.pointerId !== sw.id) return;
       const s = sw; sw = null;
       if (s.mode !== "x") return;
-      const g = hzGeo(), dx = e.clientX - s.x;
-      let to = Math.round(g.f);
-      if (to === s.step && (Math.abs(s.vx) > .35 || Math.abs(dx) > L.cw / 3)) to = s.step + (dx < 0 ? 1 : -1);
-      goStep(to);
+      const g = hzGeo();
+      const fresh = e.timeStamp - s.lt < 80 ? s.vx : 0;                // finger stopped before lifting: no throw
+      goStep(Math.round(g.f - fresh * 260 / (L.cw + L.gap)));          // throw = where the flick would coast to
     };
     pin.addEventListener("pointerup", endSwipe);
     pin.addEventListener("pointercancel", e => {   /* browser took the gesture: just settle on the nearest card */
@@ -255,11 +236,27 @@
       clearTimeout(wheelT);
       wheelT = setTimeout(() => goStep(Math.round(hzGeo().f)), 140);
     }, { passive: false });
+    /* light lock after scrolling down: once the page comes to rest inside the pinned section
+       between two cards, ease the nearest one into the centre (touch screens only; never mid-touch) */
+    if (matchMedia("(pointer: coarse)").matches && !reduce) {
+      let touching = false, restT = 0;
+      const settleSoon = () => {
+        clearTimeout(restT);
+        restT = setTimeout(() => {
+          if (!hzOn || touching || glide || sw) return;
+          const g = hzGeo(), off = g.f - Math.round(g.f);
+          if (g.pinned && Math.abs(off) > .03) goStep(Math.round(g.f));
+        }, 180);
+      };
+      window.addEventListener("touchstart", () => { touching = true; clearTimeout(restT); stopGlide(); }, { passive: true });
+      window.addEventListener("touchend", () => { touching = false; settleSoon(); }, { passive: true });
+      window.addEventListener("touchcancel", () => { touching = false; settleSoon(); }, { passive: true });
+      window.addEventListener("scroll", () => { if (hzOn && !glide && !sw) settleSoon(); }, { passive: true });
+    }
     /* tap a faded card to go to it */
     hzItems.forEach((li, k) => li.addEventListener("click", e => {
-      if (li.classList.contains("is-on") || e.target.closest("a")) return;
-      if (hzFree) hzTrack.scrollTo({ left: li.offsetLeft - (hzTrack.clientWidth - li.offsetWidth) / 2, behavior: "smooth" });
-      else if (hzOn) goStep(k);
+      if (!hzOn || li.classList.contains("is-on") || e.target.closest("a")) return;
+      goStep(k);
     }));
   }
 
