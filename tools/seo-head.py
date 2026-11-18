@@ -26,7 +26,7 @@ DRAFT_GUIDES = {"calendar-suggestions", "campaign-management", "fitness", "ilca-
 NOINDEX_EXTRA = {"account/"}
 SKIP = {"loader-test/", "navigator/", "coaching/"}  # coaching/ = forwarding stub to /#dates, never the old site; others noindex for now
 EVENT_PAGES = {""}
-ARTICLES = {"advice/new-to-ilca/": "kai", "venues/weymouth/": "james"}      # finished guides -> author key
+ARTICLES = {"advice/new-to-ilca/": "kai", "advice/commonwealth-youth-games/": "james", "venues/weymouth/": "james"}      # finished guides -> author key
 ARTICLE_ABOUT = {"venues/weymouth/": "WPNSA"}   # venue guides -> the place they are about (VENUES key)
 
 ORG_ID, SITE_ID = SITE + "/#organisation", SITE + "/#website"

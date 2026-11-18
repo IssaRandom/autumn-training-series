@@ -1,0 +1,103 @@
+/* Commonwealth Youth Games guide: page-only pieces (key facts, birth-year checker, Home Country tags, ready list, road timeline). */
+.art-page { --opti: #ff8a3d; --ilca4: var(--rig-4); --hc-e: #e8eef8; --hc-s: #8fb5ff; --hc-w: #ff6b6b; --hc-ni: #ffc531; }
+.art-page .wip { white-space: normal; }
+
+/* Deadline chip in the hero */
+.cyg-deadline { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-top: 18px; padding: 10px 16px;
+  border-radius: var(--radius); background: rgba(255, 138, 61, .14); border: 1px solid rgba(255, 138, 61, .5); color: #fff; text-decoration: none; }
+.cyg-deadline__k { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: #ffb27d; }
+.cyg-deadline__v { font-weight: 700; }
+.cyg-deadline__left:not(:empty) { font-size: 13px; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--opti); color: #2a1200; }
+
+/* Key facts */
+.cyg-facts { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 900px) { .cyg-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cyg-facts li { padding: 14px 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 2px; align-content: start; }
+.cyg-facts__k { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--blue-300); }
+.cyg-facts b { font: 800 clamp(1.25rem, 4.4vw, 1.5rem)/1.05 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.cyg-facts li > span:last-child { font-size: 13px; color: var(--muted); }
+
+.cyg-note, .cyg-small { font-size: 14px !important; color: var(--muted) !important; }
+
+/* Birth-year checker */
+.agecheck { margin: 24px 0; padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.agecheck__q { margin: 0 0 10px !important; font-weight: 700; color: var(--heading); }
+.agecheck__years { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.agecheck__years button { min-height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--line-strong); background: transparent; color: var(--heading);
+  font: 700 14px/1 var(--font); cursor: pointer; transition: background var(--dur), border-color var(--dur), transform var(--dur-fast); }
+.agecheck__years button:hover { border-color: var(--blue-300); }
+.agecheck__years button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.agecheck__years button:active { transform: scale(.95); }
+.agecheck__grid { display: grid; grid-template-columns: 74px repeat(6, minmax(0, 1fr)); gap: 6px; align-items: center; margin-top: 16px; font-size: 12px; color: var(--muted); }
+.agecheck__grid > span { text-align: center; font-weight: 600; }
+.agecheck__grid b { font-size: 13px; color: var(--heading); }
+.agecheck__grid i { height: 18px; border-radius: 5px; background: color-mix(in srgb, var(--muted) 14%, transparent); transition: opacity var(--dur), outline-color var(--dur); outline: 2px solid transparent; outline-offset: 2px; }
+.agecheck__grid i.on { background: var(--ilca4); }
+.agecheck__grid i.on.o { background: var(--opti); }
+.agecheck.has-pick .agecheck__grid i { opacity: .35; }
+.agecheck.has-pick .agecheck__grid i.is-pick { opacity: 1; }
+.agecheck.has-pick .agecheck__grid i.on.is-pick { outline-color: var(--heading); }
+.agecheck__out { margin: 14px 0 0 !important; font-size: 15px; color: var(--ink-2); min-height: 3em; }
+.agecheck__out b { color: var(--heading); }
+
+/* Eligibility routes and RYA examples */
+.cyg-routes { list-style: none; padding: 0; margin: 16px 0 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.cyg-routes li { margin: 0; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: 14px; color: var(--ink-2); }
+.cyg-examples { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 8px; }
+.cyg-examples li { margin: 0; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.cyg-examples p { flex: 1 1 100%; margin: 0 0 4px !important; font-size: 15px; }
+.hc { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; color: #0a1830; }
+.hc-e { background: var(--hc-e); } .hc-s { background: var(--hc-s); } .hc-w { background: var(--hc-w); } .hc-ni { background: var(--hc-ni); }
+@media (min-width: 700px) { .cyg-examples p { flex: 1 1 auto; margin: 0 !important; } }
+
+.cyg-steps { margin: 12px 0 20px; padding-left: 1.3em; }
+.cyg-steps li { margin: 6px 0; }
+
+/* Apply */
+.cyg-cta { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 12px; }
+.cyg-deadline-line { padding: 10px 14px; border-radius: var(--radius-sm); background: rgba(255, 138, 61, .12); border-left: 3px solid var(--opti); }
+.cyg-ready { list-style: none; padding: 0; margin: 16px 0 24px; display: grid; gap: 8px; counter-reset: ready; }
+@media (min-width: 760px) { .cyg-ready { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cyg-ready li { margin: 0; counter-increment: ready; position: relative; padding: 12px 14px 12px 50px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 2px; }
+.cyg-ready li::before { content: counter(ready); position: absolute; left: 14px; top: 12px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 12px/1 var(--font); background: var(--accent); color: #fff; }
+.cyg-ready b { color: var(--heading); }
+.cyg-ready span { font-size: 14px; color: var(--ink-2); }
+
+/* Road to Malta */
+.road { list-style: none; margin: 22px 0 12px; padding: 0 0 0 28px; position: relative; }
+.road::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(var(--opti), var(--blue-300) 40%, var(--ilca4)); }
+.road__step { position: relative; margin: 0 0 14px; padding: 12px 14px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 2px; }
+.road__step::before { content: ""; position: absolute; left: -25px; top: 16px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg, #03132e); border: 2px solid var(--blue-300); }
+.road__when { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-300); }
+.road__step b { font: 800 1.35rem/1.05 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.road__step > span:last-child { font-size: 14px; color: var(--ink-2); }
+.road__step.is-now { border-color: var(--opti); }
+.road__step.is-now::before { background: var(--opti); border-color: var(--opti); box-shadow: 0 0 0 5px rgba(255, 138, 61, .25); }
+.road__step.is-now .road__when { color: var(--opti); }
+.road__step.is-tbc { border-style: dashed; }
+.road__step.is-games { border-color: var(--ilca4); }
+.road__step.is-games::before { background: var(--ilca4); border-color: var(--ilca4); }
+.road__step.is-games .road__when { color: var(--ilca4); }
+.road__step { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+.road__step.is-in { opacity: 1; transform: none; }
+.no-js .road__step, .road:not([data-ready]) .road__step { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .road__step { opacity: 1; transform: none; transition: none; } }
+
+/* Not known yet */
+.cyg-unknown { list-style: none; padding: 0; margin: 16px 0; display: grid; gap: 8px; }
+.cyg-unknown li { margin: 0; padding: 10px 14px 10px 40px; position: relative; border-radius: var(--radius-sm); border: 1px dashed var(--line-strong); color: var(--ink-2); }
+.cyg-unknown li::before { content: "?"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%;
+  display: grid; place-items: center; font: 800 12px/1 var(--font); background: var(--surface-2); color: var(--blue-300); }
+
+/* Photos: hero credit, Malta 2027 logo card */
+.g-hero { position: relative; }
+.g-hero .g-hero-img { opacity: .5; object-position: 50% 60%; }
+.cyg-hero-credit { position: absolute; right: 12px; bottom: 10px; z-index: 2; margin: 0; padding: 3px 9px; border-radius: 999px;
+  background: rgba(0, 0, 0, .55); color: #fff; font-size: 11px; font-weight: 500; line-height: 1.35; }
+.cyg-hero-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.cyg-logo { margin: 18px auto 20px; width: min(200px, 60%); padding: 14px 16px; border-radius: var(--radius); background: #fff; }
+.cyg-logo img { display: block; width: 100%; height: auto; }
+@media (min-width: 700px) { .cyg-logo { float: right; width: 190px; margin: 6px 0 14px 24px; } .cyg-facts { clear: both; } }
+/* Road band: keep the whole MALTA 2027 line in shot on phones */
+@media (max-width: 760px) { .band.cyg-road-band { min-height: 0; aspect-ratio: 4 / 3; } }
