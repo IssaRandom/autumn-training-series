@@ -317,8 +317,8 @@
   background-size: 34px 34px; }
 .hz-on .hz-boat { position: absolute; left: 0; top: 18px; width: var(--bw); border: 0; border-radius: 0; overflow: visible; transform: translate3d(var(--bx, 0), 0, 0); will-change: transform; }
 .hz-on .hz-boat img { border-radius: var(--radius); }
-.hz-on .hz-spot { opacity: 0; transform: scale(.4); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) cubic-bezier(.34, 1.56, .64, 1); }
-.hz-on .hz-spot.on { opacity: 1; transform: none; }
+:is(.hz-on, .hz-free) .hz-spot { opacity: 0; transform: scale(.4); transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) cubic-bezier(.34, 1.56, .64, 1); }
+:is(.hz-on, .hz-free) .hz-spot.on { opacity: 1; transform: none; }
 .hz-on .hz-cap { display: flex; align-items: center; gap: 10px; position: absolute; right: var(--gutter); top: 22px; padding: 8px 12px; border-radius: 999px;
   background: color-mix(in srgb, var(--bg) 80%, transparent); border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: var(--heading); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .hz-cap .n { margin-right: 6px; color: var(--hl); font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: .06em; }
@@ -334,6 +334,19 @@
 /* a thin rail under the cards: the "timeline", filled as you go */
 .hz-on .hz-pin::after { content: ""; position: absolute; left: 0; right: 0; bottom: 10px; height: 2px;
   background: linear-gradient(90deg, var(--hl) var(--rail, 0%), var(--line-strong) var(--rail, 0%)); }
+
+/* phones (18 Nov): nothing pinned. Boat picture in the column, then the cards as a sideways strip:
+   the finger moves it freely (either way, page scroll untouched), a light snap centres the nearest card */
+.hz-free .hz-hint { display: none; }
+.hz-free .hz-cap { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 12px 0 0; padding: 8px 12px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: var(--heading); }
+.hz-free .hz-track { position: relative; display: flex; align-items: flex-start; gap: 12px; margin: 12px calc(-1 * var(--gutter)) 0; padding: 4px 8vw 16px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.hz-free .hz-track::-webkit-scrollbar { display: none; }
+.art-page .hz-free .hz-track > li { flex: none; width: 84vw; scroll-snap-align: center; padding: 16px 16px 14px 54px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); font-size: 15px; line-height: 1.5; opacity: .55; transition: opacity var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.art-page .hz-free .hz-track > li.is-on { opacity: 1; border-color: var(--hl); }
+.hz-free .hz-track > li::before { left: 14px; top: 14px; }
 
 /* ---------- Towing: a journey down the UK, ending at Weymouth ---------- */
 .trip { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 28px; margin: 26px 0; }
@@ -359,12 +372,12 @@
 .trip__card h3 .arr { color: var(--hl); }
 .art-page .trip__card p:last-child { margin: 0; font-size: 16px; }
 @media (max-width: 760px) {
-  /* phones: the map pins across the top half, the cards scroll up underneath it */
+  /* phones (18 Nov): plain scrolling. The map sits in the page (cropped to the route), the cards follow as a normal list */
   .trip { display: block; }
-  .trip__map { top: 0; z-index: 7; height: 44svh; margin: 0 calc(-1 * var(--gutter)); padding: 8px var(--gutter) 10px;
-    background: var(--bg); box-shadow: 0 14px 18px -6px var(--bg); }   /* solid backing: the land never sits over the cards */
+  .trip__map { position: static; height: auto; }
+  .trip__map svg { height: auto; aspect-ratio: 640 / 660; }
   .art-page.nav-hid .trip__map { transform: none; }
-  .trip__cards { padding: 4svh 0 6svh; gap: 16svh; }
+  .trip__cards { padding: 18px 0 0; gap: 16px; }
 }
 
 /* ---------- Training: season board (pinned) + polaroid photos ---------- */
