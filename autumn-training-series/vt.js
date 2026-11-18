@@ -64,10 +64,13 @@
     const nav = document.querySelector("[data-nav]");
     if (!nav) return;
     const btn = nav.querySelector("[data-nav-toggle]"), sheet = nav.querySelector(".nav-links");
+    /* guide pages: the phone contents capsule + sheet are glass too (advice.css, 18 Nov) */
+    const toc = document.querySelector("[data-toc]");
+    const tocBtn = toc && toc.querySelector("[data-toc-toggle]"), tocSheet = toc && toc.querySelector(".toc-panel");
     const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!still) {
       let ticking = false;
-      const light = () => { ticking = false; nav.style.setProperty("--lg-a", (135 + 38 * Math.sin(scrollY / 240)).toFixed(1) + "deg"); };
+      const light = () => { ticking = false; const a = (135 + 38 * Math.sin(scrollY / 240)).toFixed(1) + "deg"; nav.style.setProperty("--lg-a", a); if (toc) toc.style.setProperty("--lg-a", a); };
       addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(light); } }, { passive: true });
     }
     const chromium = navigator.userAgentData && navigator.userAgentData.brands.some(b => /Chromium/.test(b.brand));
@@ -101,12 +104,17 @@
     const draw = () => {
       if (btn) lens("lg-lens-btn", btn, 10, -26);
       if (sheet) lens("lg-lens-sheet", sheet, 18, -44);
+      if (tocBtn) lens("lg-lens-toc", tocBtn, 10, -26);
+      if (tocSheet) lens("lg-lens-tocsheet", tocSheet, 18, -44);
     };
     draw();
     const ro = new ResizeObserver(draw);
     if (btn) ro.observe(btn);
     if (sheet) ro.observe(sheet);
+    if (tocBtn) ro.observe(tocBtn);
+    if (tocSheet) ro.observe(tocSheet);
     new MutationObserver(() => requestAnimationFrame(draw)).observe(nav, { attributes: true, attributeFilter: ["class"] });
+    if (toc) new MutationObserver(() => requestAnimationFrame(draw)).observe(toc, { attributes: true, attributeFilter: ["class"] });
     document.documentElement.classList.add("lg-refract");
   };
   if (document.readyState === "loading") addEventListener("DOMContentLoaded", start); else start();
