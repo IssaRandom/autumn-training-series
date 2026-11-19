@@ -321,7 +321,7 @@
         const d = +s === +t ? `${s.getDate()} ${C.MONTHS[s.getMonth()]}` : `${s.getDate()}${s.getMonth() !== t.getMonth() ? " " + C.MONTHS[s.getMonth()] : ""}–${t.getDate()} ${C.MONTHS[t.getMonth()]}`;
         return `<li><button type="button" class="t-${e.type}${t < C.today ? " is-past" : ""}" data-id="${C.esc(e.id)}">
           <span class="sw"></span><span class="d">${d}</span>
-          <span class="n">${C.esc(e.name)}${e.status === "provisional" ? '<span class="prov">Prov.</span>' : ""}</span>
+          <span class="n">${C.esc(e.name)}${C.isFresh(e) && t >= C.today ? '<span class="fresh">New</span>' : ""}${e.status === "provisional" ? '<span class="prov">Prov.</span>' : ""}</span>
           <span class="v">${C.esc([e.venue, C.rigText(e)].filter(Boolean).join(" · "))}</span></button></li>`;
       }).join("");
       return `<article class="mcard${isNow(m) ? " is-now" : ""}${intro ? " animate" : ""}" id="m-${idx}" data-m="${idx}">
@@ -960,7 +960,9 @@
     }
     if (e.note) facts.push(["Notes", C.esc(e.note)]);
     if (e.checkNor) facts.push(["Check", `<span class="warn">Rigs vary by event, so check the NoR</span>`]);
+    if (e.prog) facts.push(["Programme", `<a href="../advice/road-to-volos/${C.esc(e.prog)}">Part of the road to Volos: see the whole summer →</a>`]);
     if (e.placeholder) facts.push(["Status", `<span class="warn">Dates still being cooked up. Not bookable yet.</span>`]);
+    else if (e.interest && !online) facts.push(["Booking", `<span class="warn">Dates set. Online booking opens soon: register interest to hear first.</span>`]);
     else if (e.status === "provisional") facts.push(["Status", `<span class="warn">Provisional: dates or venue may still move</span>`]);
     // NoR / SI: links when published, one quiet line when not (BTS camps don't have them)
     const docs = [["nor", "Notice of Race"], ["si", "Sailing Instructions"]].filter(([k]) => e[k]);
@@ -970,7 +972,7 @@
 
     const actions = [];
     // Every dated BTS camp books through the new booking page (it explains when a camp isn't open online yet)
-    if (e.type === "bts-camp" && e.placeholder) actions.push(`<a class="btn btn-accent" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Register interest ↗</a>`);
+    if (e.type === "bts-camp" && (e.placeholder || (e.interest && !bookable[e.id]))) actions.push(`<a class="btn btn-accent" href="https://chat.whatsapp.com/Ela5XJPNzAq9mNSzR45p3q" target="_blank" rel="noopener">Register interest ↗</a>`);
     else if (e.type === "bts-camp" && !finished) actions.push(`<a class="btn btn-accent arrow" href="../book/?camp=${encodeURIComponent(e.id)}">Book with BTS${online ? ` <span class="beta-tag">Online</span>` : ""}</a>`);
     else if (e.type !== "bts-camp" && e.url) actions.push(`<a class="btn btn-accent" href="${C.esc(e.url)}" target="_blank" rel="noopener">Event page ↗</a>`);
     if (cl && clDays >= 1) actions.push(`<button type="button" class="act-btn" data-pop="remind" aria-expanded="false">${ICON.bell}<span>Remind me</span></button>`);
