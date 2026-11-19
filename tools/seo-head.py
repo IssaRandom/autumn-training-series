@@ -26,7 +26,7 @@ DRAFT_GUIDES = {"calendar-suggestions", "campaign-management", "fitness", "ilca-
 NOINDEX_EXTRA = {"account/"}
 SKIP = {"loader-test/", "navigator/", "coaching/"}  # coaching/ = forwarding stub to /#dates, never the old site; others noindex for now
 EVENT_PAGES = {""}
-ARTICLES = {"advice/new-to-ilca/": "kai", "advice/commonwealth-youth-games/": "james", "venues/weymouth/": "james"}      # finished guides -> author key
+ARTICLES = {"advice/new-to-ilca/": "kai", "advice/commonwealth-youth-games/": "james", "advice/road-to-volos/": "james", "venues/weymouth/": "james"}      # finished guides -> author key
 ARTICLE_ABOUT = {"venues/weymouth/": "WPNSA"}   # venue guides -> the place they are about (VENUES key)
 
 ORG_ID, SITE_ID = SITE + "/#organisation", SITE + "/#website"
@@ -89,9 +89,10 @@ def load_camps():
         if f.get("end", "") < TODAY or f.get("venue") not in VENUES:
             continue
         d = details.get(f["id"], {})
-        page = f"{SITE}/camps/{d['slug']}/" if d.get("slug") else SITE + "/#dates"
+        # camps without their own page: the programme article stop (prog: "#stop-x") if there is one, else the homepage list
+        page = f"{SITE}/camps/{d['slug']}/" if d.get("slug") else (f"{SITE}/advice/road-to-volos/{f['prog']}" if f.get("prog") else SITE + "/#dates")
         e = {
-            "@type": "Event", "@id": page + "#event",
+            "@type": "Event", "@id": (page if d.get("slug") else page.split("#")[0] + "#event-" + f["id"]) + ("#event" if d.get("slug") else ""),
             "name": d.get("title") or f["name"],
             "startDate": f["start"], "endDate": f["end"],
             "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
