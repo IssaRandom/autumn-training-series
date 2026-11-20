@@ -106,6 +106,27 @@
 .rv-promise { margin: 26px 0; padding: 22px 20px; border-radius: var(--radius); background: linear-gradient(135deg, #0b3fb8, #2f6df6); color: #fff; }
 .art-page .rv-promise p { color: rgba(255, 255, 255, .92); }
 .rv-promise .rv-promise__line { margin: 0 0 10px; font: 800 clamp(1.5rem, 4.5vw, 2rem)/1.05 var(--font-display); text-transform: uppercase; color: #fff; }
+/* buttons: the article link colour was greying out the button text (James, 20 Nov) */
+.art-page .g-body a.btn-accent, .art-page .g-body a.btn-accent:hover { color: #fff; }
+.art-page .g-body a.btn-ghost { color: var(--heading); }
+.art-page .g-body a.btn-white { color: #0b3fb8; }
+
+/* post-it notes on this page: a little smaller than the guide default */
+.art-page .rv-stop .note, .art-page #goal .note, .art-page #other .note { max-width: 30rem; padding: 22px 20px 18px; }
+.art-page .rv-stop .note p, .art-page #goal .note p, .art-page #other .note p { font-size: 1.2rem; }
+.art-page .rv-stop .note .note__label, .art-page #goal .note .note__label, .art-page #other .note .note__label { font-size: 1.4rem !important; }
+.rv-stop .note { margin: 30px auto 14px; }
+
+/* Feb stop: the Winter Series weekends either side */
+.rv-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 14px 0 0; }
+.art-page .rv-extra .rv-extra__k { grid-column: 1 / -1; margin: 0; font-size: 13px !important; font-weight: 700; color: var(--ink-2); }
+.art-page .g-body a.rv-extra__c { display: grid; gap: 2px; padding: 12px; border: 1px solid color-mix(in srgb, var(--t-bts) 55%, var(--line)); border-radius: 10px; background: color-mix(in srgb, var(--t-bts) 12%, var(--surface)); color: var(--ink-2); font-size: 13px; text-decoration: none; transition: border-color var(--dur), transform var(--dur); }
+.art-page .g-body a.rv-extra__c:hover { border-color: var(--t-bts); transform: translateY(-2px); }
+.rv-extra__c b { font-size: 15px; color: var(--heading); }
+.rv-extra__d { font: 800 1.05rem/1 var(--font-display); text-transform: uppercase; color: #8fb5ff; }
+.rv-extra__go { margin-top: 4px; font-weight: 700; color: #fff; }
+.rv-extra__go::after { content: " →"; }
+
 /* Volos sub-sections */
 .art-page .rv-h3 { margin: 30px 0 8px; font: 800 1.35rem/1.1 var(--font-display); text-transform: uppercase; color: var(--heading); }
 .rv-dates { list-style: none; margin: 14px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
