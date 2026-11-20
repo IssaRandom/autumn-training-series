@@ -50,9 +50,6 @@ window.BTS_EVENTS = [
   { id: "no5", name: "ILCA UK National Open 5", sponsor: "Ovington", short: "NO5", start: "2027-10-16", end: "2027-10-17", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
   { id: "no6", name: "ILCA UK National Open 6", sponsor: "Sailingfast", short: "NO6", start: "2027-10-23", end: "2027-10-24", venue: "WPNSA", rigs: [4, 6, 7], type: "national-open", checkNor: true, url: "https://portal.ilca.uk/events" },
 
-  /* ---- ILCA UK Grand Prix Series: regional club-run rounds (75+ events in 2026, late Apr to early Oct). 2027 rounds not published. ---- */
-  { id: "gp-series-2027", name: "ILCA UK Grand Prix Series opens (regional rounds)", short: "GP Series opens", start: "2027-05-01", end: "2027-05-01", venue: "Clubs in 9 regions", rigs: [4, 6, 7], type: "national-open", status: "provisional", url: "https://portal.ilca.uk/events", note: "Sailingfast ILCA UK Grand Prix Series: regional club open meetings from about late April to early October (one marker here, not every round). 2027 rounds are not published yet; timing follows 2026. Find your region's rounds on the ILCA UK portal." },
-
   /* ---- Championships ---- */
   { id: "nationals", name: "ILCA UK Open & National Championships", short: "Nationals", start: "2027-08-07", end: "2027-08-13", venue: "Largs SC", rigs: [4, 6, 7], type: "championship", url: "https://portal.ilca.uk/events", note: "7 Aug is registration day." },
   /* reg: true = registration day marker (hatched gold bar, "Reg" label) so it stands out from racing days */
