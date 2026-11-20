@@ -187,10 +187,8 @@
   /* phones (20 Nov): when the header hides, the bar's sticky line moves to the top edge instead of the
      bar being shifted up. Still in the page under the hero it doesn't move at all; once stuck it slides
      up with the header and back down with it. No stop at the old header line. */
-  .art-page .toc { transition: top var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
+  .art-page .toc { transition: top var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
   .art-page.nav-hid .toc, .art-page.nav-hid .toc.is-stuck { transform: none; top: 0; }
-  /* one slim bar at a time: the contents pill steps aside while a picture is pinned */
-  .art-page.pinned .toc:not(.is-open) { opacity: 0; visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
   .art-page .nav, .art-page .toc, .season__stage, .trip__map, .rigwalk__stage { transition: none; }
@@ -316,7 +314,6 @@
 .hz-hint i:first-child { animation-direction: reverse; }
 .hz-hint.is-gone { opacity: 0; }
 @keyframes hz-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
-.art-page .hz-on .hz-track > li:not(.is-on) { cursor: pointer; }
 .hz-on .hz-grid { display: block; position: absolute; inset: 0 -160px 0 0; transform: translate3d(var(--gx, 0), 0, 0);
   background-image: linear-gradient(rgba(143, 181, 255, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(143, 181, 255, .08) 1px, transparent 1px);
   background-size: 34px 34px; }
@@ -364,12 +361,12 @@
 .trip__card h3 .arr { color: var(--hl); }
 .art-page .trip__card p:last-child { margin: 0; font-size: 16px; }
 @media (max-width: 760px) {
-  /* phones: the map pins across the top half, the cards scroll up underneath it */
+  /* phones (18 Nov): plain scrolling. The map sits in the page (cropped to the route), the cards follow as a normal list */
   .trip { display: block; }
-  .trip__map { top: 0; z-index: 7; height: 44svh; margin: 0 calc(-1 * var(--gutter)); padding: 8px var(--gutter) 10px;
-    background: var(--bg); box-shadow: 0 14px 18px -6px var(--bg); }   /* solid backing: the land never sits over the cards */
+  .trip__map { position: static; height: auto; }
+  .trip__map svg { height: auto; aspect-ratio: 640 / 660; }
   .art-page.nav-hid .trip__map { transform: none; }
-  .trip__cards { padding: 4svh 0 6svh; gap: 16svh; }
+  .trip__cards { padding: 18px 0 0; gap: 16px; }
 }
 
 /* ---------- Training: season board (pinned) + polaroid photos ---------- */
@@ -536,3 +533,22 @@
 .minical__key { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 11px; color: var(--muted); }
 .minical__key > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .minical__key .k { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--bar); }
+
+/* ---------- Phones: the contents bar rides with the header over pinned pictures (James 18 Nov) ----------
+   It used to vanish whenever a picture was pinned, which on New to ILCAs was most of the page (rig walk,
+   season chart), so the contents only seemed to appear after Training. A bar at the bottom would cover the
+   text. Now the header and the bar move as one:
+   - reading down while a picture is pinned: header and bar both step aside, the picture takes the top;
+   - any scroll up: both come back and the picture slides down underneath them, so nothing covers it.
+   Outside pinned pictures the bar stays at the top as before. The pictures move by their sticky `top`
+   (not a transform), so a picture still sitting in the page never jumps.
+   20 Nov: the bar's sticky top is already 0 while the header is hidden (see the Nav block), so it only needs
+   to move its own height + 8px to step aside. */
+@media (max-width: 900px) {
+  .art-page.pinned.nav-hid .toc.is-stuck:not(.is-open) { transform: translateY(calc(-100% - 8px)); opacity: 0; visibility: hidden; }
+  .art-page .season__stage, .js-walk .art-page .rigwalk.walk-on .rigwalk__stage { top: calc(var(--nav-h) + 52px); transition: top var(--dur-slow) var(--ease); }
+  .art-page.nav-hid .season__stage, .js-walk .art-page.nav-hid .rigwalk.walk-on .rigwalk__stage { top: 8px; transform: none; }
+}
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .art-page .season__stage, .js-walk .art-page .rigwalk.walk-on .rigwalk__stage { transition: none; }
+}

@@ -5,7 +5,8 @@
    - sticky notes: the second half of the note "writes" itself in
    - FAQ mystery boxes: tap a crate to open it (answers stay findable with Ctrl+F where supported)
    - boatwork: sideways timeline (01 + 16); vertical scroll moves the cards across, the blueprint pans
-   - towing: van drives the route down the UK as each stop's card passes
+     (touch: a sideways swipe moves it the same way, settling on the nearest card)
+   - towing: van drives the route down the UK as each stop's card passes (phones: as the map scrolls past, no pin)
    - training: season board row for the paragraph being read lights up
    - which rig: compact pinned panel, girl + boy walk past the rigs; table rows + paragraph light up
    - phone contents pill: "n of N" count, and steps aside while something is pinned */
@@ -139,20 +140,23 @@
     hz.style.setProperty("--gx", (-p * 160) + "px");
     hz.style.setProperty("--rail", (p * 100) + "%");
     const step = Math.round(f);
-    if (step !== hzStep) {
-      hzStep = step;
-      hzItems.forEach((li, k) => li.classList.toggle("is-on", k === step));
-      hzSpots.forEach(s => s.classList.toggle("on", s.dataset.part == step + 1));
-      hzDots.forEach((d, k) => d.classList.toggle("on", k <= step));
-      writeCap(step);
-    }
+    setHzStep(step);
     if (step > 0) hideHint();
     return r.top <= 0 && r.bottom >= L.vh;
   };
+  function setHzStep(step) {
+    if (step === hzStep) return;
+    hzStep = step;
+    hzItems.forEach((li, k) => li.classList.toggle("is-on", k === step));
+    hzSpots.forEach(s => s.classList.toggle("on", s.dataset.part == step + 1));
+    hzDots.forEach((d, k) => d.classList.toggle("on", k <= step));
+    writeCap(step);
+  }
 
-  /* Sideways: a finger swipe (or trackpad sideways scroll) drives the same timeline.
-     The cards follow the finger 1:1 by moving the page, then snap to the nearest card;
-     a quick flick or a third of a card goes to the next one. Up/down is left to the browser. */
+  /* Sideways (18 Nov, agreed with James): scrolling DOWN is the way through, exactly as before.
+     A sideways swipe does the same job: the cards follow the finger 1:1 (it moves the page), and on
+     letting go they settle on the nearest card (a quick flick goes to the next one, never more).
+     No settle after scrolling down, no tap-to-pick. Up/down is left to the browser. */
   let hzHint = null, glide = 0;
   const hideHint = () => { if (hzHint) hzHint.classList.add("is-gone"); };
   const hzGeo = () => {
@@ -212,7 +216,7 @@
       if (s.mode !== "x") return;
       const g = hzGeo(), dx = e.clientX - s.x;
       let to = Math.round(g.f);
-      if (to === s.step && (Math.abs(s.vx) > .35 || Math.abs(dx) > L.cw / 3)) to = s.step + (dx < 0 ? 1 : -1);
+      if (to === s.step && Math.abs(s.vx) > .35) to = s.step + (dx < 0 ? 1 : -1);   // a quick flick: the next card, never more
       goStep(to);
     };
     pin.addEventListener("pointerup", endSwipe);
@@ -234,11 +238,6 @@
       clearTimeout(wheelT);
       wheelT = setTimeout(() => goStep(Math.round(hzGeo().f)), 140);
     }, { passive: false });
-    /* tap a faded card to go to it */
-    hzItems.forEach((li, k) => li.addEventListener("click", e => {
-      if (!hzOn || li.classList.contains("is-on") || e.target.closest("a")) return;
-      goStep(k);
-    }));
   }
 
   /* ---------- Towing: van along the route ---------- */
@@ -266,11 +265,13 @@
   const updateTrip = () => {
     if (!road || !tripCards.length) return false;
     const vh = window.innerHeight, phone = window.matchMedia("(max-width: 760px)").matches;
-    const mb = trip.querySelector(".trip__map").getBoundingClientRect().bottom;
-    const line = phone ? mb + (vh - mb) * .45 : vh * .55;
+    const line = vh * .55;
     const cs = tripCards.map(c => { const r = c.getBoundingClientRect(); return r.top + r.height / 2; });
     let f = 0;
-    if (cs[0] <= line) {
+    if (phone) {   /* phones (18 Nov): the map just scrolls with the page; the car drives while the map is on screen */
+      const m = tripSvg.getBoundingClientRect();
+      f = clamp((vh * .85 - m.top) / (vh * .5 + m.height), 0, 1) * (stopLen.length - 1);
+    } else if (cs[0] <= line) {
       f = cs.length - 1;
       for (let k = 0; k < cs.length - 1; k++) if (cs[k + 1] > line) { f = k + (line - cs[k]) / (cs[k + 1] - cs[k]); break; }
     }
@@ -282,7 +283,8 @@
     const dir = ahead.x - pt.x > .3 ? -1 : 1;   // the drawing faces left; flip when heading east
     van.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) scale(${dir} 1)`);
     /* zoomed-in map that follows the car down the country (viewBox matches the box's shape, so nothing letterboxes) */
-    if (tripSvg && tripSvg.clientHeight) {
+    if (phone) tripSvg.setAttribute("viewBox", "520 350 640 660");   /* fixed crop round the route */
+    else if (tripSvg && tripSvg.clientHeight) {
       const W = 1478, H = 1064, asp = tripSvg.clientWidth / tripSvg.clientHeight;
       let vh2 = H / (phone ? 1.6 : 1.15), vw2 = vh2 * asp;
       if (vw2 > W) { vw2 = W; vh2 = W / asp; }
@@ -292,9 +294,9 @@
     }
     const now = Math.round(f);
     stops.forEach((s, j) => s.classList.toggle("on", j <= f + .02));
-    tripCards.forEach((c, j) => c.classList.toggle("is-on", j === now && cs[0] <= line + vh * .3));
-    const r = trip.getBoundingClientRect();
-    return phone && r.top < 0 && r.bottom > mb + 40;
+    if (phone) tripCards.forEach(c => { const r = c.getBoundingClientRect(); c.classList.toggle("is-on", r.top < vh * .6 && r.bottom > vh * .4); });
+    else tripCards.forEach((c, j) => c.classList.toggle("is-on", j === now && cs[0] <= line + vh * .3));
+    return false;
   };
 
   /* ---------- Training: season board ---------- */

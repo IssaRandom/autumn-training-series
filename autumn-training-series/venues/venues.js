@@ -110,6 +110,12 @@
 
   /* ---- Nav: steps aside while reading down, back on the first scroll up (James 15 Nov, same as New to ILCAs) ---- */
   const nav = $("[data-nav]"), toc = $("[data-toc]");
+  /* the contents bar only follows the header up once it has reached its sticky line (James 18 Nov: it slid up
+     too early, while still sitting in the page under the hero) */
+  const tocStuck = el => {
+    const box = el.parentElement, pad = parseFloat(getComputedStyle(box).paddingTop) || 0;
+    return box.getBoundingClientRect().top + pad <= (parseFloat(getComputedStyle(el).top) || 0) + 1;
+  };
   if (nav && document.body.classList.contains("venue-page")) {
     let lastY = window.scrollY;
     window.addEventListener("scroll", () => {
@@ -117,6 +123,7 @@
       if (Math.abs(d) < 4 && y > 80) return;
       const busy = nav.classList.contains("is-open") || (toc && toc.classList.contains("is-open"));
       document.body.classList.toggle("nav-hid", y > 80 && d > 0 && !busy);
+      if (toc) toc.classList.toggle("is-stuck", tocStuck(toc));
       lastY = y;
     }, { passive: true });
   }
