@@ -1,6 +1,6 @@
 /* The road to Volos (programme article, 19 Nov 2026). Page-only styles; pairs with volos.js.
    Patterns: countdown chip in the hero, programme board (mini calendar Feb–Aug) pinned under the nav while the stop cards
-   scroll past, stop cards with a venue photo, "build your summer" receipt, Volos support grid. */
+   scroll past, stop cards with a venue photo, a racing card (National Opens), Volos support grid, other opportunities. */
 
 /* ---------- Hero ---------- */
 .rv-hero-credit { position: absolute; right: 12px; bottom: 10px; z-index: 2; margin: 0; padding: 3px 9px; border-radius: 999px; background: rgba(3, 19, 46, .6); color: rgba(255, 255, 255, .85); font-size: 11px; }
@@ -89,28 +89,13 @@
 .rv-stop.is-goal .rv-stop__img { aspect-ratio: 16 / 9; }
 .rv-stop.is-goal.on { border-color: var(--t-intl); box-shadow: 0 0 0 1px var(--t-intl), 0 0 40px rgba(185, 140, 255, .35); }
 
-/* ---------- Build your summer (receipt) ---------- */
-.rv-build { margin: 20px 0 8px; display: grid; gap: 16px; }
-@media (min-width: 760px) { .rv-build { grid-template-columns: 1fr 1fr; align-items: start; } }
-.rv-picks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.art-page .rv-picks li { margin: 0; }
-.rv-pick { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; font-size: 14px; transition: border-color var(--dur), background var(--dur); }
-.rv-pick input { width: 18px; height: 18px; accent-color: var(--t-bts); margin: 0; }
-.rv-pick b { display: block; color: var(--heading); font-size: 14px; }
-.rv-pick small { color: var(--muted); font-size: 12px; }
-.rv-pick .rv-pick__p { font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.rv-pick:has(input:checked) { border-color: color-mix(in srgb, var(--t-bts) 70%, #fff); background: color-mix(in srgb, var(--t-bts) 10%, var(--surface)); }
-.rv-receipt { position: sticky; top: calc(var(--nav-h) + 16px); padding: 18px 18px 16px; border-radius: 6px; background: #f6f2e8; color: #2b2a26; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, .35); -webkit-mask: radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) 0 0 / 16px 100% repeat-x; mask: radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) 0 0 / 16px 100% repeat-x; padding-bottom: 24px; }
-.rv-receipt h3 { margin: 0 0 10px; font: 800 1.1rem/1 var(--font-display); text-transform: uppercase; letter-spacing: .04em; text-align: center; color: #2b2a26; }
-.rv-receipt ul { list-style: none; margin: 0; padding: 0; }
-.rv-receipt li { display: flex; gap: 6px; margin: 0 0 4px !important; font-size: 13px; }
-.rv-receipt li span:first-child { flex: none; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rv-receipt li i { flex: 1; border-bottom: 1.5px dotted #9b9483; transform: translateY(-4px); }
-.rv-receipt .rv-empty { color: #7a7466; text-align: center; }
-.rv-receipt hr { border: 0; border-top: 1.5px dashed #9b9483; margin: 10px 0; }
-.rv-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; }
-.art-page .rv-receipt p { margin: 8px 0 0; font-size: 11px; color: #6b6556; text-align: center; }
+/* racing card between the stops (spring National Opens): no photo, dashed green edge */
+.rv-stop--race { border-style: dashed; border-color: color-mix(in srgb, var(--t-no) 55%, var(--line)); background: color-mix(in srgb, var(--t-no) 6%, var(--surface)); }
+.rv-stop--race .rv-stop__n { color: var(--t-no); }
+.art-page .rv-stop--race h3 { margin: 4px 0 12px; font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--heading); }
+.rv-stop--race.on { border-color: var(--t-no); box-shadow: 0 0 0 1px var(--t-no), 0 12px 30px rgba(0, 0, 0, .35); }
+.rv-stop--race .rv-mile { margin-top: 12px; border-color: color-mix(in srgb, var(--t-no) 60%, transparent); }
+.rv-stop--race .rv-mile__flag { background: var(--t-no); color: #002a1c; }
 
 /* ---------- Volos support grid ---------- */
 .rv-support { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 10px; }
@@ -121,6 +106,27 @@
 .rv-promise { margin: 26px 0; padding: 22px 20px; border-radius: var(--radius); background: linear-gradient(135deg, #0b3fb8, #2f6df6); color: #fff; }
 .art-page .rv-promise p { color: rgba(255, 255, 255, .92); }
 .rv-promise .rv-promise__line { margin: 0 0 10px; font: 800 clamp(1.5rem, 4.5vw, 2rem)/1.05 var(--font-display); text-transform: uppercase; color: #fff; }
+/* Volos sub-sections */
+.art-page .rv-h3 { margin: 30px 0 8px; font: 800 1.35rem/1.1 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.rv-dates { list-style: none; margin: 14px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.art-page .rv-dates li { margin: 0; padding: 10px 12px; border-left: 3px solid var(--t-intl); border-radius: 8px; background: var(--surface); font-size: 13px; color: var(--muted); }
+.rv-dates b { display: block; font: 800 1.15rem/1.1 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.rv-kit { margin: 14px 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.rv-kit summary { cursor: pointer; padding: 12px 16px; font-weight: 700; color: var(--heading); }
+.rv-kit > :not(summary) { margin-inline: 16px; }
+.rv-kit > :last-child { margin-bottom: 14px; }
+.art-page .rv-kit li, .art-page .rv-kit p { font-size: 15px; }
+
+/* other opportunities */
+.rv-opps { list-style: none; margin: 18px 0; padding: 0; display: grid; gap: 10px; }
+@media (min-width: 640px) { .rv-opps { grid-template-columns: 1fr 1fr; } }
+.art-page .rv-opps > li { margin: 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.rv-opps__k { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); }
+.art-page .rv-opps h3 { margin: 4px 0 2px; font: 800 1.35rem/1.1 var(--font-display); text-transform: uppercase; color: var(--heading); }
+.art-page .rv-opps .rv-opps__when { margin: 0 0 8px; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.art-page .rv-opps p { font-size: 15px; }
+.rv-opps .arrow { font-size: 14px; font-weight: 700; color: var(--blue); }
+
 .rv-doc { display: flex; gap: 12px; align-items: center; margin: 18px 0; padding: 12px 14px; border-radius: var(--radius); border: 1px dashed var(--line-strong, var(--line)); color: var(--muted); font-size: 14px; }
 .rv-doc b { color: var(--heading); }
 
@@ -137,7 +143,6 @@
   .art-page .rv-key { gap: 3px 12px; font-size: 10.5px; margin: 0; }
   .rv-key .rv-open { display: none; }
   .rv-stops { gap: 26px; }
-  .rv-receipt { position: static; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rv-stage, .rv-bar, .rv-stop { transition: none; }

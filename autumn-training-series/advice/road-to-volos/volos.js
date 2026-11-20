@@ -2,7 +2,8 @@
    - hero countdown to the ILCA 6 Youth Worlds (start date from events.js "i6-youth-worlds")
    - programme board: Feb–Aug 2027 month strips drawn from events.js (our camps, Nationals + registration day, the Worlds);
      it pins under the nav while the stop cards scroll past; the stop being read lights its bars, tap a bar to jump to its stop
-   - build your summer: tick stops, the receipt adds up days × £90 (Feb camp at its listed price) */
+   - a racing card (.rv-stop--race, the spring National Opens) sits between the stops; it lights its bars but is not counted
+   (the "build your summer" receipt was removed 20 Nov: James doesn't want costs highlighted) */
 (() => {
   "use strict";
   const EV = Array.isArray(window.BTS_EVENTS) ? window.BTS_EVENTS : [];
@@ -27,6 +28,7 @@
   const nowEl = prog && prog.querySelector("[data-rv-now]");
   const stops = prog ? [...prog.querySelectorAll("[data-stop]")] : [];
   const stage = prog && prog.querySelector(".rv-stage");
+  const camps = stops.filter(s => !s.classList.contains("rv-stop--race"));   // numbered BTS stops
   const evStop = {};   // event id -> stop element
   stops.forEach(s => (s.dataset.ev || "").split(" ").filter(Boolean).forEach(id => { evStop[id] = s; }));
   const bars = [];
@@ -95,9 +97,10 @@
       const months = new Set();
       if (cur) bars.filter(b => b.classList.contains("on")).forEach(b => months.add(b.closest(".rv-row").dataset.m));
       rows && [...rows.children].forEach(r => r.classList.toggle("on", months.has(r.dataset.m)));
+      const race = cur && cur.classList.contains("rv-stop--race");
       if (nowEl) nowEl.innerHTML = cur && first
-        ? `<b>Stop ${stops.indexOf(cur) + 1} of ${stops.length}</b> · ${cur.dataset.name} · ${cur.dataset.stop === "volos" ? "the goal" : weeksTo(first.start)}`
-        : `${stops.length} stops · ${weeksTo("2027-02-15").replace(" to Volos", "")} from February to Volos`;
+        ? `<b>${race ? "Racing" : `Stop ${camps.indexOf(cur) + 1} of ${camps.length}`}</b> · ${cur.dataset.name} · ${cur.dataset.stop === "volos" ? "the goal" : weeksTo(first.start)}`
+        : `${camps.length} stops · ${weeksTo("2027-02-15").replace(" to Volos", "")} from February to Volos`;
     }
     const r = prog.getBoundingClientRect();
     document.body.classList.toggle("rv-pinned", r.top < sb - 20 && r.bottom > sb + 80);
@@ -110,28 +113,4 @@
     update();
   }
 
-  /* ---------- Build your summer ---------- */
-  const build = document.querySelector("[data-rv-build]");
-  if (build) {
-    const picks = [...build.querySelectorAll("input[data-days]")];
-    const list = build.querySelector("[data-rv-lines]");
-    const total = build.querySelector("[data-rv-total]");
-    const days = build.querySelector("[data-rv-days]");
-    const money = n => "£" + n.toLocaleString("en-GB");
-    const calc = () => {
-      let t = 0, dd = 0;
-      const lines = picks.filter(p => p.checked).map(p => {
-        const n = +p.dataset.days, price = p.dataset.price ? +p.dataset.price : n * 90;
-        t += price; dd += n;
-        return `<li><span>${p.dataset.label}</span><i></i><span>${money(price)}</span></li>`;
-      });
-      list.innerHTML = lines.length ? lines.join("") : `<li class="rv-empty">Tick a camp to add it</li>`;
-      total.textContent = money(t);
-      days.textContent = dd === 1 ? "1 day" : `${dd} days`;
-    };
-    picks.forEach(p => p.addEventListener("change", calc));
-    const clear = build.querySelector("[data-rv-clear]");
-    if (clear) clear.addEventListener("click", () => { const anyOn = picks.some(p => p.checked); picks.forEach(p => { p.checked = !anyOn; }); clear.textContent = anyOn ? "Tick all" : "Clear all"; calc(); });
-    calc();
-  }
 })();
