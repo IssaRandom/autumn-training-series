@@ -25,6 +25,9 @@
     if (s.getFullYear() === t.getFullYear()) return `${s.getDate()} ${MONTHS[s.getMonth()]} – ${t.getDate()} ${MONTHS[t.getMonth()]} ${t.getFullYear()}`;
     return `${s.getDate()} ${MONTHS[s.getMonth()]} ${s.getFullYear()} – ${t.getDate()} ${MONTHS[t.getMonth()]} ${t.getFullYear()}`;
   }
+  /* NEW glow: an event with isNew: "<date added>" glows for FRESH_DAYS after that date (James 19 Nov 2026: new dates should stand out) */
+  const FRESH_DAYS = 45;
+  const isFresh = e => !!e.isNew && diff(today, parse(e.isNew)) <= FRESH_DAYS;
   const rigText = e => (e.rigs && e.rigs.length ? e.rigs.map(r => `ILCA ${r}`).join(" · ") : "All rigs");
 
   /* Lane packing. BTS training is placed first so it always sits on the top lane,
@@ -70,7 +73,7 @@
     const lanes = Math.max(opts.minLanes || 0, pack(segs));
     const bars = segs.map((g, i) => {
       const e = g.e, past = parse(e.end) < today;
-      const cls = ["cal-bar", `t-${e.type}`, g.cl ? "cont-l" : "", g.cr ? "cont-r" : "", past ? "is-past" : "", e.status === "provisional" ? "is-prov" : ""].join(" ").replace(/\s+/g, " ").trim();
+      const cls = ["cal-bar", `t-${e.type}`, g.cl ? "cont-l" : "", g.cr ? "cont-r" : "", past ? "is-past" : "", e.status === "provisional" ? "is-prov" : "", isFresh(e) && !past ? "is-fresh" : "", e.reg ? "is-reg" : ""].join(" ").replace(/\s+/g, " ").trim();
       const label = `${e.name}, ${range(e)}${e.venue ? ", " + e.venue : ""}`;
       return `<button type="button" class="${cls}" style="--c:${g.c};--s:${g.s};--l:${g.l};--i:${i}" data-id="${esc(e.id)}" aria-label="${esc(label)}" title="${esc(label)}"><span class="full">${esc(e.name)}</span><span class="short" aria-hidden="true">${esc(e.short || e.name)}</span></button>`;
     }).join("");
@@ -123,5 +126,5 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
-  window.BTSCal = { DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics, gcal, reminderIcs, reminderGcal, download };
+  window.BTSCal = { isFresh, DAY, MONTHS, MONTHS_LONG, WD, parse, iso, addDays, diff, wd, today, esc, range, rigText, row, ics, gcal, reminderIcs, reminderGcal, download };
 })();

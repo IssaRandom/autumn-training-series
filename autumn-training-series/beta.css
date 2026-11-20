@@ -678,6 +678,17 @@ mark.legal-todo { background: #ffdf27; color: #03132e; font-weight: 800; padding
 .cal-bar.cont-l.cont-r { width: calc(var(--s) * 100% / var(--n)); }
 .cal-bar.is-past { opacity: .4; filter: saturate(.55); }
 .cal-bar.is-prov { background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, .28) 0 5px, transparent 5px 10px); }
+/* NEW dates (isNew in events.js, glow lasts 45 days): pulsing halo + a small NEW tag on wide enough bars. James 19 Nov 2026. */
+.cal-bar.is-fresh { z-index: 1; animation: fresh-glow 2.2s ease-in-out infinite; }
+.cal-bar.is-fresh::after { content: "NEW"; flex: none; margin-left: 5px; padding: 1px 4px 0; border-radius: 3px; background: #fff; color: #0b3fb8; font-size: 8.5px; font-weight: 800; letter-spacing: .06em; line-height: 1.35; }
+@container (max-width: 74px) { .cal-bar.is-fresh::after { display: none; } }
+@keyframes fresh-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255, 255, 255, .55), 0 0 8px 1px rgba(80, 160, 255, .55); }
+  50% { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, .95), 0 0 18px 5px rgba(80, 190, 255, .85); }
+}
+@media (prefers-reduced-motion: reduce) { .cal-bar.is-fresh.is-fresh { animation: none; box-shadow: 0 0 0 1.5px #fff, 0 0 12px 3px rgba(80, 190, 255, .75); } }
+/* Registration day (reg: true): hatched gold, dashed outline, so it reads apart from racing days */
+.cal-bar.is-reg { background-image: repeating-linear-gradient(135deg, rgba(0, 0, 0, .22) 0 4px, transparent 4px 8px); outline: 1.5px dashed rgba(255, 255, 255, .85); outline-offset: -1.5px; }
 .t-bts-camp { --bar: var(--t-bts); --bar-tx: var(--t-bts-tx); }
 .t-national-open { --bar: var(--t-no); --bar-tx: var(--t-no-tx); }
 .t-championship { --bar: var(--t-champ); --bar-tx: var(--t-champ-tx); }
@@ -691,6 +702,7 @@ mark.legal-todo { background: #ffdf27; color: #03132e; font-weight: 800; padding
 .cal-bar.t-deadline::before { content: "!"; font-weight: 800; margin-right: 3px; flex: none; }
 .animate .cal-bar { animation: bar-in .6s var(--ease) both; animation-delay: calc(var(--i) * 30ms + var(--rd, 0ms)); transform-origin: left center; }
 @keyframes bar-in { from { transform: scaleX(.2); opacity: 0; } }
+.animate .cal-bar.is-fresh { animation: bar-in .6s var(--ease) both, fresh-glow 2.2s ease-in-out infinite; animation-delay: calc(var(--i) * 30ms + var(--rd, 0ms)), .9s; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
@@ -708,3 +720,12 @@ mark.legal-todo { background: #ffdf27; color: #03132e; font-weight: 800; padding
 /* "Coming soon" guide cards are placeholders, not links (SEO: no links to unfinished guides) */
 div.card-soon { cursor: default; }
 div.card-soon:hover { transform: none; border-color: var(--line); box-shadow: var(--shadow-sm); }
+
+/* Homepage: summer 2027 programme teaser under the camp dates (19 Nov 2026) */
+.summer-teaser { display: flex; align-items: center; gap: 14px; margin-top: 22px; padding: 16px 18px; border-radius: var(--radius); background: linear-gradient(135deg, #0b3fb8, #2f6df6); color: #fff; text-decoration: none; box-shadow: 0 0 0 1px rgba(255, 255, 255, .35), 0 0 24px rgba(80, 160, 255, .45); transition: transform var(--dur) var(--ease), box-shadow var(--dur); }
+.summer-teaser:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(255, 255, 255, .6), 0 0 34px rgba(80, 190, 255, .7); }
+.summer-teaser__new { flex: none; padding: 3px 8px 2px; border-radius: 4px; background: #fff; color: #0b3fb8; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.summer-teaser__t { display: grid; gap: 2px; min-width: 0; }
+.summer-teaser__t b { font-size: 17px; }
+.summer-teaser__t span { font-size: 14px; color: rgba(255, 255, 255, .85); }
+.summer-teaser__go { margin-left: auto; font-size: 22px; font-weight: 700; }

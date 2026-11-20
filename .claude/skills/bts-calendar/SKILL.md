@@ -13,6 +13,10 @@ One file: `autumn-training-series/beta/data/events.js` → `window.BTS_EVENTS` (
 { id: "no1", name: "National Open 1 (Rooster)", short: "NO1", start: "2027-03-13", end: "2027-03-14",
   venue: "WPNSA", rigs: [4,6,7], type: "national-open", url: "...", status: "provisional"?, checkNor: true?, optional: true?, note: "" }
 ```
+- `isNew: "YYYY-MM-DD"` = date added: the bar glows with a NEW tag (and the Months list shows a New tag) for 45 days (`FRESH_DAYS`, `BTSCal.isFresh`). Use it whenever James adds a batch of new dates ("make them glow").
+- `interest: true` (BTS only) = dates set but no booking-sheet row yet: sheet says "Online booking opens soon" + "Register interest" (WhatsApp) instead of Book. Drop it once the sheet row exists.
+- `prog: "#stop-x"` = the camp's stop in the programme article `advice/road-to-volos/` (sheet shows a "Programme" link; seo-head uses it as the Event url).
+- `reg: true` = a registration-day marker (hatched gold, dashed outline), e.g. `nats-reg` on 7 Aug 2027.
 - `placeholder: true` (BTS only) = dates not set: striped like provisional, sheet says "not open for booking", button is "Register interest" (WhatsApp), and it is left out of the homepage "next trainings".
 - Never add a season-long series as one bar (it takes a lane in every month): use a one-day "opens" marker plus a note.
 - `short` is shown when a bar is narrow, so always give one. `rigs: []` = all rigs or allocated by ranking. `optional` = masters/women's events (hidden by default).
