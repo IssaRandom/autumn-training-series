@@ -183,6 +183,13 @@
 .art-page.nav-hid .toc.is-stuck { transform: translateY(calc(-1 * var(--nav-h))); }
 .season__stage, .trip__map, .rigwalk__stage { transition: transform var(--dur-slow) var(--ease); }
 .art-page.nav-hid .season__stage, .art-page.nav-hid .trip__map, .art-page.nav-hid .walk-on .rigwalk__stage { transform: translateY(calc(-1 * var(--nav-h) + 8px)); }
+@media (max-width: 900px) {
+  /* phones (20 Nov): when the header hides, the bar's sticky line moves to the top edge instead of the
+     bar being shifted up. Still in the page under the hero it doesn't move at all; once stuck it slides
+     up with the header and back down with it. No stop at the old header line. */
+  .art-page .toc { transition: top var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease), opacity var(--dur) var(--ease), visibility var(--dur); }
+  .art-page.nav-hid .toc, .art-page.nav-hid .toc.is-stuck { transform: none; top: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
   .art-page .nav, .art-page .toc, .season__stage, .trip__map, .rigwalk__stage { transition: none; }
 }
@@ -534,9 +541,11 @@
    - reading down while a picture is pinned: header and bar both step aside, the picture takes the top;
    - any scroll up: both come back and the picture slides down underneath them, so nothing covers it.
    Outside pinned pictures the bar stays at the top as before. The pictures move by their sticky `top`
-   (not a transform), so a picture still sitting in the page never jumps. */
+   (not a transform), so a picture still sitting in the page never jumps.
+   20 Nov: the bar's sticky top is already 0 while the header is hidden (see the Nav block), so it only needs
+   to move its own height + 8px to step aside. */
 @media (max-width: 900px) {
-  .art-page.pinned.nav-hid .toc:not(.is-open) { transform: translateY(calc(-1 * var(--nav-h) - 100% - 8px)); opacity: 0; visibility: hidden; }
+  .art-page.pinned.nav-hid .toc.is-stuck:not(.is-open) { transform: translateY(calc(-100% - 8px)); opacity: 0; visibility: hidden; }
   .art-page .season__stage, .js-walk .art-page .rigwalk.walk-on .rigwalk__stage { top: calc(var(--nav-h) + 52px); transition: top var(--dur-slow) var(--ease); }
   .art-page.nav-hid .season__stage, .js-walk .art-page.nav-hid .rigwalk.walk-on .rigwalk__stage { top: 8px; transform: none; }
 }

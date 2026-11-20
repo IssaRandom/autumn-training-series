@@ -133,6 +133,7 @@ html.cal-lock.cal-intro-seen .cal-intro { animation: cal-intro-out .3s var(--eas
 .mlist .is-past .v { color: #8293b0; }
 .mlist .is-past .sw { opacity: .45; box-shadow: none; }
 .mlist .prov { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border: 1px dashed currentColor; border-radius: 4px; padding: 0 4px; margin-left: 4px; vertical-align: 1px; }
+.mlist .fresh { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #0b3fb8; background: #fff; border-radius: 4px; padding: 1px 5px 0; margin-left: 6px; vertical-align: 1px; box-shadow: 0 0 10px rgba(80, 190, 255, .8); }
 .mempty { padding: 0 16px 14px; font-size: 13px; color: var(--muted); margin: 0; }
 
 /* ---------- Tooltip ---------- */
