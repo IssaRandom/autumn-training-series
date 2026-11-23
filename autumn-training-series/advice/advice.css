@@ -206,3 +206,55 @@ html:not(.review) .g-lede:has(> .wip:only-child), html:not(.review) .stat:has(.w
 html:not(.review) .timeline time[aria-label="time to add"] { visibility: hidden; }
 html:not(.review) .draft { box-shadow: none; padding-left: 0; }
 html:not(.review) .draft::before { content: none; }
+
+/* Advice hub, image-led (James 23 Nov: "really quite bland, very boxy") */
+.hub-hero .g-hero-img { opacity: .5; }
+.hub-hero-credit { position: absolute; right: 10px; bottom: 10px; z-index: 2; margin: 0; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; letter-spacing: .02em; }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.feat { display: flex; flex-direction: column; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--line); text-decoration: none; color: var(--heading); box-shadow: var(--shadow-sm); transition: transform var(--dur-slow) var(--ease), box-shadow var(--dur-slow) var(--ease), border-color var(--dur); }
+@media (hover: hover) { .feat:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--line-strong); } .feat:hover .feat-img img { transform: scale(1.05); } }
+.feat:active { transform: scale(.99); }
+.feat-img { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #050c1c; }
+.feat-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.feat-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(3, 19, 46, .55), transparent 45%); pointer-events: none; }
+.feat-stamp { position: absolute; left: 14px; top: 14px; z-index: 2; padding: 7px 11px; border-radius: var(--radius-sm); background: rgba(3, 19, 46, .8); border: 1px solid rgba(255, 255, 255, .22); color: #fff; font: 800 .95rem/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; }
+.feat-stamp--new { background: var(--accent); border-color: transparent; }
+.feat-img .credit { position: absolute; right: 8px; bottom: 8px; z-index: 2; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; }
+.feat-body { display: flex; flex-direction: column; gap: 12px; flex: 1; padding: 22px 24px 26px; }
+.feat-body .eyebrow { margin: 0; }
+.feat-body h3 { margin: 0; font: 800 clamp(1.9rem, 4.4vw, 2.7rem)/.95 var(--font-display); text-transform: uppercase; color: var(--heading); text-wrap: balance; }
+.feat-toc { counter-reset: t; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; padding: 0; }
+.feat-toc li { counter-increment: t; padding: 6px 11px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); font-size: .8rem; font-weight: 600; }
+.feat-toc li::before { content: counter(t, decimal-leading-zero) "  "; color: var(--blue-300); font-weight: 800; }
+.feat .btn { align-self: flex-start; margin-top: auto; }
+
+.hub-band { position: relative; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; min-height: clamp(150px, 22vw, 230px); margin-bottom: 24px; padding: clamp(20px, 3vw, 32px); border-radius: var(--radius); overflow: hidden; background: #050c1c; color: #fff; }
+.hub-band > img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform 1.4s var(--ease); }
+.hub-band:hover > img { transform: scale(1.08); }
+.hub-band::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(0deg, rgba(3, 19, 46, .94), rgba(3, 19, 46, .55) 70%, rgba(3, 19, 46, .3)), linear-gradient(90deg, rgba(3, 19, 46, .55), transparent 70%); }
+.hub-band .h2, .hub-band .eyebrow { text-shadow: 0 2px 14px rgba(3, 19, 46, .7); }
+.hub-band > :not(img) { position: relative; z-index: 2; }
+.hub-band .h2 { margin: 0; color: #fff; text-wrap: balance; }
+.hub-band .eyebrow { color: #8fb5ff; }
+.hub-band .link-more { color: #fff; }
+.hub-band > .hub-band-credit { position: absolute; top: 10px; right: 10px; margin: 0; padding: 2px 8px; border-radius: 999px; background: rgba(3, 19, 46, .72); color: #dbe6f6; font-size: .62rem; }
+.card-img--art { background: #03132e; }
+.card-img--art img { object-fit: contain; padding: 6px; }
+.card-soon .card-img--none { aspect-ratio: 16 / 7; }
+.card-soon .card-img img { filter: saturate(.7) brightness(.82); }
+
+/* Guide credits: "Written by Kai" / "Designed by James" (dashed design frame). Static, no animation (James 23 Nov). */
+.g-credits { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin: 34px 0 8px; }
+.cr { position: relative; padding: 18px 20px 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); min-height: 150px; }
+.cr-lab { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.cr-sig { position: relative; display: block; width: 210px; max-width: 100%; margin-top: 4px; }
+.sig { display: block; width: 100%; height: auto; overflow: visible; color: var(--heading); }
+.sig-txt { font: 700 78px/1 "Caveat", "Segoe Script", cursive; fill: currentColor; stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; }
+.sig-tail { fill: none; stroke: var(--blue-300); stroke-width: 2.5; stroke-linecap: round; }
+.cr-des { position: relative; display: inline-block; margin: 18px 0 0 6px; padding: 4px 14px; }
+.des-name { display: block; font: 800 clamp(2.6rem, 6vw, 3.2rem)/1 var(--font-display); text-transform: uppercase; letter-spacing: .02em; color: var(--heading); }
+.des-frame { position: absolute; inset: 0; border: 1.5px dashed var(--blue-300); }
+.des-frame i { position: absolute; width: 9px; height: 9px; background: var(--surface); border: 1.5px solid var(--blue-300); }
+.des-frame i:nth-child(1) { left: -5px; top: -5px; } .des-frame i:nth-child(2) { right: -5px; top: -5px; }
+.des-frame i:nth-child(3) { left: -5px; bottom: -5px; } .des-frame i:nth-child(4) { right: -5px; bottom: -5px; }
+@media (max-width: 640px) { .card-soon .card-img--none { display: none; } }
